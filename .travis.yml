@@ -1,0 +1,13 @@
+os:
+  - linux
+  - osx
+language: perl6
+perl6:
+  - latest
+install:
+  - rakudobrew build-panda
+  - panda --notests installdeps .
+script:
+  - perl6 -MPanda::Builder -e 'Panda::Builder.build(~$*CWD)'
+  - PERL6LIB=$PWD/lib prove -e perl6 -vr t/
+sudo: false

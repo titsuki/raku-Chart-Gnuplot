@@ -1,0 +1,17 @@
+{
+  "authors" : [
+    "titsuki"
+  ],
+  "build-depends" : [ ],
+  "depends" : [ ],
+  "description" : "blah blah blah",
+  "name" : "Chart::Gnuplot",
+  "perl" : "6.c",
+  "provides" : {
+    "Chart::Gnuplot" : "lib/Chart/Gnuplot.pm6"
+  },
+  "resources" : [ ],
+  "source-url" : "git://github.com/titsuki/p6-Chart-Gnuplot.git",
+  "test-depends" : [ ],
+  "version" : "*"
+}
