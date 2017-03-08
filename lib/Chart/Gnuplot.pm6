@@ -11,6 +11,7 @@ has Str @!plots;
 has Str @!objects;
 has Str @!pre-commands;
 has Str @!post-commands;
+has Str @!labels;
 
 submethod BUILD(:$!terminal!, Str :$filename, :$!persist = True, :$!debug = False) {
     my @opts;
@@ -31,6 +32,7 @@ method terminal($terminal) {
 
 method draw {
     $!gnuplot.in.say: $_ for @!pre-commands;
+    $!gnuplot.in.say: $_ for @!labels;
     $!gnuplot.in.say: $_ for @!objects;
     $!gnuplot.in.say: sprintf("%s %s", "plot", @!plots.join(","));
     $!gnuplot.in.say: $_ for @!post-commands;
@@ -46,6 +48,47 @@ method plot(Str :$title, Str :$style, :@vertices) {
 
     my $plot = sprintf("\'%s\' with %s title \"%s\"", $tmpfile, $style, $title);
     @!plots.push($plot);
+}
+
+method label(:$tag, :$label-text, :@at, :$relative-position,
+             :$norotate, :$rotate, :$font, :$noenhanced,
+             :$layer, :$textcolor, :$point, :$nopoint, :$offset,
+             :$boxed, :$hypertext) {
+    my @args;
+    @args.push($tag) if $tag.defined;
+    @args.push(sprintf("\"%s\"", $label-text)) if $label-text.defined;
+    @args.push(sprintf("at %s",@at.join(","))) if @at.defined;
+    @args.push($layer) if $layer.defined;
+    @args.push("norotate") if $norotate.defined;
+
+    my @rotate;
+    if $rotate.defined {
+        @rotate.push("rotate") ;
+        if $rotate<degrees>:exists {
+            @rotate.push(sprintf("by %d", $rotate<degrees>));
+        }
+    }
+    @args.push(@rotate.join(" ")) if @rotate.elems > 0;
+
+    my @font;
+    if $font<name>:exists {
+        @font.push($font<name>);
+        if $font<size>:exists {
+            @font.push($font<size>);
+        }
+        @args.push(sprintf("font \"%s\"", @font.join(",")));
+    }
+
+    @args.push("noenhanced") if $noenhanced.defined;
+    @args.push($layer) if $layer.defined;
+    @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
+    @args.push("point " ~ $point) if $point.defined;
+    @args.push("offset " ~ $offset) if $offset.defined;
+    @args.push("boxed") if $boxed.defined;
+    @args.push("hypertext") if $hypertext.defined;
+
+    my $label = sprintf("set label %s", @args.join(" "));
+    @!labels.push($label);
 }
 
 multi method rectangle(:$index, :@from where *.elems == 2, :@to where *.elems == 2,
