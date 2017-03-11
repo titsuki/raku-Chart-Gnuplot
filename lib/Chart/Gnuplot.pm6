@@ -7,18 +7,14 @@ has Bool $.persist;
 has $.debug;
 has $.terminal;
 has %.options;
-has Str @!plots;
-has Str @!objects;
-has Str @!pre-commands;
-has Str @!post-commands;
-has Str @!labels;
+has $!filename;
+has Int $!num-plot;
 
-submethod BUILD(:$!terminal!, Str :$filename, :$!persist = True, :$!debug = False) {
+submethod BUILD(:$!terminal!, Str :$!filename, :$!persist = True, :$!debug = False) {
     my @opts;
     @opts.push('-persist') if $!persist;
     $!gnuplot = run("gnuplot", @opts.join(" "), :in, :out, :err);
-    $!gnuplot.in.say: sprintf("set terminal %s", $!terminal);
-    $!gnuplot.in.say: sprintf("set output \"%s\"", $filename);
+    $!num-plot = 0;
 }
 
 submethod DESTROY {
@@ -30,14 +26,6 @@ method terminal($terminal) {
     $!gnuplot.in.say: sprintf("set terminal \"%s\"", $!terminal);
 }
 
-method draw {
-    $!gnuplot.in.say: $_ for @!pre-commands;
-    $!gnuplot.in.say: $_ for @!labels;
-    $!gnuplot.in.say: $_ for @!objects;
-    $!gnuplot.in.say: sprintf("%s %s", "plot", @!plots.join(","));
-    $!gnuplot.in.say: $_ for @!post-commands;
-}
-
 method plot(Str :$title, Str :$style, :@vertices) {
     my $tmpfile = ("$*TMPDIR", "/p6gnuplot-", "$*PID", "-", time, "-", @vertices.WHERE).join;
     my $fh = open $tmpfile, :w;
@@ -46,8 +34,15 @@ method plot(Str :$title, Str :$style, :@vertices) {
     }
     $fh.close;
 
-    my $plot = sprintf("\'%s\' with %s title \"%s\"", $tmpfile, $style, $title);
-    @!plots.push($plot);
+    $!gnuplot.in.say: sprintf("set terminal %s", $!terminal);
+    $!gnuplot.in.say: sprintf("set output \"%s\"", $!filename);
+
+    my $cmd = do given $!num-plot {
+        when * > 0 { "replot" }
+        default { "plot" }
+    };
+    $!gnuplot.in.say: sprintf("%s \'%s\' with %s title \"%s\"",$cmd, $tmpfile, $style, $title);
+    $!num-plot++;
 }
 
 method label(:$tag, :$label-text, :@at, :$relative-position,
@@ -87,8 +82,7 @@ method label(:$tag, :$label-text, :@at, :$relative-position,
     @args.push("boxed") if $boxed.defined;
     @args.push("hypertext") if $hypertext.defined;
 
-    my $label = sprintf("set label %s", @args.join(" "));
-    @!labels.push($label);
+    $!gnuplot.in.say: sprintf("set label %s", @args.join(" "));
 }
 
 multi method rectangle(:$index, :@from where *.elems == 2, :@to where *.elems == 2,
@@ -104,8 +98,7 @@ multi method rectangle(:$index, :@from where *.elems == 2, :@to where *.elems ==
     @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
     @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
 
-    my $object = sprintf("set object %d rectangle from %s to %s %s", $index, @from.join(","), @to.join(","), @args.join(" "));
-    @!objects.push($object);
+    $!gnuplot.in.say: sprintf("set object %d rectangle from %s to %s %s", $index, @from.join(","), @to.join(","), @args.join(" "));
 }
 
 multi method rectangle(:$index, :@from where *.elems == 2, :@rto where *.elems == 2,
@@ -121,8 +114,7 @@ multi method rectangle(:$index, :@from where *.elems == 2, :@rto where *.elems =
     @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
     @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
 
-    my $object = sprintf("set object %d rectangle from %s to %s %s", $index, @from.join(","), @rto.join(","), @args.join(" "));
-    @!objects.push($object);
+    $!gnuplot.in.say: sprintf("set object %d rectangle from %s to %s %s", $index, @from.join(","), @rto.join(","), @args.join(" "));
 }
 
 multi method ellipse(:$index, :@at where *.elems == 2, :$w, :$h,
@@ -138,8 +130,7 @@ multi method ellipse(:$index, :@at where *.elems == 2, :$w, :$h,
     @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
     @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
 
-    my $object = sprintf("set object %d ellipse at %s size %d,%d %s", $index, @at.join(","), $w, $h, @args.join(" "));
-    @!objects.push($object);
+     $!gnuplot.in.say: sprintf("set object %d ellipse at %s size %d,%d %s", $index, @at.join(","), $w, $h, @args.join(" "));
 }
 
 multi method ellipse(:$index, :@center where *.elems == 2, :$w, :$h,
@@ -155,8 +146,7 @@ multi method ellipse(:$index, :@center where *.elems == 2, :$w, :$h,
     @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
     @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
 
-    my $object = sprintf("set object %d ellipse center %s size %d,%d %s", $index, @center.join(","), $w, $h, @args.join(" "));
-    @!objects.push($object);
+    $!gnuplot.in.say: sprintf("set object %d ellipse center %s size %d,%d %s", $index, @center.join(","), $w, $h, @args.join(" "));
 }
 
 multi method circle(:$index, :@at where *.elems == 2, :$radius,
@@ -172,8 +162,7 @@ multi method circle(:$index, :@at where *.elems == 2, :$radius,
     @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
     @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
 
-    my $object = sprintf("set object %d circle at %s size %d %s", $index, @at.join(","), $radius, @args.join(" "));
-    @!objects.push($object);
+    $!gnuplot.in.say: sprintf("set object %d circle at %s size %d %s", $index, @at.join(","), $radius, @args.join(" "));
 }
 
 multi method circle(:$index, :@center where *.elems == 2, :$radius,
@@ -189,8 +178,7 @@ multi method circle(:$index, :@center where *.elems == 2, :$radius,
     @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
     @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
     
-    my $object = sprintf("set object %d circle center %s size %d %s", $index, @center.join(","), $radius, @args.join(" "));
-    @!objects.push($object);
+    $!gnuplot.in.say: sprintf("set object %d circle center %s size %d %s", $index, @center.join(","), $radius, @args.join(" "));
 }
 
 method polygon(:$index, :@from where *.elems == 2, :@to,
@@ -206,16 +194,11 @@ method polygon(:$index, :@from where *.elems == 2, :@to,
     @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
     @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
 
-    my $object = sprintf("set object %d polygon from %s %s %s", $index, @from.join(","), @to.map({ "to " ~ $_.join(",") }).join(" "), @args.join(" "));
-    @!objects.push($object);
+    $!gnuplot.in.say: sprintf("set object %d polygon from %s %s %s", $index, @from.join(","), @to.map({ "to " ~ $_.join(",") }).join(" "), @args.join(" "));
 }
 
-method pre-process-command(Str $command) {
-    @!pre-commands.push($command);
-}
-
-method post-process-command(Str $command) {
-    @!post-commands.push($command);
+method command(Str $command) {
+    $!gnuplot.in.say: $command;
 }
 
 =begin pod
