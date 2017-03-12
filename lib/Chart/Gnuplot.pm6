@@ -29,12 +29,13 @@ method terminal($terminal) {
 method plot(Str :$title, :@range, :@vertices,
             Str :$style, :$linestyle, :$linetype, :$linewidth, :$linecolor,
             :$pointtype, :$pointsize, :$fill, :$nohidden3d, :$nocontours, :$nosurface, :$palette) {
-    my $tmpfile = ("$*TMPDIR", "/p6gnuplot-", "$*PID", "-", time, "-", @vertices.WHERE).join;
-    my $fh = open $tmpfile, :w;
+    my $tmpvariable = '$mydata' ~ ($*PID, time, @vertices.WHERE).join;
+
+    self.command(sprintf("%s << EOD", $tmpvariable));
     for ^@vertices.elems -> $r {
-        $fh.say(@vertices[$r;*].join(" "));
+        self.command(@vertices[$r;*].join(" "));
     }
-    $fh.close;
+    self.command("EOD");
 
     my @range-args;
     for @range {
@@ -61,7 +62,7 @@ method plot(Str :$title, :@range, :@vertices,
         when * > 0 { "replot" }
         default { "plot" }
     };
-    $!gnuplot.in.say: sprintf("%s %s \'%s\' with %s title \"%s\" %s",$cmd, @range-args.join(" "), $tmpfile, $style, $title, @style-args.join(" "));
+    $!gnuplot.in.say: sprintf("%s %s %s with %s title \"%s\" %s",$cmd, @range-args.join(" "), $tmpvariable, $style, $title, @style-args.join(" "));
     $!num-plot++;
 }
 
