@@ -26,13 +26,33 @@ method terminal($terminal) {
     $!gnuplot.in.say: sprintf("set terminal \"%s\"", $!terminal);
 }
 
-method plot(Str :$title, Str :$style, :@vertices) {
+method plot(Str :$title, :@range, :@vertices,
+            Str :$style, :$linestyle, :$linetype, :$linewidth, :$linecolor,
+            :$pointtype, :$pointsize, :$fill, :$nohidden3d, :$nocontours, :$nosurface, :$palette) {
     my $tmpfile = ("$*TMPDIR", "/p6gnuplot-", "$*PID", "-", time, "-", @vertices.WHERE).join;
     my $fh = open $tmpfile, :w;
     for ^@vertices.elems -> $r {
         $fh.say(@vertices[$r;*].join(" "));
     }
     $fh.close;
+
+    my @range-args;
+    for @range {
+        @range-args.push(sprintf("[%s]", $_.join(":")));
+    }
+
+    my @style-args;
+    @style-args.push("linestyle " ~ $linestyle) if $linestyle.defined;
+    @style-args.push("linetype " ~ $linetype) if $linetype.defined;
+    @style-args.push("linewidth " ~ $linewidth) if $linewidth.defined;
+    @style-args.push("linecolor " ~ $linecolor) if $linecolor.defined;
+    @style-args.push("pointtype " ~ $pointtype) if $pointtype.defined;
+    @style-args.push("pointsize " ~ $pointsize) if $pointsize.defined;
+    @style-args.push("fill " ~ $fill) if $fill.defined;
+    @style-args.push("nohidden3d") if $nohidden3d.defined;
+    @style-args.push("nocontours") if $nocontours.defined;
+    @style-args.push("nosurface") if $nosurface.defined;
+    @style-args.push("palette") if $palette.defined;
 
     $!gnuplot.in.say: sprintf("set terminal %s", $!terminal);
     $!gnuplot.in.say: sprintf("set output \"%s\"", $!filename);
@@ -41,7 +61,7 @@ method plot(Str :$title, Str :$style, :@vertices) {
         when * > 0 { "replot" }
         default { "plot" }
     };
-    $!gnuplot.in.say: sprintf("%s \'%s\' with %s title \"%s\"",$cmd, $tmpfile, $style, $title);
+    $!gnuplot.in.say: sprintf("%s %s \'%s\' with %s title \"%s\" %s",$cmd, @range-args.join(" "), $tmpfile, $style, $title, @style-args.join(" "));
     $!num-plot++;
 }
 
