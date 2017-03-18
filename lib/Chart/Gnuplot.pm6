@@ -66,11 +66,6 @@ method plot(Str :$title, :@range, :@vertices,
     $!num-plot++;
 }
 
-class Coordinate {
-    has $!system;
-    
-}
-
 method label(:$tag, :$label-text, :@at, :$relative-position,
              :$norotate, :$rotate, :$font, :$noenhanced,
              :$layer, :$textcolor, :$point, :$nopoint, :$offset,
