@@ -156,6 +156,95 @@ method cblabel(Str :$label, :$offset, :$font, :$textcolor, :$noenhanced, :$enhan
     $!gnuplot.in.say: sprintf("set cblabel %s", self!anylabel(:$label, :$offset, :$font, :$textcolor, :$noenhanced, :$enhanced, :$rotate, :$rotate-parallel, :$norotate));
 }
 
+method !anyrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
+    my @args;
+    @args.push(sprintf("[%s:%s]", $min, $max));
+    @args.push($reverse ?? "reverse" !! "noreverse") if $reverse.defined;
+    @args.push($writeback ?? "writeback" !! "nowriteback") if $writeback.defined;
+    @args.push($extend ?? "extend" !! "noextend") if $extend.defined;
+    @args.join(" ");
+}
+
+multi method xrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
+   $!gnuplot.in.say: sprintf("set xrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+}
+
+multi method xrange(:$restore) {
+    $!gnuplot.in.say: "set xrange restore";
+}
+
+multi method yrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
+   $!gnuplot.in.say: sprintf("set yrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+}
+
+multi method yrange(:$restore) {
+    $!gnuplot.in.say: "set yrange restore";
+}
+
+multi method zrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
+   $!gnuplot.in.say: sprintf("set zrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+}
+
+multi method zrange(:$restore) {
+    $!gnuplot.in.say: "set zrange restore";
+}
+
+multi method x2range(:$min, :$max, :$reverse, :$writeback, :$extend) {
+   $!gnuplot.in.say: sprintf("set x2range %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+}
+
+multi method x2range(:$restore) {
+    $!gnuplot.in.say: "set x2range restore";
+}
+
+multi method y2range(:$min, :$max, :$reverse, :$writeback, :$extend) {
+   $!gnuplot.in.say: sprintf("set y2range %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+}
+
+multi method y2range(:$restore) {
+    $!gnuplot.in.say: "set y2range restore";
+}
+
+multi method cbrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
+   $!gnuplot.in.say: sprintf("set cbrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+}
+
+multi method cbrange(:$restore) {
+    $!gnuplot.in.say: "set cbrange restore";
+}
+
+multi method rrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
+    $!gnuplot.in.say: sprintf("set rrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+}
+
+multi method rrange(:$restore) {
+    $!gnuplot.in.say: "set rrange restore";
+}
+
+multi method trange(:$min, :$max, :$reverse, :$writeback, :$extend) {
+    $!gnuplot.in.say: sprintf("set trange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+}
+
+multi method trange(:$restore) {
+    $!gnuplot.in.say: "set trange restore";
+}
+
+multi method urange(:$min, :$max, :$reverse, :$writeback, :$extend) {
+    $!gnuplot.in.say: sprintf("set urange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+}
+
+multi method urange(:$restore) {
+    $!gnuplot.in.say: "set urange restore";
+}
+
+multi method vrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
+    $!gnuplot.in.say: sprintf("set vrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+}
+
+multi method vrange(:$restore) {
+    $!gnuplot.in.say: "set vrange restore";
+}
+
 multi method rectangle(:$index, :@from, :@to,
                        :$layer, :$clip, :$noclip, :$fillcolor, :$fillstyle,
                        :$default, :$linewidth, :$dashtype) {
