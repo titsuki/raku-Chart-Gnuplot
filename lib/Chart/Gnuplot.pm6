@@ -118,6 +118,89 @@ method label(:$tag, :$label-text, :@at, :$relative-position,
     $!gnuplot.in.say: sprintf("set label %s", @args.join(" "));
 }
 
+method xlabel(Str :$label, :$offset, :$font, :$textcolor, :$noenhanced, :$enhanced, :$rotate, :$rotate-parallel, :$norotate) {
+    my @args;
+    @args.push(sprintf("\"%s\"", $label)) if $label.defined;
+    @args.push("offset " ~ $offset) if $offset.defined;
+    @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
+    @args.push($textcolor) if $textcolor.defined;
+    @args.push("noenhanced") if $noenhanced.defined;
+    @args.push("enhanced $enhanced") if $enhanced.defined;
+    @args.push("rotate by $rotate") if $rotate.defined;
+    @args.push("rotate parallel") if $rotate-parallel.defined;
+    @args.push("norotate") if $norotate.defined;
+    $!gnuplot.in.say: sprintf("set xlabel %s", @args.join(" "));
+}
+
+method ylabel(Str :$label, :$offset, :$font, :$textcolor, :$noenhanced, :$enhanced, :$rotate, :$rotate-parallel, :$norotate) {
+    my @args;
+    @args.push(sprintf("\"%s\"", $label)) if $label.defined;
+    @args.push("offset " ~ $offset) if $offset.defined;
+    @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
+    @args.push($textcolor) if $textcolor.defined;
+    @args.push("noenhanced") if $noenhanced.defined;
+    @args.push("enhanced $enhanced") if $enhanced.defined;
+    @args.push("rotate by $rotate") if $rotate.defined;
+    @args.push("rotate parallel") if $rotate-parallel.defined;
+    @args.push("norotate") if $norotate.defined;
+    $!gnuplot.in.say: sprintf("set ylabel %s", @args.join(" "));
+}
+
+method zlabel(Str :$label, :$offset, :$font, :$textcolor, :$noenhanced, :$enhanced, :$rotate, :$rotate-parallel, :$norotate) {
+    my @args;
+    @args.push(sprintf("\"%s\"", $label)) if $label.defined;
+    @args.push("offset " ~ $offset) if $offset.defined;
+    @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
+    @args.push($textcolor) if $textcolor.defined;
+    @args.push("noenhanced") if $noenhanced.defined;
+    @args.push("enhanced $enhanced") if $enhanced.defined;
+    @args.push("rotate by $rotate") if $rotate.defined;
+    @args.push("norotate") if $norotate.defined;
+    $!gnuplot.in.say: sprintf("set zlabel %s", @args.join(" "));
+}
+
+method x2label(Str :$label, :$offset, :$font, :$textcolor, :$noenhanced, :$enhanced, :$rotate, :$rotate-parallel, :$norotate) {
+    my @args;
+    @args.push(sprintf("\"%s\"", $label)) if $label.defined;
+    @args.push("offset " ~ $offset) if $offset.defined;
+    @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
+    @args.push($textcolor) if $textcolor.defined;
+    @args.push("noenhanced") if $noenhanced.defined;
+    @args.push("enhanced $enhanced") if $enhanced.defined;
+    @args.push("rotate by $rotate") if $rotate.defined;
+    @args.push("rotate parallel") if $rotate-parallel.defined;
+    @args.push("norotate") if $norotate.defined;
+    $!gnuplot.in.say: sprintf("set x2label %s", @args.join(" "));
+}
+
+method y2label(Str :$label, :$offset, :$font, :$textcolor, :$noenhanced, :$enhanced, :$rotate, :$rotate-parallel, :$norotate) {
+    my @args;
+    @args.push(sprintf("\"%s\"", $label)) if $label.defined;
+    @args.push("offset " ~ $offset) if $offset.defined;
+    @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
+    @args.push($textcolor) if $textcolor.defined;
+    @args.push("noenhanced") if $noenhanced.defined;
+    @args.push("enhanced $enhanced") if $enhanced.defined;
+    @args.push("rotate by $rotate") if $rotate.defined;
+    @args.push("rotate parallel") if $rotate-parallel.defined;
+    @args.push("norotate") if $norotate.defined;
+    $!gnuplot.in.say: sprintf("set y2label %s", @args.join(" "));
+}
+
+method cblabel(Str :$label, :$offset, :$font, :$textcolor, :$noenhanced, :$enhanced, :$rotate, :$rotate-parallel, :$norotate) {
+    my @args;
+    @args.push(sprintf("\"%s\"", $label)) if $label.defined;
+    @args.push("offset " ~ $offset) if $offset.defined;
+    @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
+    @args.push($textcolor) if $textcolor.defined;
+    @args.push("noenhanced") if $noenhanced.defined;
+    @args.push("enhanced $enhanced") if $enhanced.defined;
+    @args.push("rotate by $rotate") if $rotate.defined;
+    @args.push("rotate parallel") if $rotate-parallel.defined;
+    @args.push("norotate") if $norotate.defined;
+    $!gnuplot.in.say: sprintf("set cblabel %s", @args.join(" "));
+}
+
 multi method rectangle(:$index, :@from, :@to,
                        :$layer, :$clip, :$noclip, :$fillcolor, :$fillstyle,
                        :$default, :$linewidth, :$dashtype) {
