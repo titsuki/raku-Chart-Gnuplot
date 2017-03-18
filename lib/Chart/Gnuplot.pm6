@@ -123,7 +123,7 @@ method xlabel(Str :$label, :$offset, :$font, :$textcolor, :$noenhanced, :$enhanc
     @args.push(sprintf("\"%s\"", $label)) if $label.defined;
     @args.push("offset " ~ $offset) if $offset.defined;
     @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
-    @args.push($textcolor) if $textcolor.defined;
+    @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
     @args.push("noenhanced") if $noenhanced.defined;
     @args.push("enhanced $enhanced") if $enhanced.defined;
     @args.push("rotate by $rotate") if $rotate.defined;
@@ -137,7 +137,7 @@ method ylabel(Str :$label, :$offset, :$font, :$textcolor, :$noenhanced, :$enhanc
     @args.push(sprintf("\"%s\"", $label)) if $label.defined;
     @args.push("offset " ~ $offset) if $offset.defined;
     @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
-    @args.push($textcolor) if $textcolor.defined;
+    @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
     @args.push("noenhanced") if $noenhanced.defined;
     @args.push("enhanced $enhanced") if $enhanced.defined;
     @args.push("rotate by $rotate") if $rotate.defined;
@@ -151,7 +151,7 @@ method zlabel(Str :$label, :$offset, :$font, :$textcolor, :$noenhanced, :$enhanc
     @args.push(sprintf("\"%s\"", $label)) if $label.defined;
     @args.push("offset " ~ $offset) if $offset.defined;
     @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
-    @args.push($textcolor) if $textcolor.defined;
+    @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
     @args.push("noenhanced") if $noenhanced.defined;
     @args.push("enhanced $enhanced") if $enhanced.defined;
     @args.push("rotate by $rotate") if $rotate.defined;
@@ -164,7 +164,7 @@ method x2label(Str :$label, :$offset, :$font, :$textcolor, :$noenhanced, :$enhan
     @args.push(sprintf("\"%s\"", $label)) if $label.defined;
     @args.push("offset " ~ $offset) if $offset.defined;
     @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
-    @args.push($textcolor) if $textcolor.defined;
+    @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
     @args.push("noenhanced") if $noenhanced.defined;
     @args.push("enhanced $enhanced") if $enhanced.defined;
     @args.push("rotate by $rotate") if $rotate.defined;
@@ -178,7 +178,7 @@ method y2label(Str :$label, :$offset, :$font, :$textcolor, :$noenhanced, :$enhan
     @args.push(sprintf("\"%s\"", $label)) if $label.defined;
     @args.push("offset " ~ $offset) if $offset.defined;
     @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
-    @args.push($textcolor) if $textcolor.defined;
+    @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
     @args.push("noenhanced") if $noenhanced.defined;
     @args.push("enhanced $enhanced") if $enhanced.defined;
     @args.push("rotate by $rotate") if $rotate.defined;
@@ -192,7 +192,7 @@ method cblabel(Str :$label, :$offset, :$font, :$textcolor, :$noenhanced, :$enhan
     @args.push(sprintf("\"%s\"", $label)) if $label.defined;
     @args.push("offset " ~ $offset) if $offset.defined;
     @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
-    @args.push($textcolor) if $textcolor.defined;
+    @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
     @args.push("noenhanced") if $noenhanced.defined;
     @args.push("enhanced $enhanced") if $enhanced.defined;
     @args.push("rotate by $rotate") if $rotate.defined;
