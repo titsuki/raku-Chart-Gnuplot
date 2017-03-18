@@ -73,19 +73,7 @@ method label(:$tag, :$label-text, :@at, :$relative-position,
     my @args;
     @args.push($tag) if $tag.defined;
     @args.push(sprintf("\"%s\"", $label-text)) if $label-text.defined;
-    
-    my @at-args;
-    if @at.elems >= 2 {
-        while @at {
-            my $p = @at.shift;
-            @at-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-        @at-args.join(" ");
-    } else {
-        die "Error: Found invalid coordinate";
-    }
-    
-    @args.push(sprintf("at %s",@at-args.join(","))) if @at-args.defined;
+    @args.push(sprintf("at %s",@at.join(","))) if @at.defined;
     @args.push($layer) if $layer.defined;
     @args.push("norotate") if $norotate.defined;
 
@@ -118,33 +106,10 @@ method label(:$tag, :$label-text, :@at, :$relative-position,
     $!gnuplot.in.say: sprintf("set label %s", @args.join(" "));
 }
 
-multi method rectangle(:$index, :@from, :@to,
+multi method rectangle(:$index, :@from where *.elems == 2, :@to where *.elems == 2,
                        :$layer, :$clip, :$noclip, :$fillcolor, :$fillstyle,
                        :$default, :$linewidth, :$dashtype) {
     my @args;
-    
-    my @from-args;
-    if @from.elems >= 2 {
-        while @from {
-            my $p = @from.shift;
-            @from-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-        @from-args.join(" ");
-    } else {
-        die "Error: Found invalid coordinate";
-    }
-
-    my @to-args;
-    if @to.elems >= 2 {
-        while @to {
-            my $p = @to.shift;
-            @to-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-        @to-args.join(" ");
-    } else {
-        die "Error: Found invalid coordinate";
-    }
-
     @args.push($layer) if $layer.defined;
     @args.push("clip") if $clip.defined;
     @args.push("noclip") if $noclip.defined;
@@ -154,36 +119,13 @@ multi method rectangle(:$index, :@from, :@to,
     @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
     @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
 
-    $!gnuplot.in.say: sprintf("set object %d rectangle from %s to %s %s", $index, @from-args.join(","), @to-args.join(","), @args.join(" "));
+    $!gnuplot.in.say: sprintf("set object %d rectangle from %s to %s %s", $index, @from.join(","), @to.join(","), @args.join(" "));
 }
 
-multi method rectangle(:$index, :@from, :@rto,
+multi method rectangle(:$index, :@from where *.elems == 2, :@rto where *.elems == 2,
                        :$layer, :$clip, :$noclip, :$fillcolor, :$fillstyle,
                        :$default, :$linewidth, :$dashtype) {
     my @args;
-
-    my @from-args;
-    if @from.elems >= 2 {
-        while @from {
-            my $p = @from.shift;
-            @from-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-        @from-args.join(" ");
-    } else {
-        die "Error: Found invalid coordinate";
-    }
-
-    my @rto-args;
-    if @rto.elems >= 2 {
-        while @rto {
-            my $p = @rto.shift;
-            @rto-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-        @rto-args.join(" ");
-    } else {
-        die "Error: Found invalid coordinate";
-    }
-
     @args.push($layer) if $layer.defined;
     @args.push("clip") if $clip.defined;
     @args.push("noclip") if $noclip.defined;
@@ -193,25 +135,13 @@ multi method rectangle(:$index, :@from, :@rto,
     @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
     @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
 
-    $!gnuplot.in.say: sprintf("set object %d rectangle from %s to %s %s", $index, @from-args.join(","), @rto-args.join(","), @args.join(" "));
+    $!gnuplot.in.say: sprintf("set object %d rectangle from %s to %s %s", $index, @from.join(","), @rto.join(","), @args.join(" "));
 }
 
-method ellipse(:$index, :center(:@at), :$w, :$h,
+multi method ellipse(:$index, :@at where *.elems == 2, :$w, :$h,
                :$layer, :$clip, :$noclip, :$fillcolor, :$fillstyle,
                :$default, :$linewidth, :$dashtype) {
     my @args;
-
-    my @at-args;
-    if @at.elems >= 2 {
-        while @at {
-            my $p = @at.shift;
-            @at-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-        @at-args.join(" ");
-    } else {
-        die "Error: Found invalid coordinate";
-    }
-
     @args.push($layer) if $layer.defined;
     @args.push("clip") if $clip.defined;
     @args.push("noclip") if $noclip.defined;
@@ -221,25 +151,13 @@ method ellipse(:$index, :center(:@at), :$w, :$h,
     @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
     @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
 
-     $!gnuplot.in.say: sprintf("set object %d ellipse at %s size %d,%d %s", $index, @at-args.join(","), $w, $h, @args.join(" "));
+     $!gnuplot.in.say: sprintf("set object %d ellipse at %s size %d,%d %s", $index, @at.join(","), $w, $h, @args.join(" "));
 }
 
-method circle(:$index, :center(:@at), :$radius,
-              :$layer, :$clip, :$noclip, :$fillcolor, :$fillstyle,
-              :$default, :$linewidth, :$dashtype) {
+multi method ellipse(:$index, :@center where *.elems == 2, :$w, :$h,
+                     :$layer, :$clip, :$noclip, :$fillcolor, :$fillstyle,
+                     :$default, :$linewidth, :$dashtype) {
     my @args;
-
-    my @at-args;
-    if @at.elems >= 2 {
-        while @at {
-            my $p = @at.shift;
-            @at-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-        @at-args.join(" ");
-    } else {
-        die "Error: Found invalid coordinate";
-    }
-
     @args.push($layer) if $layer.defined;
     @args.push("clip") if $clip.defined;
     @args.push("noclip") if $noclip.defined;
@@ -249,10 +167,10 @@ method circle(:$index, :center(:@at), :$radius,
     @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
     @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
 
-    $!gnuplot.in.say: sprintf("set object %d circle at %s size %d %s", $index, @at-args.join(","), $radius, @args.join(" "));
+    $!gnuplot.in.say: sprintf("set object %d ellipse center %s size %d,%d %s", $index, @center.join(","), $w, $h, @args.join(" "));
 }
 
-method polygon(:$index, :@from, :@to,
+multi method circle(:$index, :@at where *.elems == 2, :$radius,
               :$layer, :$clip, :$noclip, :$fillcolor, :$fillstyle,
               :$default, :$linewidth, :$dashtype) {
     my @args;
@@ -265,32 +183,39 @@ method polygon(:$index, :@from, :@to,
     @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
     @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
 
-    my @from-args;
-    if @from.elems >= 2 {
-        while @from {
-            my $p = @from.shift;
-            @from-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-        @from-args.join(" ");
-    } else {
-        die "Error: Found invalid coordinate";
-    }
+    $!gnuplot.in.say: sprintf("set object %d circle at %s size %d %s", $index, @at.join(","), $radius, @args.join(" "));
+}
 
-    my &myproc = -> @at {
-        my @at-args;
-        if @at.elems >= 2 {
-            while @at {
-                my $p = @at.shift;
-                @at-args.push(sprintf("%s %s", $p.key, $p.value));
-            }
-            @at-args.join(" ");
-        } else {
-            die "Error: Found invalid coordinate";
-        }
-        @at-args
-    }
+multi method circle(:$index, :@center where *.elems == 2, :$radius,
+              :$layer, :$clip, :$noclip, :$fillcolor, :$fillstyle,
+              :$default, :$linewidth, :$dashtype) {
+    my @args;
+    @args.push($layer) if $layer.defined;
+    @args.push("clip") if $clip.defined;
+    @args.push("noclip") if $noclip.defined;
+    @args.push("fillcolor " ~ $fillcolor) if $fillcolor.defined;
+    @args.push("fillstyle " ~ $fillstyle) if $fillstyle.defined;
+    @args.push("default") if $default.defined;
+    @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
+    @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
+    
+    $!gnuplot.in.say: sprintf("set object %d circle center %s size %d %s", $index, @center.join(","), $radius, @args.join(" "));
+}
 
-    $!gnuplot.in.say: sprintf("set object %d polygon from %s %s %s", $index, @from-args.join(","), @to.map({ "to " ~ myproc($_).join(",") }).join(" "), @args.join(" "));
+method polygon(:$index, :@from where *.elems == 2, :@to,
+              :$layer, :$clip, :$noclip, :$fillcolor, :$fillstyle,
+              :$default, :$linewidth, :$dashtype) {
+    my @args;
+    @args.push($layer) if $layer.defined;
+    @args.push("clip") if $clip.defined;
+    @args.push("noclip") if $noclip.defined;
+    @args.push("fillcolor " ~ $fillcolor) if $fillcolor.defined;
+    @args.push("fillstyle " ~ $fillstyle) if $fillstyle.defined;
+    @args.push("default") if $default.defined;
+    @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
+    @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
+
+    $!gnuplot.in.say: sprintf("set object %d polygon from %s %s %s", $index, @from.join(","), @to.map({ "to " ~ $_.join(",") }).join(" "), @args.join(" "));
 }
 
 method command(Str $command) {
