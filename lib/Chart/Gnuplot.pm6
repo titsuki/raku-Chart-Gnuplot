@@ -245,6 +245,235 @@ multi method vrange(:$restore) {
     $!gnuplot.in.say: "set vrange restore";
 }
 
+method !anytics(:$axis, :$border, :$mirror,
+                :$in, :$out, :$scale, :$rotate, :$offset,
+                :$left, :$right, :$center, :$autojustify,
+                :$add,
+                :$autofreq,
+                :$incr,
+                :$start, :$end,
+                :@tics,
+                :$format, :$font, :$enhanced,
+                :$numeric, :$timedate, :$geographic,
+                :$rangelimited,
+                :$textcolor
+               ) {
+    my @args;
+    @args.push("axis") if $axis.defined;
+    @args.push("border") if $border.defined;
+    @args.push($mirror ?? "mirror" !! "nomirror") if $mirror.defined;
+    @args.push("in") if $in.defined;
+    @args.push("out") if $out.defined;
+    @args.push($scale) if $scale.defined;
+    @args.push(sprintf("rotate by %s", $rotate)) if $rotate.defined;
+    @args.push("left") if $left.defined;
+    @args.push("right") if $right.defined;
+    @args.push("center") if $center.defined;
+    @args.push("autojustify") if $autojustify.defined;
+    @args.push("add") if $add.defined;
+    @args.push("autofreq") if $autofreq.defined;
+
+    if $incr.defined and (not $start.defined and not $end.defined) {
+        @args.push($incr) if $incr.defined;
+    } else {
+        if $start.defined and $incr.defined and $end.defined {
+            @args.push(sprintf("%s, %s, %s", $start, $incr, $end));
+        } elsif $start.defined and $incr.defined {
+            @args.push(sprintf("%s, %s", $start, $incr));
+        }
+    }
+
+    if @tics.defined {
+        my @tic-args;
+        while @tics {
+            my @tmp;
+            my $t = @tics.shift;
+            if $t<label>:exists {
+                @tmp.push(sprintf("\"%s\"", $t<label>));
+            }
+
+            @tmp.push($t<pos>);
+            if $<level>:exists {
+                @tmp.push($t<level>);
+            }
+            @tic-args.push(@tmp.join(","));
+        }
+        @args.push(sprintf("(%s)", @tic-args.join(",")));
+    }
+    
+    @args.push(sprintf("format \"%s\"", $format)) if $format.defined;
+    @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
+    @args.push($enhanced ?? "enhanced" !! "noenhanced") if $enhanced.defined;
+    @args.push("numeric") if $numeric.defined;
+    @args.push("timedate") if $timedate.defined;
+    @args.push("geographic") if $geographic.defined;
+    @args.push("rangelimited") if $rangelimited.defined;
+    @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
+    @args.join(" ")
+}
+
+method xtics(:$axis, :$border, :$mirror,
+             :$in, :$out, :$scale, :$rotate, :$offset,
+             :$left, :$right, :$center, :$autojustify,
+             :$add,
+             :$autofreq,
+             :$incr,
+             :$start, :$end,
+             :@tics,
+             :$format, :$font, :$enhanced,
+             :$numeric, :$timedate, :$geographic,
+             :$rangelimited,
+             :$textcolor
+            ) {
+    $!gnuplot.in.say: sprintf("set xtics %s", self!anytics(:$axis, :$border, :$mirror,
+                                                           :$in, :$out, :$scale, :$rotate, :$offset,
+                                                           :$left, :$right, :$center, :$autojustify,
+                                                           :$add,
+                                                           :$autofreq,
+                                                           :$incr,
+                                                           :$start, :$end,
+                                                           :@tics,
+                                                           :$format, :$font, :$enhanced,
+                                                           :$numeric, :$timedate, :$geographic,
+                                                           :$rangelimited,
+                                                           :$textcolor));
+}
+
+method ytics(:$axis, :$border, :$mirror,
+             :$in, :$out, :$scale, :$rotate, :$offset,
+             :$left, :$right, :$center, :$autojustify,
+             :$add,
+             :$autofreq,
+             :$incr,
+             :$start, :$end,
+             :@tics,
+             :$format, :$font, :$enhanced,
+             :$numeric, :$timedate, :$geographic,
+             :$rangelimited,
+             :$textcolor
+            ) {
+    $!gnuplot.in.say: sprintf("set ytics %s", self!anytics(:$axis, :$border, :$mirror,
+                                                           :$in, :$out, :$scale, :$rotate, :$offset,
+                                                           :$left, :$right, :$center, :$autojustify,
+                                                           :$add,
+                                                           :$autofreq,
+                                                           :$incr,
+                                                           :$start, :$end,
+                                                           :@tics,
+                                                           :$format, :$font, :$enhanced,
+                                                           :$numeric, :$timedate, :$geographic,
+                                                           :$rangelimited,
+                                                           :$textcolor));
+}
+
+method ztics(:$axis, :$border, :$mirror,
+             :$in, :$out, :$scale, :$rotate, :$offset,
+             :$left, :$right, :$center, :$autojustify,
+             :$add,
+             :$autofreq,
+             :$incr,
+             :$start, :$end,
+             :@tics,
+             :$format, :$font, :$enhanced,
+             :$numeric, :$timedate, :$geographic,
+             :$rangelimited,
+             :$textcolor
+            ) {
+    $!gnuplot.in.say: sprintf("set ztics %s", self!anytics(:$axis, :$border, :$mirror,
+                                                           :$in, :$out, :$scale, :$rotate, :$offset,
+                                                           :$left, :$right, :$center, :$autojustify,
+                                                           :$add,
+                                                           :$autofreq,
+                                                           :$incr,
+                                                           :$start, :$end,
+                                                           :@tics,
+                                                           :$format, :$font, :$enhanced,
+                                                           :$numeric, :$timedate, :$geographic,
+                                                           :$rangelimited,
+                                                           :$textcolor));
+}
+
+method x2tics(:$axis, :$border, :$mirror,
+              :$in, :$out, :$scale, :$rotate, :$offset,
+              :$left, :$right, :$center, :$autojustify,
+              :$add,
+              :$autofreq,
+              :$incr,
+              :$start, :$end,
+              :@tics,
+              :$format, :$font, :$enhanced,
+              :$numeric, :$timedate, :$geographic,
+              :$rangelimited,
+              :$textcolor
+             ) {
+    $!gnuplot.in.say: sprintf("set x2tics %s", self!anytics(:$axis, :$border, :$mirror,
+                                                            :$in, :$out, :$scale, :$rotate, :$offset,
+                                                            :$left, :$right, :$center, :$autojustify,
+                                                            :$add,
+                                                            :$autofreq,
+                                                            :$incr,
+                                                            :$start, :$end,
+                                                            :@tics,
+                                                            :$format, :$font, :$enhanced,
+                                                            :$numeric, :$timedate, :$geographic,
+                                                            :$rangelimited,
+                                                            :$textcolor));
+}
+
+method y2tics(:$axis, :$border, :$mirror,
+              :$in, :$out, :$scale, :$rotate, :$offset,
+              :$left, :$right, :$center, :$autojustify,
+              :$add,
+              :$autofreq,
+              :$incr,
+              :$start, :$end,
+              :@tics,
+              :$format, :$font, :$enhanced,
+              :$numeric, :$timedate, :$geographic,
+              :$rangelimited,
+              :$textcolor
+             ) {
+    $!gnuplot.in.say: sprintf("set y2tics %s", self!anytics(:$axis, :$border, :$mirror,
+                                                            :$in, :$out, :$scale, :$rotate, :$offset,
+                                                            :$left, :$right, :$center, :$autojustify,
+                                                            :$add,
+                                                            :$autofreq,
+                                                            :$incr,
+                                                            :$start, :$end,
+                                                            :@tics,
+                                                            :$format, :$font, :$enhanced,
+                                                            :$numeric, :$timedate, :$geographic,
+                                                            :$rangelimited,
+                                                            :$textcolor));
+}
+
+method cbtics(:$axis, :$border, :$mirror,
+              :$in, :$out, :$scale, :$rotate, :$offset,
+              :$left, :$right, :$center, :$autojustify,
+              :$add,
+              :$autofreq,
+              :$incr,
+              :$start, :$end,
+              :@tics,
+              :$format, :$font, :$enhanced,
+              :$numeric, :$timedate, :$geographic,
+              :$rangelimited,
+              :$textcolor
+             ) {
+    $!gnuplot.in.say: sprintf("set cbtics %s", self!anytics(:$axis, :$border, :$mirror,
+                                                            :$in, :$out, :$scale, :$rotate, :$offset,
+                                                            :$left, :$right, :$center, :$autojustify,
+                                                            :$add,
+                                                            :$autofreq,
+                                                            :$incr,
+                                                            :$start, :$end,
+                                                            :@tics,
+                                                            :$format, :$font, :$enhanced,
+                                                            :$numeric, :$timedate, :$geographic,
+                                                            :$rangelimited,
+                                                            :$textcolor));
+}
+
 multi method rectangle(:$index, :@from, :@to,
                        :$layer, :$clip, :$noclip, :$fillcolor, :$fillstyle,
                        :$default, :$linewidth, :$dashtype) {
