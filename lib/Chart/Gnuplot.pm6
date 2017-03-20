@@ -529,6 +529,8 @@ method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin,
         @args.push("maxrows " ~ $maxrows<num>) if $maxrows<num>:exists;
         @args.push("maxrows auto") if $maxrows<auto>:exists;
     }
+
+    $!gnuplot.in.say: sprintf("set key %s", @args.join(" "));
 }
 
 multi method rectangle(:$index, :@from, :@to,
