@@ -474,6 +474,63 @@ method cbtics(:$axis, :$border, :$mirror,
                                                             :$textcolor));
 }
 
+method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin, :$tmargin, :$bmargin,
+              :$at,
+              :$left, :$right, :$hcenter, :$top, :$bottom, :$vcenter,
+              :$vertical, :$horizontal, :$Left, :$Right,
+              :$opaque, :$reverse, :$invert,
+              :$samplen, :$spacing, :$width, :$height,
+              :$autotitle, :$columnheader, :$title, :$font, :$textcolor,
+              :$box, :$linestyle, :$linetype, :$linewidth,
+              :$maxcols, :$maxrows) {
+    my @args;
+    @args.push("on") if $on.defined;
+    @args.push("off") if $off.defined;
+    @args.push("default") if $default.defined;
+    @args.push("inside") if $inside.defined;
+    @args.push("outside") if $outside.defined;
+    @args.push("lmargin") if $lmargin.defined;
+    @args.push("rmargin") if $rmargin.defined;
+    @args.push("tmargin") if $tmargin.defined;
+    @args.push("bmargin") if $bmargin.defined;
+    @args.push(sprintf("at %s", $at)) if $at.defined;
+    @args.push("left") if $left.defined;
+    @args.push("right") if $right.defined;
+    @args.push("center") if $hcenter.defined;
+    @args.push("top") if $top.defined;
+    @args.push("bottom") if $bottom.defined;
+    @args.push("center") if $vcenter.defined;
+    @args.push("vertical") if $vertical.defined;
+    @args.push("horizontal") if $horizontal.defined;
+    @args.push("Left") if $Left.defined;
+    @args.push("Right") if $Right.defined;
+    @args.push($opaque ?? "opaque" !! "noopaque") if $opaque.defined;
+    @args.push($reverse ?? "reverse" !! "noreverse") if $reverse.defined;
+    @args.push($invert ?? "invert" !! "noinvert") if $invert.defined;
+    @args.push("samplen " ~ $samplen) if $samplen.defined;
+    @args.push("spacing " ~ $spacing) if $spacing.defined;
+    @args.push("width " ~ $width) if $width.defined;
+    @args.push("height " ~ $height) if $height.defined;
+    @args.push("autotitle") if $autotitle.defined;
+    @args.push("columnheader") if $autotitle.defined and $columnheader.defined;
+    @args.push(sprintf("title \"%s\"", $title)) if $title.defined;
+    @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
+    @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
+    @args.push($box ?? "box" !! "nobox") if $box.defined;
+    @args.push("linestyle " ~ $linestyle) if $box.defined and $linestyle.defined;
+    @args.push("linetype " ~ $linetype) if $box.defined and $linetype.defined;
+    @args.push("linewidth " ~ $linewidth) if $box.defined and $linewidth.defined;
+    if $maxcols.defined {
+        @args.push("maxcols " ~ $maxcols<num>) if $maxcols<num>:exists;
+        @args.push("maxcols auto") if $maxcols<auto>:exists;
+    }
+
+    if $maxrows.defined {
+        @args.push("maxrows " ~ $maxrows<num>) if $maxrows<num>:exists;
+        @args.push("maxrows auto") if $maxrows<auto>:exists;
+    }
+}
+
 multi method rectangle(:$index, :@from, :@to,
                        :$layer, :$clip, :$noclip, :$fillcolor, :$fillstyle,
                        :$default, :$linewidth, :$dashtype) {
