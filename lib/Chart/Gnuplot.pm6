@@ -533,6 +533,20 @@ method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin,
     $!gnuplot.in.say: sprintf("set key %s", @args.join(" "));
 }
 
+method border(:$integer, :$front, :$back, :$behind,
+              :lw(:$linewidth), :ls(:$linestyle), :lt(:$linetype)) {
+    my @args;
+    @args.push($integer) if $integer.defined;
+    @args.push("front") if $front.defined;
+    @args.push("back") if $back.defined;
+    @args.push("begind") if $behind.defined;
+    @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
+    @args.push("linestyle " ~ $linestyle) if $linestyle.defined;
+    @args.push("linetype " ~ $linetype) if $linetype.defined;
+
+    $!gnuplot.in.say: sprintf("set border %s", @args.join(" "));
+}
+
 multi method rectangle(:$index, :@from, :@to,
                        :$layer, :$clip, :$noclip, :$fillcolor, :$fillstyle,
                        :$default, :$linewidth, :$dashtype) {
