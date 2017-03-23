@@ -574,6 +574,24 @@ method grid(:$xtics, :$ytics, :$ztics, :$x2tics, :$y2tics, :$cbtics,
     $!gnuplot.in.say: sprintf("set grid %s", @args.join(" "));
 }
 
+method timestamp(:$format, :$top, :$bottom, :$rotate,
+                 :$offset, :$font, :$textcolor) {
+    my @args;
+    @args.push(sprintf("\"%s\"", $format)) if $format.defined;
+    @args.push("top") if $top.defined;
+    @args.push("bottom") if $bottom.defined;
+    @args.push($rotate ?? "rotate" !! "norotate") if $rotate.defined;
+
+    my @off-args;
+    @off-args.push($offset<xoff>) if $offset<xoff>:exists;
+    @off-args.push($offset<yoff>) if $offset<xoff>:exists and $offset<yoff>:exists;
+    @args.push(sprintf("offset %s", @off-args.join(","))) if @off-args.elems > 0;
+    @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
+    @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
+
+    $!gnuplot.in.say: sprintf("set timestamp %s", @args.join(" "));
+}
+
 multi method rectangle(:$index, :@from, :@to,
                        :$layer, :$clip, :$noclip, :$fillcolor, :$fillstyle,
                        :$default, :$linewidth, :$dashtype) {
