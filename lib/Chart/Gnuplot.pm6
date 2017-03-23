@@ -547,6 +547,33 @@ method border(:$integer, :$front, :$back, :$behind,
     $!gnuplot.in.say: sprintf("set border %s", @args.join(" "));
 }
 
+method grid(:$xtics, :$ytics, :$ztics, :$x2tics, :$y2tics, :$cbtics,
+            :$polar, :$layerdefault, :$front, :$back,
+            :ls(:@linestyle), :lt(:@linetype), :lw(:@linewidth)) {
+    my @args;
+    @args.push($xtics) if $xtics.defined;
+    @args.push($ytics) if $ytics.defined;
+    @args.push($ztics) if $ztics.defined;
+    @args.push($x2tics) if $x2tics.defined;
+    @args.push($y2tics) if $y2tics.defined;
+    @args.push($cbtics) if $cbtics.defined;
+    @args.push("polar " ~ $polar) if $polar.defined;
+    @args.push("layerdefault") if $layerdefault.defined;
+    @args.push("front") if $front.defined;
+    @args.push("back") if $back.defined;
+
+    @args.push("linestyle " ~ @linestyle[0]) if @linestyle.elems >= 1;
+    @args.push("linetype " ~ @linetype[0]) if @linetype.elems >= 1;
+    @args.push("linewidth " ~ @linewidth[0]) if @linewidth.elems >= 1;
+
+    @args.push(",") if @linestyle.elems|@linetype.elems|@linewidth.elems == 2;
+    @args.push("linestyle " ~ @linestyle[1]) if @linestyle.elems == 2;
+    @args.push("linetype " ~ @linetype[1]) if @linetype.elems == 2;
+    @args.push("linewidth " ~ @linewidth[1]) if @linewidth.elems == 2;
+
+    $!gnuplot.in.say: sprintf("set grid %s", @args.join(" "));
+}
+
 multi method rectangle(:$index, :@from, :@to,
                        :$layer, :$clip, :$noclip, :$fillcolor, :$fillstyle,
                        :$default, :$linewidth, :$dashtype) {
