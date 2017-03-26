@@ -476,7 +476,7 @@ method cbtics(:$axis, :$border, :$mirror,
 
 method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin, :$tmargin, :$bmargin,
               :$at,
-              :$left, :$right, :$hcenter, :$top, :$bottom, :$vcenter,
+              :$left, :$right, :$center, :$top, :$bottom,
               :$vertical, :$horizontal, :$Left, :$Right,
               :$opaque, :$reverse, :$invert,
               :$samplen, :$spacing, :$width, :$height,
@@ -496,10 +496,9 @@ method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin,
     @args.push(sprintf("at %s", $at)) if $at.defined;
     @args.push("left") if $left.defined;
     @args.push("right") if $right.defined;
-    @args.push("center") if $hcenter.defined;
     @args.push("top") if $top.defined;
     @args.push("bottom") if $bottom.defined;
-    @args.push("center") if $vcenter.defined;
+    @args.push("center") if $center.defined;
     @args.push("vertical") if $vertical.defined;
     @args.push("horizontal") if $horizontal.defined;
     @args.push("Left") if $Left.defined;
