@@ -601,15 +601,14 @@ method timestamp(:$format, :$top, :$bottom, :$rotate,
     $!gnuplot.in.say: sprintf("set timestamp %s", @args.join(" "));
 }
 
-method !anyobject(:$front, :$back, :$behind, :$clip, :$noclip, :$fillcolor, :$fillstyle,
+method !anyobject(:$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
                   :$default, :$linewidth, :$dashtype) {
 
     my @args;
     @args.push("front") if $front.defined;
     @args.push("back") if $back.defined;
     @args.push("behind") if $behind.defined;
-    @args.push("clip") if $clip.defined;
-    @args.push("noclip") if $noclip.defined;
+    @args.push($clip ?? "clip" !! "noclip") if $clip.defined;
     @args.push("fillcolor " ~ $fillcolor) if $fillcolor.defined;
     @args.push("fillstyle " ~ $fillstyle) if $fillstyle.defined;
     @args.push("default") if $default.defined;
@@ -619,7 +618,7 @@ method !anyobject(:$front, :$back, :$behind, :$clip, :$noclip, :$fillcolor, :$fi
 }
 
 multi method rectangle(:$index, :@from, :@to,
-                       :$front, :$back, :$behind, :$clip, :$noclip, :$fillcolor, :$fillstyle,
+                       :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
                        :$default, :$linewidth, :$dashtype) {
     my @from-args;
     if @from.elems >= 2 {
@@ -644,12 +643,12 @@ multi method rectangle(:$index, :@from, :@to,
     }
 
     $!gnuplot.in.say: sprintf("set object %d rectangle from %s to %s %s", $index, @from-args.join(","), @to-args.join(","),
-                              self!anyobject(:$front, :$back, :$behind, :$clip, :$noclip, :$fillcolor, :$fillstyle,
+                              self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
                                              :$default, :$linewidth, :$dashtype));
 }
 
 multi method rectangle(:$index, :@from, :@rto,
-                       :$front, :$back, :$behind, :$clip, :$noclip, :$fillcolor, :$fillstyle,
+                       :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
                        :$default, :$linewidth, :$dashtype) {
     my @from-args;
     if @from.elems >= 2 {
@@ -674,12 +673,12 @@ multi method rectangle(:$index, :@from, :@rto,
     }
 
     $!gnuplot.in.say: sprintf("set object %d rectangle from %s to %s %s", $index, @from-args.join(","), @rto-args.join(","),
-                              self!anyobject(:$front, :$back, :$behind, :$clip, :$noclip, :$fillcolor, :$fillstyle,
+                              self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
                                              :$default, :$linewidth, :$dashtype));
 }
 
 method ellipse(:$index, :center(:@at), :$w, :$h,
-               :$front, :$back, :$behind, :$clip, :$noclip, :$fillcolor, :$fillstyle,
+               :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
                :$default, :$linewidth, :$dashtype) {
     my @at-args;
     if @at.elems >= 2 {
@@ -693,12 +692,12 @@ method ellipse(:$index, :center(:@at), :$w, :$h,
     }
 
     $!gnuplot.in.say: sprintf("set object %d ellipse at %s size %d,%d %s", $index, @at-args.join(","), $w, $h,
-                              self!anyobject(:$front, :$back, :$behind, :$clip, :$noclip, :$fillcolor, :$fillstyle,
+                              self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
                                              :$default, :$linewidth, :$dashtype));
 }
 
 method circle(:$index, :center(:@at), :$radius,
-              :$front, :$back, :$behind, :$clip, :$noclip, :$fillcolor, :$fillstyle,
+              :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
               :$default, :$linewidth, :$dashtype) {
     my @at-args;
     if @at.elems >= 2 {
@@ -712,12 +711,12 @@ method circle(:$index, :center(:@at), :$radius,
     }
 
     $!gnuplot.in.say: sprintf("set object %d circle at %s size %d %s", $index, @at-args.join(","), $radius,
-                              self!anyobject(:$front, :$back, :$behind, :$clip, :$noclip, :$fillcolor, :$fillstyle,
+                              self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
                                              :$default, :$linewidth, :$dashtype));
 }
 
 method polygon(:$index, :@from, :@to,
-               :$front, :$back, :$behind, :$clip, :$noclip, :$fillcolor, :$fillstyle,
+               :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
                :$default, :$linewidth, :$dashtype) {
     my @from-args;
     if @from.elems >= 2 {
@@ -745,7 +744,7 @@ method polygon(:$index, :@from, :@to,
     }
 
     $!gnuplot.in.say: sprintf("set object %d polygon from %s %s %s", $index, @from-args.join(","), @to.map({ "to " ~ myproc($_).join(",") }).join(" "),
-                              self!anyobject(:$front, :$back, :$behind, :$clip, :$noclip, :$fillcolor, :$fillstyle,
+                              self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
                                              :$default, :$linewidth, :$dashtype));
 }
 
