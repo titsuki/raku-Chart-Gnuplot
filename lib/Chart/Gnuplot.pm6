@@ -138,11 +138,26 @@ method label(:$tag, :$label-text, :@at, :$left, :$center, :$right,
 
 my subset AnyLabelRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ eq "parallel" or $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
 
-method !anylabel(Str :$label, :$offset, :$font, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
+method !anylabel(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
     my @args;
     @args.push(sprintf("\"%s\"", $label)) if $label.defined;
-    @args.push("offset " ~ $offset) if $offset.defined;
-    @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
+
+    my @offset-args;
+    if @offset.elems > 0 {
+        while @offset {
+            my $p = @offset.shift;
+            @offset-args.push(sprintf("%s %s", $p.key, $p.value));
+        }
+    }
+    @args.push("offset " ~ @offset-args.join(",")) if @offset-args.elems > 0;
+
+    my @font;
+    if $font-name.defined {
+        @font.push($font-name);
+        @font.push($font-size) if $font-size.defined;
+        @args.push(sprintf("font \"%s\"", @font.join(",")));
+    }
+
     @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
     @args.push($enhanced ?? "enhanced" !! "noenhanced") if $enhanced.defined;
     
@@ -157,28 +172,28 @@ method !anylabel(Str :$label, :$offset, :$font, :$textcolor, Bool :$enhanced, An
     @args.join(" ");
 }
 
-method xlabel(Str :$label, :$offset, :$font, :$textcolor, :$enhanced, :$rotate) {
-    $!gnuplot.in.say: sprintf("set xlabel %s", self!anylabel(:$label, :$offset, :$font, :$textcolor, :$enhanced, :$rotate));
+method xlabel(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
+    $!gnuplot.in.say: sprintf("set xlabel %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
-method ylabel(Str :$label, :$offset, :$font, :$textcolor, :$enhanced, :$rotate) {
-    $!gnuplot.in.say: sprintf("set ylabel %s", self!anylabel(:$label, :$offset, :$font, :$textcolor, :$enhanced, :$rotate));
+method ylabel(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
+    $!gnuplot.in.say: sprintf("set ylabel %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
-method zlabel(Str :$label, :$offset, :$font, :$textcolor, :$enhanced, :$rotate) {
-    $!gnuplot.in.say: sprintf("set zlabel %s", self!anylabel(:$label, :$offset, :$font, :$textcolor, :$enhanced, :$rotate));
+method zlabel(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
+    $!gnuplot.in.say: sprintf("set zlabel %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
-method x2label(Str :$label, :$offset, :$font, :$textcolor, :$enhanced, :$rotate) {
-    $!gnuplot.in.say: sprintf("set x2label %s", self!anylabel(:$label, :$offset, :$font, :$textcolor, :$enhanced, :$rotate));
+method x2label(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
+    $!gnuplot.in.say: sprintf("set x2label %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
-method y2label(Str :$label, :$offset, :$font, :$textcolor, :$enhanced, :$rotate) {
-    $!gnuplot.in.say: sprintf("set y2label %s", self!anylabel(:$label, :$offset, :$font, :$textcolor, :$enhanced, :$rotate));
+method y2label(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
+    $!gnuplot.in.say: sprintf("set y2label %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
-method cblabel(Str :$label, :$offset, :$font, :$textcolor, :$enhanced, :$rotate) {
-    $!gnuplot.in.say: sprintf("set cblabel %s", self!anylabel(:$label, :$offset, :$font, :$textcolor, :$enhanced, :$rotate));
+method cblabel(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
+    $!gnuplot.in.say: sprintf("set cblabel %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
 method !anyrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
