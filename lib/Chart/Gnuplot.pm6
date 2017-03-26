@@ -26,9 +26,11 @@ method terminal($terminal) {
     $!gnuplot.in.say: sprintf("set terminal \"%s\"", $!terminal);
 }
 
+my subset FalseOnly of Bool where { if not $_.defined { True } else { $_ == False } }
+
 method plot(Str :$title, :@range, :@vertices,
             Str :$style, :$linestyle, :$linetype, :$linewidth, :$linecolor,
-            :$pointtype, :$pointsize, :$fill, :$nohidden3d, :$nocontours, :$nosurface, :$palette) {
+            :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette) {
     my $tmpvariable = '$mydata' ~ ($*PID, time, @vertices.WHERE).join;
 
     self.command(sprintf("%s << EOD", $tmpvariable));
@@ -50,9 +52,9 @@ method plot(Str :$title, :@range, :@vertices,
     @style-args.push("pointtype " ~ $pointtype) if $pointtype.defined;
     @style-args.push("pointsize " ~ $pointsize) if $pointsize.defined;
     @style-args.push("fill " ~ $fill) if $fill.defined;
-    @style-args.push("nohidden3d") if $nohidden3d.defined;
-    @style-args.push("nocontours") if $nocontours.defined;
-    @style-args.push("nosurface") if $nosurface.defined;
+    @style-args.push("nohidden3d") if $hidden3d.defined and $hidden3d == False;
+    @style-args.push("nocontours") if $contours.defined and $contours == False;
+    @style-args.push("nosurface") if $surface.defined and $surface == False;
     @style-args.push("palette") if $palette.defined;
 
     $!gnuplot.in.say: sprintf("set terminal %s", $!terminal);
