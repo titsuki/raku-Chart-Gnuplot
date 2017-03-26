@@ -293,7 +293,7 @@ method !anytics(:$axis, :$border, :$mirror,
                 :$incr,
                 :$start, :$end,
                 :@tics,
-                :$format, :$font, :$enhanced,
+                :$format, :$font-name, :$font-size, :$enhanced,
                 :$numeric, :$timedate, :$geographic,
                 :$rangelimited,
                 :$textcolor
@@ -342,7 +342,14 @@ method !anytics(:$axis, :$border, :$mirror,
     }
     
     @args.push(sprintf("format \"%s\"", $format)) if $format.defined;
-    @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
+    
+    my @font;
+    if $font-name.defined {
+        @font.push($font-name);
+        @font.push($font-size) if $font-size.defined;
+        @args.push(sprintf("font \"%s\"", @font.join(",")));
+    }
+
     @args.push($enhanced ?? "enhanced" !! "noenhanced") if $enhanced.defined;
     @args.push("numeric") if $numeric.defined;
     @args.push("timedate") if $timedate.defined;
@@ -360,7 +367,7 @@ method xtics(:$axis, :$border, :$mirror,
              :$incr,
              :$start, :$end,
              :@tics,
-             :$format, :$font, :$enhanced,
+             :$format, :$font-name, :$font-size, :$enhanced,
              :$numeric, :$timedate, :$geographic,
              :$rangelimited,
              :$textcolor
@@ -373,7 +380,7 @@ method xtics(:$axis, :$border, :$mirror,
                                                            :$incr,
                                                            :$start, :$end,
                                                            :@tics,
-                                                           :$format, :$font, :$enhanced,
+                                                           :$format, :$font-name, :$font-size, :$enhanced,
                                                            :$numeric, :$timedate, :$geographic,
                                                            :$rangelimited,
                                                            :$textcolor));
@@ -387,7 +394,7 @@ method ytics(:$axis, :$border, :$mirror,
              :$incr,
              :$start, :$end,
              :@tics,
-             :$format, :$font, :$enhanced,
+             :$format, :$font-name, :$font-size, :$enhanced,
              :$numeric, :$timedate, :$geographic,
              :$rangelimited,
              :$textcolor
@@ -400,7 +407,7 @@ method ytics(:$axis, :$border, :$mirror,
                                                            :$incr,
                                                            :$start, :$end,
                                                            :@tics,
-                                                           :$format, :$font, :$enhanced,
+                                                           :$format, :$font-name, :$font-size, :$enhanced,
                                                            :$numeric, :$timedate, :$geographic,
                                                            :$rangelimited,
                                                            :$textcolor));
@@ -414,7 +421,7 @@ method ztics(:$axis, :$border, :$mirror,
              :$incr,
              :$start, :$end,
              :@tics,
-             :$format, :$font, :$enhanced,
+             :$format, :$font-name, :$font-size, :$enhanced,
              :$numeric, :$timedate, :$geographic,
              :$rangelimited,
              :$textcolor
@@ -427,7 +434,7 @@ method ztics(:$axis, :$border, :$mirror,
                                                            :$incr,
                                                            :$start, :$end,
                                                            :@tics,
-                                                           :$format, :$font, :$enhanced,
+                                                           :$format, :$font-name, :$font-size, :$enhanced,
                                                            :$numeric, :$timedate, :$geographic,
                                                            :$rangelimited,
                                                            :$textcolor));
@@ -441,7 +448,7 @@ method x2tics(:$axis, :$border, :$mirror,
               :$incr,
               :$start, :$end,
               :@tics,
-              :$format, :$font, :$enhanced,
+              :$format, :$font-name, :$font-size, :$enhanced,
               :$numeric, :$timedate, :$geographic,
               :$rangelimited,
               :$textcolor
@@ -454,7 +461,7 @@ method x2tics(:$axis, :$border, :$mirror,
                                                             :$incr,
                                                             :$start, :$end,
                                                             :@tics,
-                                                            :$format, :$font, :$enhanced,
+                                                            :$format, :$font-name, :$font-size, :$enhanced,
                                                             :$numeric, :$timedate, :$geographic,
                                                             :$rangelimited,
                                                             :$textcolor));
@@ -468,7 +475,7 @@ method y2tics(:$axis, :$border, :$mirror,
               :$incr,
               :$start, :$end,
               :@tics,
-              :$format, :$font, :$enhanced,
+              :$format, :$font-name, :$font-size, :$enhanced,
               :$numeric, :$timedate, :$geographic,
               :$rangelimited,
               :$textcolor
@@ -481,7 +488,7 @@ method y2tics(:$axis, :$border, :$mirror,
                                                             :$incr,
                                                             :$start, :$end,
                                                             :@tics,
-                                                            :$format, :$font, :$enhanced,
+                                                            :$format, :$font-name, :$font-size, :$enhanced,
                                                             :$numeric, :$timedate, :$geographic,
                                                             :$rangelimited,
                                                             :$textcolor));
@@ -495,7 +502,7 @@ method cbtics(:$axis, :$border, :$mirror,
               :$incr,
               :$start, :$end,
               :@tics,
-              :$format, :$font, :$enhanced,
+              :$format, :$font-name, :$font-size, :$enhanced,
               :$numeric, :$timedate, :$geographic,
               :$rangelimited,
               :$textcolor
@@ -508,7 +515,7 @@ method cbtics(:$axis, :$border, :$mirror,
                                                             :$incr,
                                                             :$start, :$end,
                                                             :@tics,
-                                                            :$format, :$font, :$enhanced,
+                                                            :$format, :$font-name, :$font-size, :$enhanced,
                                                             :$numeric, :$timedate, :$geographic,
                                                             :$rangelimited,
                                                             :$textcolor));
@@ -520,7 +527,7 @@ method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin,
               :$vertical, :$horizontal, :$Left, :$Right,
               :$opaque, :$reverse, :$invert,
               :$samplen, :$spacing, :$width, :$height,
-              :$autotitle, :$columnheader, :$title, :$font, :$textcolor,
+              :$autotitle, :$columnheader, :$title, :$font-name, :$font-size, :$textcolor,
               :$box, :$linestyle, :$linetype, :$linewidth,
               :$maxcols, :$maxrows) {
     my @args;
@@ -553,7 +560,14 @@ method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin,
     @args.push("autotitle") if $autotitle.defined;
     @args.push("columnheader") if $autotitle.defined and $columnheader.defined;
     @args.push(sprintf("title \"%s\"", $title)) if $title.defined;
-    @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
+    
+    my @font;
+    if $font-name.defined {
+        @font.push($font-name);
+        @font.push($font-size) if $font-size.defined;
+        @args.push(sprintf("font \"%s\"", @font.join(",")));
+    }
+    
     @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
     @args.push($box ?? "box" !! "nobox") if $box.defined;
     @args.push("linestyle " ~ $linestyle) if $box.defined and $linestyle.defined;
@@ -614,7 +628,7 @@ method grid(:$xtics, :$ytics, :$ztics, :$x2tics, :$y2tics, :$cbtics,
 }
 
 method timestamp(:$format, :$top, :$bottom, :$rotate,
-                 :$offset, :$font, :$textcolor) {
+                 :$offset, :$font-name, :$font-size, :$textcolor) {
     my @args;
     @args.push(sprintf("\"%s\"", $format)) if $format.defined;
     @args.push("top") if $top.defined;
@@ -625,7 +639,14 @@ method timestamp(:$format, :$top, :$bottom, :$rotate,
     @off-args.push($offset<xoff>) if $offset<xoff>:exists;
     @off-args.push($offset<yoff>) if $offset<xoff>:exists and $offset<yoff>:exists;
     @args.push(sprintf("offset %s", @off-args.join(","))) if @off-args.elems > 0;
-    @args.push(sprintf("font \"%s\"", $font)) if $font.defined;
+
+    my @font;
+    if $font-name.defined {
+        @font.push($font-name);
+        @font.push($font-size) if $font-size.defined;
+        @args.push(sprintf("font \"%s\"", @font.join(",")));
+    }
+
     @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
 
     $!gnuplot.in.say: sprintf("set timestamp %s", @args.join(" "));
