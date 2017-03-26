@@ -68,9 +68,11 @@ method plot(Str :$title, :@range, :@vertices,
     $!num-plot++;
 }
 
+my subset LabelRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
+
 method label(:$tag, :$label-text, :@at, :$left, :$center, :$right,
-             :$norotate, :$rotate, :$font, :$noenhanced,
-             :$front, :$back, :$textcolor, :$point, :$nopoint, :$offset,
+             LabelRotate :$rotate, :font-path(:$font-name), :$font-size, FalseOnly :$enhanced,
+             :$front, :$back, :$textcolor, FalseOnly :$point, :$line-type, :$point-type, :$point-size, :@offset,
              :$boxed, :$hypertext) {
     my @args;
     @args.push($tag) if $tag.defined;
@@ -82,7 +84,6 @@ method label(:$tag, :$label-text, :@at, :$left, :$center, :$right,
             my $p = @at.shift;
             @at-args.push(sprintf("%s %s", $p.key, $p.value));
         }
-        @at-args.join(" ");
     } else {
         die "Error: Found invalid coordinate";
     }
@@ -91,32 +92,42 @@ method label(:$tag, :$label-text, :@at, :$left, :$center, :$right,
     @args.push("left") if $left.defined;
     @args.push("center") if $center.defined;
     @args.push("right") if $right.defined;
-    @args.push("norotate") if $norotate.defined;
 
-    my @rotate;
     if $rotate.defined {
-        @rotate.push("rotate") ;
-        if $rotate<degrees>:exists {
-            @rotate.push(sprintf("by %d", $rotate<degrees>));
+        given $rotate {
+            when * ~~ Real { @args.push("rotate by $rotate") }
+            when * == False { @args.push("norotate") }
+            default { die "Error: Something went wrong." }
         }
     }
-    @args.push(@rotate.join(" ")) if @rotate.elems > 0;
 
     my @font;
-    if $font<name>:exists {
-        @font.push($font<name>);
-        if $font<size>:exists {
-            @font.push($font<size>);
-        }
+    if $font-name.defined {
+        @font.push($font-name);
+        @font.push($font-size) if $font-size.defined;
         @args.push(sprintf("font \"%s\"", @font.join(",")));
     }
 
-    @args.push("noenhanced") if $noenhanced.defined;
+    @args.push("noenhanced") if $enhanced.defined and $enhanced == False;
     @args.push("front") if $front.defined;
     @args.push("back") if $back.defined;
     @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
-    @args.push("point " ~ $point) if $point.defined;
-    @args.push("offset " ~ $offset) if $offset.defined;
+    @args.push("nopoint") if $point.defined and $point == False;
+
+    my @point;
+    @point.push("lt " ~ $line-type) if $line-type.defined;
+    @point.push("pt " ~ $point-type) if $point-type.defined;
+    @point.push("ps " ~ $point-size) if $point-size.defined;
+
+    my @offset-args;
+    if @offset.elems > 0 {
+        while @offset {
+            my $p = @offset.shift;
+            @offset-args.push(sprintf("%s %s", $p.key, $p.value));
+        }
+    }
+
+    @args.push("offset " ~ @offset-args.join(",")) if @offset-args.elems > 0;
     @args.push("boxed") if $boxed.defined;
     @args.push("hypertext") if $hypertext.defined;
 
