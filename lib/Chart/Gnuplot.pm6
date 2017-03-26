@@ -114,10 +114,12 @@ method label(:$tag, :$label-text, :@at, :$left, :$center, :$right,
     @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
     @args.push("nopoint") if $point.defined and $point == False;
 
-    my @point;
-    @point.push("lt " ~ $line-type) if $line-type.defined;
-    @point.push("pt " ~ $point-type) if $point-type.defined;
-    @point.push("ps " ~ $point-size) if $point-size.defined;
+    my @point-args;
+    @point-args.push("lt " ~ $line-type) if $line-type.defined;
+    @point-args.push("pt " ~ $point-type) if $point-type.defined;
+    @point-args.push("ps " ~ $point-size) if $point-size.defined;
+
+    @args.push("point " ~ @point-args.join(" ")) if @point-args.elems > 0;
 
     my @offset-args;
     if @offset.elems > 0 {
