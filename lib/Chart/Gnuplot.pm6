@@ -71,7 +71,7 @@ method plot(Str :$title, :@range, :@vertices,
 my subset LabelRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
 
 method label(:$tag, :$label-text, :@at, :$left, :$center, :$right,
-             LabelRotate :$rotate, :font-path(:$font-name), :$font-size, FalseOnly :$enhanced,
+             LabelRotate :$rotate, :$font-name, :$font-size, FalseOnly :$enhanced,
              :$front, :$back, :$textcolor, FalseOnly :$point, :$line-type, :$point-type, :$point-size, :@offset,
              :$boxed, :$hypertext) {
     my @args;
