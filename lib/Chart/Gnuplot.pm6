@@ -323,7 +323,7 @@ method !anytics(:$axis, :$border, :$mirror,
         }
     }
 
-    if @tics.defined {
+    if @tics.elems > 0 {
         my @tic-args;
         while @tics {
             my @tmp;
