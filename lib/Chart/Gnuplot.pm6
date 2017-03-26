@@ -333,14 +333,14 @@ method !anytics(:$axis, :$border, :$mirror,
             }
 
             @tmp.push($t<pos>);
-            if $<level>:exists {
+            if $t<level>:exists {
                 @tmp.push($t<level>);
             }
-            @tic-args.push(@tmp.join(","));
+            @tic-args.push(@tmp.join(" "));
         }
         @args.push(sprintf("(%s)", @tic-args.join(",")));
     }
-    
+
     @args.push(sprintf("format \"%s\"", $format)) if $format.defined;
     
     my @font;
