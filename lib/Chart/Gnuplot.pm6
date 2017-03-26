@@ -123,9 +123,9 @@ method label(:$tag, :$label-text, :@at, :$left, :$center, :$right,
     $!gnuplot.in.say: sprintf("set label %s", @args.join(" "));
 }
 
-my subset LabelRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ eq "parallel" or $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
+my subset AnyLabelRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ eq "parallel" or $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
 
-method !anylabel(Str :$label, :$offset, :$font, :$textcolor, Bool :$enhanced, LabelRotate :$rotate) {
+method !anylabel(Str :$label, :$offset, :$font, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
     my @args;
     @args.push(sprintf("\"%s\"", $label)) if $label.defined;
     @args.push("offset " ~ $offset) if $offset.defined;
