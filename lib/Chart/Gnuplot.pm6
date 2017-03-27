@@ -285,8 +285,10 @@ multi method vrange(:$restore) {
     $!gnuplot.in.say: "set vrange restore";
 }
 
+my subset AnyTicsRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
+
 method !anytics(:$axis, :$border, :$mirror,
-                :$in, :$out, :$scale, :$rotate, :$offset,
+                :$in, :$out, :$scale, AnyTicsRotate :$rotate, :$offset,
                 :$left, :$right, :$center, :$autojustify,
                 :$add,
                 :$autofreq,
@@ -305,7 +307,15 @@ method !anytics(:$axis, :$border, :$mirror,
     @args.push("in") if $in.defined;
     @args.push("out") if $out.defined;
     @args.push($scale) if $scale.defined;
-    @args.push(sprintf("rotate by %s", $rotate)) if $rotate.defined;
+    
+    if $rotate.defined {
+        given $rotate {
+            when * ~~ Real { @args.push("rotate by $rotate") }
+            when * == False { @args.push("norotate") }
+            default { die "Error: Something went wrong." }
+        }
+    }
+
     @args.push("left") if $left.defined;
     @args.push("right") if $right.defined;
     @args.push("center") if $center.defined;
@@ -360,7 +370,7 @@ method !anytics(:$axis, :$border, :$mirror,
 }
 
 method xtics(:$axis, :$border, :$mirror,
-             :$in, :$out, :$scale, :$rotate, :$offset,
+             :$in, :$out, :$scale, AnyTicsRotate :$rotate, :$offset,
              :$left, :$right, :$center, :$autojustify,
              :$add,
              :$autofreq,
@@ -414,7 +424,7 @@ method ytics(:$axis, :$border, :$mirror,
 }
 
 method ztics(:$axis, :$border, :$mirror,
-             :$in, :$out, :$scale, :$rotate, :$offset,
+             :$in, :$out, :$scale, AnyTicsRotate :$rotate, :$offset,
              :$left, :$right, :$center, :$autojustify,
              :$add,
              :$autofreq,
@@ -441,7 +451,7 @@ method ztics(:$axis, :$border, :$mirror,
 }
 
 method x2tics(:$axis, :$border, :$mirror,
-              :$in, :$out, :$scale, :$rotate, :$offset,
+              :$in, :$out, :$scale, AnyTicsRotate :$rotate, :$offset,
               :$left, :$right, :$center, :$autojustify,
               :$add,
               :$autofreq,
@@ -468,7 +478,7 @@ method x2tics(:$axis, :$border, :$mirror,
 }
 
 method y2tics(:$axis, :$border, :$mirror,
-              :$in, :$out, :$scale, :$rotate, :$offset,
+              :$in, :$out, :$scale, AnyTicsRotate :$rotate, :$offset,
               :$left, :$right, :$center, :$autojustify,
               :$add,
               :$autofreq,
@@ -495,7 +505,7 @@ method y2tics(:$axis, :$border, :$mirror,
 }
 
 method cbtics(:$axis, :$border, :$mirror,
-              :$in, :$out, :$scale, :$rotate, :$offset,
+              :$in, :$out, :$scale, AnyTicsRotate :$rotate, :$offset,
               :$left, :$right, :$center, :$autojustify,
               :$add,
               :$autofreq,
