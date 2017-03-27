@@ -317,8 +317,6 @@ method !anytics(:$axis, :$border, :$mirror,
         @args.push(sprintf("scale %s", @scale-args.join(",")));
     }
     
-    @args.push($scale) if $scale.defined;
-    
     if $rotate.defined {
         given $rotate {
             when * ~~ Real { @args.push("rotate by $rotate") }
