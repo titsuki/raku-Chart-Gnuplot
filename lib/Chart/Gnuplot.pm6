@@ -288,7 +288,7 @@ multi method vrange(:$restore) {
 my subset AnyTicsRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
 
 method !anytics(:$axis, :$border, :$mirror,
-                :$in, :$out, :$scale-default :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, :$offset,
+                :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, :$offset,
                 :$left, :$right, :$center, :$autojustify,
                 :$add,
                 :$autofreq,
