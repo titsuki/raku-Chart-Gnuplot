@@ -288,7 +288,7 @@ multi method vrange(:$restore) {
 my subset AnyTicsRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
 
 method !anytics(:$axis, :$border, :$mirror,
-                :$in, :$out, :$scale, AnyTicsRotate :$rotate, :$offset,
+                :$in, :$out, :$scale-default :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, :$offset,
                 :$left, :$right, :$center, :$autojustify,
                 :$add,
                 :$autofreq,
@@ -306,6 +306,17 @@ method !anytics(:$axis, :$border, :$mirror,
     @args.push($mirror ?? "mirror" !! "nomirror") if $mirror.defined;
     @args.push("in") if $in.defined;
     @args.push("out") if $out.defined;
+    
+    @args.push("scale default") if $scale-default.defined;
+
+    my @scale-args;
+    @scale-args.push($scale-major) if $scale-major.defined;
+    @scale-args.push($scale-minor) if $scale-major.defined and $scale-minor.defined;
+    
+    if @scale-args.elems > 0 {
+        @args.push(sprintf("scale %s", @scale-args.join(",")));
+    }
+    
     @args.push($scale) if $scale.defined;
     
     if $rotate.defined {
@@ -370,7 +381,7 @@ method !anytics(:$axis, :$border, :$mirror,
 }
 
 method xtics(:$axis, :$border, :$mirror,
-             :$in, :$out, :$scale, AnyTicsRotate :$rotate, :$offset,
+             :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, :$offset,
              :$left, :$right, :$center, :$autojustify,
              :$add,
              :$autofreq,
@@ -383,7 +394,7 @@ method xtics(:$axis, :$border, :$mirror,
              :$textcolor
             ) {
     $!gnuplot.in.say: sprintf("set xtics %s", self!anytics(:$axis, :$border, :$mirror,
-                                                           :$in, :$out, :$scale, :$rotate, :$offset,
+                                                           :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
                                                            :$left, :$right, :$center, :$autojustify,
                                                            :$add,
                                                            :$autofreq,
@@ -397,7 +408,7 @@ method xtics(:$axis, :$border, :$mirror,
 }
 
 method ytics(:$axis, :$border, :$mirror,
-             :$in, :$out, :$scale, :$rotate, :$offset,
+             :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
              :$left, :$right, :$center, :$autojustify,
              :$add,
              :$autofreq,
@@ -410,7 +421,7 @@ method ytics(:$axis, :$border, :$mirror,
              :$textcolor
             ) {
     $!gnuplot.in.say: sprintf("set ytics %s", self!anytics(:$axis, :$border, :$mirror,
-                                                           :$in, :$out, :$scale, :$rotate, :$offset,
+                                                           :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
                                                            :$left, :$right, :$center, :$autojustify,
                                                            :$add,
                                                            :$autofreq,
@@ -424,7 +435,7 @@ method ytics(:$axis, :$border, :$mirror,
 }
 
 method ztics(:$axis, :$border, :$mirror,
-             :$in, :$out, :$scale, AnyTicsRotate :$rotate, :$offset,
+             :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, :$offset,
              :$left, :$right, :$center, :$autojustify,
              :$add,
              :$autofreq,
@@ -437,7 +448,7 @@ method ztics(:$axis, :$border, :$mirror,
              :$textcolor
             ) {
     $!gnuplot.in.say: sprintf("set ztics %s", self!anytics(:$axis, :$border, :$mirror,
-                                                           :$in, :$out, :$scale, :$rotate, :$offset,
+                                                           :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
                                                            :$left, :$right, :$center, :$autojustify,
                                                            :$add,
                                                            :$autofreq,
@@ -451,7 +462,7 @@ method ztics(:$axis, :$border, :$mirror,
 }
 
 method x2tics(:$axis, :$border, :$mirror,
-              :$in, :$out, :$scale, AnyTicsRotate :$rotate, :$offset,
+              :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, :$offset,
               :$left, :$right, :$center, :$autojustify,
               :$add,
               :$autofreq,
@@ -464,7 +475,7 @@ method x2tics(:$axis, :$border, :$mirror,
               :$textcolor
              ) {
     $!gnuplot.in.say: sprintf("set x2tics %s", self!anytics(:$axis, :$border, :$mirror,
-                                                            :$in, :$out, :$scale, :$rotate, :$offset,
+                                                            :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
                                                             :$left, :$right, :$center, :$autojustify,
                                                             :$add,
                                                             :$autofreq,
@@ -478,7 +489,7 @@ method x2tics(:$axis, :$border, :$mirror,
 }
 
 method y2tics(:$axis, :$border, :$mirror,
-              :$in, :$out, :$scale, AnyTicsRotate :$rotate, :$offset,
+              :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, :$offset,
               :$left, :$right, :$center, :$autojustify,
               :$add,
               :$autofreq,
@@ -491,7 +502,7 @@ method y2tics(:$axis, :$border, :$mirror,
               :$textcolor
              ) {
     $!gnuplot.in.say: sprintf("set y2tics %s", self!anytics(:$axis, :$border, :$mirror,
-                                                            :$in, :$out, :$scale, :$rotate, :$offset,
+                                                            :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
                                                             :$left, :$right, :$center, :$autojustify,
                                                             :$add,
                                                             :$autofreq,
@@ -505,7 +516,7 @@ method y2tics(:$axis, :$border, :$mirror,
 }
 
 method cbtics(:$axis, :$border, :$mirror,
-              :$in, :$out, :$scale, AnyTicsRotate :$rotate, :$offset,
+              :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, :$offset,
               :$left, :$right, :$center, :$autojustify,
               :$add,
               :$autofreq,
@@ -518,7 +529,7 @@ method cbtics(:$axis, :$border, :$mirror,
               :$textcolor
              ) {
     $!gnuplot.in.say: sprintf("set cbtics %s", self!anytics(:$axis, :$border, :$mirror,
-                                                            :$in, :$out, :$scale, :$rotate, :$offset,
+                                                            :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
                                                             :$left, :$right, :$center, :$autojustify,
                                                             :$add,
                                                             :$autofreq,
