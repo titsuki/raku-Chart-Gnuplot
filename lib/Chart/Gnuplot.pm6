@@ -286,20 +286,21 @@ multi method vrange(:$restore) {
 }
 
 my subset AnyTicsRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
+my subset AnyTicsOffset of Mu where { if not $_.defined { True } else { $_ ~~ FalseOnly or ($_ ~~ List and $_.all ~~ Pair|Real) } };
 
 method !anytics(:$axis, :$border, :$mirror,
-                :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, :$offset,
-                :$left, :$right, :$center, :$autojustify,
-                :$add,
-                :$autofreq,
-                :$incr,
-                :$start, :$end,
-                :@tics,
-                :$format, :$font-name, :$font-size, :$enhanced,
-                :$numeric, :$timedate, :$geographic,
-                :$rangelimited,
-                :$textcolor
-               ) {
+               :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
+               :$left, :$right, :$center, :$autojustify,
+               :$add,
+               :$autofreq,
+               :$incr,
+               :$start, :$end,
+               :@tics,
+               :$format, :$font-name, :$font-size, :$enhanced,
+               :$numeric, :$timedate, :$geographic,
+               :$rangelimited,
+               :$textcolor
+              ) {
     my @args;
     @args.push("axis") if $axis.defined;
     @args.push("border") if $border.defined;
@@ -321,6 +322,23 @@ method !anytics(:$axis, :$border, :$mirror,
         given $rotate {
             when * ~~ Real { @args.push("rotate by $rotate") }
             when * == False { @args.push("norotate") }
+            default { die "Error: Something went wrong." }
+        }
+    }
+    
+    if $offset.defined {
+        given $offset {
+            when * ~~ FalseOnly { @args.push("nooffset") }
+            when * ~~ List {
+                my @offset-args;
+                if $offset.elems > 0 {
+                    while $offset {
+                        my $p = $offset.shift;
+                        @offset-args.push(sprintf("%s %s", $p.key, $p.value));
+                    }
+                }
+                @args.push("offset " ~ @offset-args.join(",")) if @offset-args.elems > 0;
+            }
             default { die "Error: Something went wrong." }
         }
     }
@@ -379,7 +397,7 @@ method !anytics(:$axis, :$border, :$mirror,
 }
 
 method xtics(:$axis, :$border, :$mirror,
-             :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, :$offset,
+             :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
              :$left, :$right, :$center, :$autojustify,
              :$add,
              :$autofreq,
@@ -406,7 +424,7 @@ method xtics(:$axis, :$border, :$mirror,
 }
 
 method ytics(:$axis, :$border, :$mirror,
-             :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
+             :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, AnyTicsOffset :$offset,
              :$left, :$right, :$center, :$autojustify,
              :$add,
              :$autofreq,
@@ -433,7 +451,7 @@ method ytics(:$axis, :$border, :$mirror,
 }
 
 method ztics(:$axis, :$border, :$mirror,
-             :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, :$offset,
+             :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
              :$left, :$right, :$center, :$autojustify,
              :$add,
              :$autofreq,
@@ -460,7 +478,7 @@ method ztics(:$axis, :$border, :$mirror,
 }
 
 method x2tics(:$axis, :$border, :$mirror,
-              :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, :$offset,
+              :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
               :$left, :$right, :$center, :$autojustify,
               :$add,
               :$autofreq,
@@ -487,7 +505,7 @@ method x2tics(:$axis, :$border, :$mirror,
 }
 
 method y2tics(:$axis, :$border, :$mirror,
-              :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, :$offset,
+              :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
               :$left, :$right, :$center, :$autojustify,
               :$add,
               :$autofreq,
@@ -514,7 +532,7 @@ method y2tics(:$axis, :$border, :$mirror,
 }
 
 method cbtics(:$axis, :$border, :$mirror,
-              :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, :$offset,
+              :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
               :$left, :$right, :$center, :$autojustify,
               :$add,
               :$autofreq,
