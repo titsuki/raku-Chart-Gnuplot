@@ -424,7 +424,7 @@ method xtics(:$axis, :$border, :$mirror,
 }
 
 method ytics(:$axis, :$border, :$mirror,
-             :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, AnyTicsOffset :$offset,
+             :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
              :$left, :$right, :$center, :$autojustify,
              :$add,
              :$autofreq,
