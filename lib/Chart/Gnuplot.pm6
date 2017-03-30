@@ -667,7 +667,7 @@ method grid(:$xtics, :$ytics, :$ztics, :$x2tics, :$y2tics, :$cbtics,
 }
 
 method timestamp(:$format, :$top, :$bottom, :$rotate,
-                 :$offset, :$font-name, :$font-size, :$textcolor) {
+                 :$offset-x, :$offset-y, :$font-name, :$font-size, :$textcolor) {
     my @args;
     @args.push(sprintf("\"%s\"", $format)) if $format.defined;
     @args.push("top") if $top.defined;
@@ -675,8 +675,8 @@ method timestamp(:$format, :$top, :$bottom, :$rotate,
     @args.push($rotate ?? "rotate" !! "norotate") if $rotate.defined;
 
     my @off-args;
-    @off-args.push($offset<xoff>) if $offset<xoff>:exists;
-    @off-args.push($offset<yoff>) if $offset<xoff>:exists and $offset<yoff>:exists;
+    @off-args.push($offset-x) if $offset-x.defined;
+    @off-args.push($offset-y) if $offset-x.defined and $offset-y.defined;
     @args.push(sprintf("offset %s", @off-args.join(","))) if @off-args.elems > 0;
 
     my @font;
