@@ -558,6 +558,8 @@ method cbtics(:$axis, :$border, :$mirror,
                                                             :$textcolor));
 }
 
+my subset LegendMax of Cool where { if not $_.defined { True } else { $_ eq "auto" or $_ ~~ Real } };
+
 method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin, :$tmargin, :$bmargin,
               :$at,
               :$left, :$right, :$center, :$top, :$bottom,
@@ -566,7 +568,7 @@ method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin,
               :$samplen, :$spacing, :$width, :$height,
               :$autotitle, :$columnheader, :$title, :$font-name, :$font-size, :$textcolor,
               :$box, :$linestyle, :$linetype, :$linewidth,
-              :$maxcols, :$maxrows) {
+              LegendMax :$maxcols, LegendMax :$maxrows) {
     my @args;
     @args.push("on") if $on.defined;
     @args.push("off") if $off.defined;
@@ -611,13 +613,13 @@ method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin,
     @args.push("linetype " ~ $linetype) if $box.defined and $linetype.defined;
     @args.push("linewidth " ~ $linewidth) if $box.defined and $linewidth.defined;
     if $maxcols.defined {
-        @args.push("maxcols " ~ $maxcols<num>) if $maxcols<num>:exists;
-        @args.push("maxcols auto") if $maxcols<auto>:exists;
+        @args.push("maxcols " ~ $maxcols) if $maxcols ~~ Real;
+        @args.push("maxcols auto") if $maxcols eq "auto";
     }
 
     if $maxrows.defined {
-        @args.push("maxrows " ~ $maxrows<num>) if $maxrows<num>:exists;
-        @args.push("maxrows auto") if $maxrows<auto>:exists;
+        @args.push("maxrows " ~ $maxrows) if $maxrows ~~ Real;
+        @args.push("maxrows auto") if $maxrows eq "auto";
     }
 
     $!gnuplot.in.say: sprintf("set key %s", @args.join(" "));
