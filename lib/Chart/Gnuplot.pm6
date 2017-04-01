@@ -295,12 +295,13 @@ method !anytics(:$axis, :$border, :$mirror,
                :$autofreq,
                :$incr,
                :$start, :$end,
-               :@tics,
+               :@tics where { if not $_.defined { True }
+                              else { $_.map(-> $e { $e<label>:exists and $e<pos>:exists }).all == True and $_.map(-> $e { $e.keys.grep(* eq "label"|"pos"|"level").elems == $e.keys.elems }).all == True } },
                :$format, :$font-name, :$font-size, :$enhanced,
                :$numeric, :$timedate, :$geographic,
                :$rangelimited,
                :$textcolor
-              ) {
+               ) {
     my @args;
     @args.push("axis") if $axis.defined;
     @args.push("border") if $border.defined;
