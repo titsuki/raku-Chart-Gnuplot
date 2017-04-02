@@ -839,6 +839,34 @@ method polygon(:$index, :@from, :@to,
                                              :$default, :$linewidth, :$dashtype));
 }
 
+method title(:$text, :@offset, :$font-name, :$font-size, :tc(:$textcolor), :$colorspec, Bool :$enhanced) {
+    my @args;
+    
+    @args.push(sprintf("title \"%s\"", $text));
+    
+    my @offset-args;
+    if @offset.elems > 0 {
+        while @offset {
+            my $p = @offset.shift;
+            @offset-args.push(sprintf("%s %s", $p.key, $p.value));
+        }
+    }
+    @args.push("offset " ~ @offset-args.join(",")) if @offset-args.elems > 0;
+    
+    my @font;
+    if $font-name.defined {
+        @font.push($font-name);
+        @font.push($font-size) if $font-size.defined;
+        @args.push(sprintf("font \"%s\"", @font.join(",")));
+    }
+
+    @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
+    @args.push("colorspec " ~ $colorspec) if $colorspec.defined;
+    @args.push($enhanced ?? "enhanced" !! "noenhanced") if $enhanced.defined;
+    
+    $!gnuplot.in.say: sprintf("set title %s", @args.join(" "));
+}
+
 method command(Str $command) {
     $!gnuplot.in.say: $command;
 }
