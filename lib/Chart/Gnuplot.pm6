@@ -35,20 +35,48 @@ method !tweak-fontargs(:$font-name, :$font-size) {
 
 my subset FalseOnly of Bool where { if not $_.defined { True } else { $_ == False } }
 
-method plot(Str :$title, :@range, :@vertices,
-            Str :$style, :$linestyle, :$linetype, :$linewidth, :$linecolor,
-            :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette) {
-    my $tmpvariable = '$mydata' ~ ($*PID, time, @vertices.WHERE).join;
+multi method plot(Str :$title, :@range, :@vertices!,
+                  Str :$style, :$linestyle, :$linetype, :$linewidth, :$linecolor,
+                  :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette) {
+    my @args;
 
+    my $tmpvariable = '$mydata' ~ ($*PID, time, @vertices.WHERE).join;
     self.command(sprintf("%s << EOD", $tmpvariable));
     for ^@vertices.elems -> $r {
         self.command(@vertices[$r;*].join(" "));
     }
     self.command("EOD");
 
-    my @range-args;
     for @range {
-        @range-args.push(sprintf("[%s]", $_.join(":")));
+        @args.push(sprintf("[%s]", $_.join(":")));
+    }
+
+    @args.push($tmpvariable);
+    @args.push("with " ~ $style) if $style.defined;
+    @args.push(sprintf("title \"%s\"", $title)) if $title.defined;
+
+    @args.push("linestyle " ~ $linestyle) if $linestyle.defined;
+    @args.push("linetype " ~ $linetype) if $linetype.defined;
+    @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
+    @args.push("linecolor " ~ $linecolor) if $linecolor.defined;
+    @args.push("pointtype " ~ $pointtype) if $pointtype.defined;
+    @args.push("pointsize " ~ $pointsize) if $pointsize.defined;
+    @args.push("fill " ~ $fill) if $fill.defined;
+    @args.push("nohidden3d") if $hidden3d.defined and $hidden3d == False;
+    @args.push("nocontours") if $contours.defined and $contours == False;
+    @args.push("nosurface") if $surface.defined and $surface == False;
+    @args.push("palette") if $palette.defined;
+
+    $!gnuplot.in.say: sprintf("set terminal %s", $!terminal);
+    $!gnuplot.in.say: sprintf("set output \"%s\"", $!filename);
+
+    my $cmd = do given $!num-plot {
+        when * > 0 { "replot" }
+        default { "plot" }
+    };
+    $!gnuplot.in.say: sprintf("%s %s",$cmd, @args.join(" "));
+    $!num-plot++;
+}
     }
 
     my @style-args;
