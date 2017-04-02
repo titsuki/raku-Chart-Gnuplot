@@ -77,20 +77,32 @@ multi method plot(Str :$title, :@range, :@vertices!,
     $!gnuplot.in.say: sprintf("%s %s",$cmd, @args.join(" "));
     $!num-plot++;
 }
-    }
 
-    my @style-args;
-    @style-args.push("linestyle " ~ $linestyle) if $linestyle.defined;
-    @style-args.push("linetype " ~ $linetype) if $linetype.defined;
-    @style-args.push("linewidth " ~ $linewidth) if $linewidth.defined;
-    @style-args.push("linecolor " ~ $linecolor) if $linecolor.defined;
-    @style-args.push("pointtype " ~ $pointtype) if $pointtype.defined;
-    @style-args.push("pointsize " ~ $pointsize) if $pointsize.defined;
-    @style-args.push("fill " ~ $fill) if $fill.defined;
-    @style-args.push("nohidden3d") if $hidden3d.defined and $hidden3d == False;
-    @style-args.push("nocontours") if $contours.defined and $contours == False;
-    @style-args.push("nosurface") if $surface.defined and $surface == False;
-    @style-args.push("palette") if $palette.defined;
+multi method plot(Str :$title, :@range, :$function!,
+                  Str :$style, :$linestyle, :$linetype, :$linewidth, :$linecolor,
+                  :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette) {
+    my @args;
+
+    for @range {
+        @args.push(sprintf("[%s]", $_.join(":")));
+    }
+    
+    @args.push($function) if $function.defined;
+    
+    @args.push(sprintf("title \"%s\"", $title)) if $title.defined;
+    @args.push("with " ~ $style) if $style.defined;
+
+    @args.push("linestyle " ~ $linestyle) if $linestyle.defined;
+    @args.push("linetype " ~ $linetype) if $linetype.defined;
+    @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
+    @args.push("linecolor " ~ $linecolor) if $linecolor.defined;
+    @args.push("pointtype " ~ $pointtype) if $pointtype.defined;
+    @args.push("pointsize " ~ $pointsize) if $pointsize.defined;
+    @args.push("fill " ~ $fill) if $fill.defined;
+    @args.push("nohidden3d") if $hidden3d.defined and $hidden3d == False;
+    @args.push("nocontours") if $contours.defined and $contours == False;
+    @args.push("nosurface") if $surface.defined and $surface == False;
+    @args.push("palette") if $palette.defined;
 
     $!gnuplot.in.say: sprintf("set terminal %s", $!terminal);
     $!gnuplot.in.say: sprintf("set output \"%s\"", $!filename);
@@ -99,7 +111,7 @@ multi method plot(Str :$title, :@range, :@vertices!,
         when * > 0 { "replot" }
         default { "plot" }
     };
-    $!gnuplot.in.say: sprintf("%s %s %s with %s title \"%s\" %s",$cmd, @range-args.join(" "), $tmpvariable, $style, $title, @style-args.join(" "));
+    $!gnuplot.in.say: sprintf("%s %s", $cmd, @args.join(" "));
     $!num-plot++;
 }
 
