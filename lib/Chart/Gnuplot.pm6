@@ -864,7 +864,7 @@ method polygon(:$index, :@from, :@to,
 method title(:$text, :@offset, :$font-name, :$font-size, :tc(:$textcolor), :$colorspec, Bool :$enhanced) {
     my @args;
     
-    @args.push(sprintf("title \"%s\"", $text));
+    @args.push(sprintf("\"%s\"", $text));
     
     my @offset-args;
     if @offset.elems > 0 {
