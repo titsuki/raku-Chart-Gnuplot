@@ -26,6 +26,13 @@ method terminal($terminal) {
     $!gnuplot.in.say: sprintf("set terminal \"%s\"", $!terminal);
 }
 
+method !tweak-fontargs(:$font-name, :$font-size) {
+    my @font;
+    @font.push($font-name.defined ?? $font-name !! "");
+    @font.push($font-size) if $font-size.defined;
+    sprintf("font \"%s\"", @font.join(","));
+}
+
 my subset FalseOnly of Bool where { if not $_.defined { True } else { $_ == False } }
 
 method plot(Str :$title, :@range, :@vertices,
@@ -101,13 +108,7 @@ method label(:$tag, :$label-text, :@at, :$left, :$center, :$right,
         }
     }
 
-    my @font;
-    if $font-name.defined {
-        @font.push($font-name);
-        @font.push($font-size) if $font-size.defined;
-        @args.push(sprintf("font \"%s\"", @font.join(",")));
-    }
-
+    @args.push(self!tweak-fontargs(:$font-name, :$font-size));
     @args.push("noenhanced") if $enhanced.defined and $enhanced == False;
     @args.push("front") if $front.defined;
     @args.push("back") if $back.defined;
@@ -150,14 +151,7 @@ method !anylabel(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, B
         }
     }
     @args.push("offset " ~ @offset-args.join(",")) if @offset-args.elems > 0;
-
-    my @font;
-    if $font-name.defined {
-        @font.push($font-name);
-        @font.push($font-size) if $font-size.defined;
-        @args.push(sprintf("font \"%s\"", @font.join(",")));
-    }
-
+    @args.push(self!tweak-fontargs(:$font-name, :$font-size));
     @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
     @args.push($enhanced ?? "enhanced" !! "noenhanced") if $enhanced.defined;
     
@@ -380,13 +374,7 @@ method !anytics(:$axis, :$border, :$mirror,
     }
 
     @args.push(sprintf("format \"%s\"", $format)) if $format.defined;
-    
-    my @font;
-    if $font-name.defined {
-        @font.push($font-name);
-        @font.push($font-size) if $font-size.defined;
-        @args.push(sprintf("font \"%s\"", @font.join(",")));
-    }
+    @args.push(self!tweak-fontargs(:$font-name, :$font-size));
 
     @args.push($enhanced ?? "enhanced" !! "noenhanced") if $enhanced.defined;
     @args.push("numeric") if $numeric.defined;
@@ -601,13 +589,7 @@ method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin,
     @args.push("columnheader") if $autotitle.defined and $columnheader.defined;
     @args.push(sprintf("title \"%s\"", $title)) if $title.defined;
     
-    my @font;
-    if $font-name.defined {
-        @font.push($font-name);
-        @font.push($font-size) if $font-size.defined;
-        @args.push(sprintf("font \"%s\"", @font.join(",")));
-    }
-    
+    @args.push(self!tweak-fontargs(:$font-name, :$font-size));
     @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
     @args.push($box ?? "box" !! "nobox") if $box.defined;
     @args.push("linestyle " ~ $linestyle) if $box.defined and $linestyle.defined;
@@ -852,14 +834,7 @@ method title(:$text, :@offset, :$font-name, :$font-size, :tc(:$textcolor), :$col
         }
     }
     @args.push("offset " ~ @offset-args.join(",")) if @offset-args.elems > 0;
-    
-    my @font;
-    if $font-name.defined {
-        @font.push($font-name);
-        @font.push($font-size) if $font-size.defined;
-        @args.push(sprintf("font \"%s\"", @font.join(",")));
-    }
-
+    @args.push(self!tweak-fontargs(:$font-name, :$font-size));
     @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
     @args.push("colorspec " ~ $colorspec) if $colorspec.defined;
     @args.push($enhanced ?? "enhanced" !! "noenhanced") if $enhanced.defined;
