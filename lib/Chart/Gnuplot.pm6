@@ -30,7 +30,8 @@ method !tweak-fontargs(:$font-name, :$font-size) {
     my @font;
     @font.push($font-name.defined ?? $font-name !! "");
     @font.push($font-size) if $font-size.defined;
-    sprintf("font \"%s\"", @font.join(","));
+    
+    (not $font-name.defined and not $font-size.defined) ?? "" !! sprintf("font \"%s\"", @font.join(","));
 }
 
 my subset FalseOnly of Bool where { if not $_.defined { True } else { $_ == False } }
@@ -878,7 +879,7 @@ method title(:$text, :@offset, :$font-name, :$font-size, :tc(:$textcolor), :$col
     @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
     @args.push("colorspec " ~ $colorspec) if $colorspec.defined;
     @args.push($enhanced ?? "enhanced" !! "noenhanced") if $enhanced.defined;
-    
+
     $!gnuplot.in.say: sprintf("set title %s", @args.join(" "));
 }
 
