@@ -36,8 +36,8 @@ method !tweak-fontargs(:$font-name, :$font-size) {
 
 my subset FalseOnly of Bool where { if not $_.defined { True } else { $_ == False } }
 
-multi method plot(Str :$title, :@range, :@vertices!,
-                  Str :$style, :$linestyle, :$linetype, :$linewidth, :$linecolor,
+multi method plot(:$title, :@range, :@vertices!,
+                  Str :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
                   :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette) {
     my @args;
 
@@ -79,8 +79,8 @@ multi method plot(Str :$title, :@range, :@vertices!,
     $!num-plot++;
 }
 
-multi method plot(Str :$title, :@range, :$function!,
-                  Str :$style, :$linestyle, :$linetype, :$linewidth, :$linecolor,
+multi method plot(:$title, :@range, :$function!,
+                  Str :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
                   :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette) {
     my @args;
 
