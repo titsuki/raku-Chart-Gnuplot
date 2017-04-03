@@ -36,7 +36,7 @@ method !tweak-fontargs(:$font-name, :$font-size) {
 
 my subset FalseOnly of Bool where { if not $_.defined { True } else { $_ == False } }
 
-multi method plot(:$title, :@range, :@vertices!,
+multi method plot(:$title, :$ignore, :@range, :@vertices!,
                   Str :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
                   :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette) {
     my @args;
@@ -54,7 +54,14 @@ multi method plot(:$title, :@range, :@vertices!,
 
     @args.push($tmpvariable);
     @args.push("with " ~ $style) if $style.defined;
-    @args.push(sprintf("title \"%s\"", $title)) if $title.defined;
+    
+    given $title {
+        when * ~~ Str { @args.push(sprintf("title \"%s\"", $title)) }
+        when * == False { @args.push(sprintf("notitle")) }
+    }
+
+    @args.push(sprintf("notitle [%s]", $ignore)) if $ignore.defined;
+
 
     @args.push("linestyle " ~ $linestyle) if $linestyle.defined;
     @args.push("linetype " ~ $linetype) if $linetype.defined;
@@ -79,7 +86,7 @@ multi method plot(:$title, :@range, :@vertices!,
     $!num-plot++;
 }
 
-multi method plot(:$title, :@range, :$function!,
+multi method plot(:$title, :$ignore, :@range, :$function!,
                   Str :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
                   :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette) {
     my @args;
@@ -89,8 +96,14 @@ multi method plot(:$title, :@range, :$function!,
     }
     
     @args.push($function) if $function.defined;
+
+    given $title {
+        when * ~~ Str { @args.push(sprintf("title \"%s\"", $title)) }
+        when * == False { @args.push(sprintf("notitle")) }
+    }
+
+    @args.push(sprintf("notitle [%s]", $ignore)) if $ignore.defined;
     
-    @args.push(sprintf("title \"%s\"", $title)) if $title.defined;
     @args.push("with " ~ $style) if $style.defined;
 
     @args.push("linestyle " ~ $linestyle) if $linestyle.defined;
