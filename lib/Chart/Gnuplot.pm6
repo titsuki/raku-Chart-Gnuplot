@@ -9,21 +9,25 @@ has $.terminal;
 has %.options;
 has $!filename;
 has Int $!num-plot;
+has $!promise;
 
 submethod BUILD(:$!terminal!, Str :$!filename, :$!persist = True, :$!debug = False) {
     my @opts;
     @opts.push('-persist') if $!persist;
-    $!gnuplot = run("gnuplot", @opts.join(" "), :in, :out, :err);
+    $!gnuplot = Proc::Async.new(:w, "gnuplot", @opts.join(" "));
+    $!gnuplot.stderr.tap(-> $v {}) if not $!debug;
+    $!promise = $!gnuplot.start;
     $!num-plot = 0;
 }
 
 submethod DESTROY {
-    $!gnuplot.in.say: "exit";
+    $!gnuplot.close-stdin;
+    await $!promise;
 }
 
 method terminal($terminal) {
     $!terminal = $terminal;
-    $!gnuplot.in.say: sprintf("set terminal \"%s\"", $!terminal);
+    await $!gnuplot.say: sprintf("set terminal \"%s\"", $!terminal);
 }
 
 method !tweak-fontargs(:$font-name, :$font-size) {
@@ -75,14 +79,14 @@ multi method plot(:$title, :$ignore, :@range, :@vertices!,
     @args.push("nosurface") if $surface.defined and $surface == False;
     @args.push("palette") if $palette.defined;
 
-    $!gnuplot.in.say: sprintf("set terminal %s", $!terminal);
-    $!gnuplot.in.say: sprintf("set output \"%s\"", $!filename);
+    await $!gnuplot.say: sprintf("set terminal %s", $!terminal);
+    await $!gnuplot.say: sprintf("set output \"%s\"", $!filename);
 
     my $cmd = do given $!num-plot {
         when * > 0 { "replot" }
         default { "plot" }
     };
-    $!gnuplot.in.say: sprintf("%s %s",$cmd, @args.join(" "));
+    await $!gnuplot.say: sprintf("%s %s",$cmd, @args.join(" "));
     $!num-plot++;
 }
 
@@ -118,14 +122,14 @@ multi method plot(:$title, :$ignore, :@range, :$function!,
     @args.push("nosurface") if $surface.defined and $surface == False;
     @args.push("palette") if $palette.defined;
 
-    $!gnuplot.in.say: sprintf("set terminal %s", $!terminal);
-    $!gnuplot.in.say: sprintf("set output \"%s\"", $!filename);
+    await $!gnuplot.say: sprintf("set terminal %s", $!terminal);
+    await $!gnuplot.say: sprintf("set output \"%s\"", $!filename);
 
     my $cmd = do given $!num-plot {
         when * > 0 { "replot" }
         default { "plot" }
     };
-    $!gnuplot.in.say: sprintf("%s %s", $cmd, @args.join(" "));
+    await $!gnuplot.say: sprintf("%s %s", $cmd, @args.join(" "));
     $!num-plot++;
 }
 
@@ -188,7 +192,7 @@ method label(:$tag, :$label-text, :@at, :$left, :$center, :$right,
     @args.push("boxed") if $boxed.defined;
     @args.push("hypertext") if $hypertext.defined;
 
-    $!gnuplot.in.say: sprintf("set label %s", @args.join(" "));
+    await $!gnuplot.say: sprintf("set label %s", @args.join(" "));
 }
 
 my subset AnyLabelRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ eq "parallel" or $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
@@ -221,27 +225,27 @@ method !anylabel(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, B
 }
 
 method xlabel(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
-    $!gnuplot.in.say: sprintf("set xlabel %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
+    await $!gnuplot.say: sprintf("set xlabel %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
 method ylabel(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
-    $!gnuplot.in.say: sprintf("set ylabel %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
+    await $!gnuplot.say: sprintf("set ylabel %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
 method zlabel(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
-    $!gnuplot.in.say: sprintf("set zlabel %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
+    await $!gnuplot.say: sprintf("set zlabel %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
 method x2label(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
-    $!gnuplot.in.say: sprintf("set x2label %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
+    await $!gnuplot.say: sprintf("set x2label %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
 method y2label(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
-    $!gnuplot.in.say: sprintf("set y2label %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
+    await $!gnuplot.say: sprintf("set y2label %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
 method cblabel(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
-    $!gnuplot.in.say: sprintf("set cblabel %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
+    await $!gnuplot.say: sprintf("set cblabel %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
 method !anyrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
@@ -254,83 +258,83 @@ method !anyrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
 }
 
 multi method xrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
-   $!gnuplot.in.say: sprintf("set xrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+   await $!gnuplot.say: sprintf("set xrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
 multi method xrange(:$restore) {
-    $!gnuplot.in.say: "set xrange restore";
+    await $!gnuplot.say: "set xrange restore";
 }
 
 multi method yrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
-   $!gnuplot.in.say: sprintf("set yrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+   await $!gnuplot.say: sprintf("set yrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
 multi method yrange(:$restore) {
-    $!gnuplot.in.say: "set yrange restore";
+    await $!gnuplot.say: "set yrange restore";
 }
 
 multi method zrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
-   $!gnuplot.in.say: sprintf("set zrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+   await $!gnuplot.say: sprintf("set zrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
 multi method zrange(:$restore) {
-    $!gnuplot.in.say: "set zrange restore";
+    await $!gnuplot.say: "set zrange restore";
 }
 
 multi method x2range(:$min, :$max, :$reverse, :$writeback, :$extend) {
-   $!gnuplot.in.say: sprintf("set x2range %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+   await $!gnuplot.say: sprintf("set x2range %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
 multi method x2range(:$restore) {
-    $!gnuplot.in.say: "set x2range restore";
+    await $!gnuplot.say: "set x2range restore";
 }
 
 multi method y2range(:$min, :$max, :$reverse, :$writeback, :$extend) {
-   $!gnuplot.in.say: sprintf("set y2range %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+   await $!gnuplot.say: sprintf("set y2range %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
 multi method y2range(:$restore) {
-    $!gnuplot.in.say: "set y2range restore";
+    await $!gnuplot.say: "set y2range restore";
 }
 
 multi method cbrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
-   $!gnuplot.in.say: sprintf("set cbrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+   await $!gnuplot.say: sprintf("set cbrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
 multi method cbrange(:$restore) {
-    $!gnuplot.in.say: "set cbrange restore";
+    await $!gnuplot.say: "set cbrange restore";
 }
 
 multi method rrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
-    $!gnuplot.in.say: sprintf("set rrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+    await $!gnuplot.say: sprintf("set rrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
 multi method rrange(:$restore) {
-    $!gnuplot.in.say: "set rrange restore";
+    await $!gnuplot.say: "set rrange restore";
 }
 
 multi method trange(:$min, :$max, :$reverse, :$writeback, :$extend) {
-    $!gnuplot.in.say: sprintf("set trange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+    await $!gnuplot.say: sprintf("set trange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
 multi method trange(:$restore) {
-    $!gnuplot.in.say: "set trange restore";
+    await $!gnuplot.say: "set trange restore";
 }
 
 multi method urange(:$min, :$max, :$reverse, :$writeback, :$extend) {
-    $!gnuplot.in.say: sprintf("set urange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+    await $!gnuplot.say: sprintf("set urange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
 multi method urange(:$restore) {
-    $!gnuplot.in.say: "set urange restore";
+    await $!gnuplot.say: "set urange restore";
 }
 
 multi method vrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
-    $!gnuplot.in.say: sprintf("set vrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+    await $!gnuplot.say: sprintf("set vrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
 multi method vrange(:$restore) {
-    $!gnuplot.in.say: "set vrange restore";
+    await $!gnuplot.say: "set vrange restore";
 }
 
 my subset AnyTicsRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
@@ -452,7 +456,7 @@ method xtics(:$axis, :$border, :$mirror,
              :$rangelimited,
              :$textcolor
             ) {
-    $!gnuplot.in.say: sprintf("set xtics %s", self!anytics(:$axis, :$border, :$mirror,
+    await $!gnuplot.say: sprintf("set xtics %s", self!anytics(:$axis, :$border, :$mirror,
                                                            :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
                                                            :$left, :$right, :$center, :$autojustify,
                                                            :$add,
@@ -479,7 +483,7 @@ method ytics(:$axis, :$border, :$mirror,
              :$rangelimited,
              :$textcolor
             ) {
-    $!gnuplot.in.say: sprintf("set ytics %s", self!anytics(:$axis, :$border, :$mirror,
+    await $!gnuplot.say: sprintf("set ytics %s", self!anytics(:$axis, :$border, :$mirror,
                                                            :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
                                                            :$left, :$right, :$center, :$autojustify,
                                                            :$add,
@@ -506,7 +510,7 @@ method ztics(:$axis, :$border, :$mirror,
              :$rangelimited,
              :$textcolor
             ) {
-    $!gnuplot.in.say: sprintf("set ztics %s", self!anytics(:$axis, :$border, :$mirror,
+    await $!gnuplot.say: sprintf("set ztics %s", self!anytics(:$axis, :$border, :$mirror,
                                                            :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
                                                            :$left, :$right, :$center, :$autojustify,
                                                            :$add,
@@ -533,7 +537,7 @@ method x2tics(:$axis, :$border, :$mirror,
               :$rangelimited,
               :$textcolor
              ) {
-    $!gnuplot.in.say: sprintf("set x2tics %s", self!anytics(:$axis, :$border, :$mirror,
+    await $!gnuplot.say: sprintf("set x2tics %s", self!anytics(:$axis, :$border, :$mirror,
                                                             :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
                                                             :$left, :$right, :$center, :$autojustify,
                                                             :$add,
@@ -560,7 +564,7 @@ method y2tics(:$axis, :$border, :$mirror,
               :$rangelimited,
               :$textcolor
              ) {
-    $!gnuplot.in.say: sprintf("set y2tics %s", self!anytics(:$axis, :$border, :$mirror,
+    await $!gnuplot.say: sprintf("set y2tics %s", self!anytics(:$axis, :$border, :$mirror,
                                                             :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
                                                             :$left, :$right, :$center, :$autojustify,
                                                             :$add,
@@ -587,7 +591,7 @@ method cbtics(:$axis, :$border, :$mirror,
               :$rangelimited,
               :$textcolor
              ) {
-    $!gnuplot.in.say: sprintf("set cbtics %s", self!anytics(:$axis, :$border, :$mirror,
+    await $!gnuplot.say: sprintf("set cbtics %s", self!anytics(:$axis, :$border, :$mirror,
                                                             :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
                                                             :$left, :$right, :$center, :$autojustify,
                                                             :$add,
@@ -659,7 +663,7 @@ method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin,
         @args.push("maxrows auto") if $maxrows eq "auto";
     }
 
-    $!gnuplot.in.say: sprintf("set key %s", @args.join(" "));
+    await $!gnuplot.say: sprintf("set key %s", @args.join(" "));
 }
 
 method border(:$integer, :$front, :$back, :$behind,
@@ -673,7 +677,7 @@ method border(:$integer, :$front, :$back, :$behind,
     @args.push("linestyle " ~ $linestyle) if $linestyle.defined;
     @args.push("linetype " ~ $linetype) if $linetype.defined;
 
-    $!gnuplot.in.say: sprintf("set border %s", @args.join(" "));
+    await $!gnuplot.say: sprintf("set border %s", @args.join(" "));
 }
 
 method grid(:$xtics, :$ytics, :$ztics, :$x2tics, :$y2tics, :$cbtics,
@@ -700,7 +704,7 @@ method grid(:$xtics, :$ytics, :$ztics, :$x2tics, :$y2tics, :$cbtics,
     @args.push("linetype " ~ @linetype[1]) if @linetype.elems == 2;
     @args.push("linewidth " ~ @linewidth[1]) if @linewidth.elems == 2;
 
-    $!gnuplot.in.say: sprintf("set grid %s", @args.join(" "));
+    await $!gnuplot.say: sprintf("set grid %s", @args.join(" "));
 }
 
 method timestamp(:$format, :$top, :$bottom, :$rotate,
@@ -725,7 +729,7 @@ method timestamp(:$format, :$top, :$bottom, :$rotate,
 
     @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
 
-    $!gnuplot.in.say: sprintf("set timestamp %s", @args.join(" "));
+    await $!gnuplot.say: sprintf("set timestamp %s", @args.join(" "));
 }
 
 method !anyobject(:$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
@@ -769,7 +773,7 @@ multi method rectangle(:$index, :@from, :@to,
         die "Error: Found invalid coordinate";
     }
 
-    $!gnuplot.in.say: sprintf("set object %d rectangle from %s to %s %s", $index, @from-args.join(","), @to-args.join(","),
+    await $!gnuplot.say: sprintf("set object %d rectangle from %s to %s %s", $index, @from-args.join(","), @to-args.join(","),
                               self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
                                              :$default, :$linewidth, :$dashtype));
 }
@@ -799,7 +803,7 @@ multi method rectangle(:$index, :@from, :@rto,
         die "Error: Found invalid coordinate";
     }
 
-    $!gnuplot.in.say: sprintf("set object %d rectangle from %s to %s %s", $index, @from-args.join(","), @rto-args.join(","),
+    await $!gnuplot.say: sprintf("set object %d rectangle from %s to %s %s", $index, @from-args.join(","), @rto-args.join(","),
                               self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
                                              :$default, :$linewidth, :$dashtype));
 }
@@ -818,7 +822,7 @@ method ellipse(:$index, :center(:@at), :$w, :$h,
         die "Error: Found invalid coordinate";
     }
 
-    $!gnuplot.in.say: sprintf("set object %d ellipse at %s size %d,%d %s", $index, @at-args.join(","), $w, $h,
+    await $!gnuplot.say: sprintf("set object %d ellipse at %s size %d,%d %s", $index, @at-args.join(","), $w, $h,
                               self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
                                              :$default, :$linewidth, :$dashtype));
 }
@@ -837,7 +841,7 @@ method circle(:$index, :center(:@at), :$radius,
         die "Error: Found invalid coordinate";
     }
 
-    $!gnuplot.in.say: sprintf("set object %d circle at %s size %d %s", $index, @at-args.join(","), $radius,
+    await $!gnuplot.say: sprintf("set object %d circle at %s size %d %s", $index, @at-args.join(","), $radius,
                               self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
                                              :$default, :$linewidth, :$dashtype));
 }
@@ -870,7 +874,7 @@ method polygon(:$index, :@from, :@to,
         @at-args
     }
 
-    $!gnuplot.in.say: sprintf("set object %d polygon from %s %s %s", $index, @from-args.join(","), @to.map({ "to " ~ myproc($_).join(",") }).join(" "),
+    await $!gnuplot.say: sprintf("set object %d polygon from %s %s %s", $index, @from-args.join(","), @to.map({ "to " ~ myproc($_).join(",") }).join(" "),
                               self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
                                              :$default, :$linewidth, :$dashtype));
 }
@@ -893,11 +897,11 @@ method title(:$text, :@offset, :$font-name, :$font-size, :tc(:$textcolor), :$col
     @args.push("colorspec " ~ $colorspec) if $colorspec.defined;
     @args.push($enhanced ?? "enhanced" !! "noenhanced") if $enhanced.defined;
 
-    $!gnuplot.in.say: sprintf("set title %s", @args.join(" "));
+    await $!gnuplot.say: sprintf("set title %s", @args.join(" "));
 }
 
 method command(Str $command) {
-    $!gnuplot.in.say: $command;
+    await $!gnuplot.say: $command;
 }
 
 =begin pod
