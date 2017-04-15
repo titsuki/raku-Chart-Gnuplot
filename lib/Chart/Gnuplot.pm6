@@ -11,6 +11,8 @@ has $!filename;
 has Int $!num-plot;
 has $!promise;
 
+my subset FalseOnly of Bool where { if not $_.defined { True } else { $_ == False } }
+
 submethod BUILD(:$!terminal!, Str :$!filename, :$!persist = True, :$!debug = False) {
     my @opts;
     @opts.push('-persist') if $!persist;
@@ -38,7 +40,35 @@ method !tweak-fontargs(:$font-name, :$font-size) {
     (not $font-name.defined and not $font-size.defined) ?? "" !! sprintf("font \"%s\"", @font.join(","));
 }
 
-my subset FalseOnly of Bool where { if not $_.defined { True } else { $_ == False } }
+method !tweak-coordinate(:$coordinate!, :$name!, :$enable-nooffset = False, Int :$upper-bound?) {
+    my Str $coordinate-str = "";
+    if $coordinate.defined {
+        given $coordinate {
+            when * ~~ FalseOnly and $enable-nooffset { $coordinate-str = "nooffset" }
+            when * ~~ List {
+                if $upper-bound.defined and $coordinate.elems > $upper-bound {
+                    die "Error: Something went wrong."; # TODO: LTA
+                }
+                my @coordinate-args;
+                while $coordinate {
+                    my $p = $coordinate.shift;
+                    given $p {
+                        when * ~~ Pair {
+                            @coordinate-args.push(sprintf("%s %s", $p.key, $p.value));
+                        }
+                        when * ~~ Real {
+                            @coordinate-args.push(sprintf("%s", $p));
+                        }
+                        default { die "Error: Something went wrong." } # TODO: LTA
+                    }
+                }
+                $coordinate-str = "$name " ~ @coordinate-args.join(",") if @coordinate-args.elems > 0;
+            }
+            default { die "Error: Something went wrong." } # TODO: LTA
+        }
+    }
+    $coordinate-str;
+}
 
 multi method plot(:$title, :$ignore, :@range, :@vertices!,
                   Str :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
@@ -135,25 +165,15 @@ multi method plot(:$title, :$ignore, :@range, :$function!,
 
 my subset LabelRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
 
-method label(:$tag, :$label-text, :@at, :$left, :$center, :$right,
+method label(:$tag, :$label-text, :$at, :$left, :$center, :$right,
              LabelRotate :$rotate, :$font-name, :$font-size, FalseOnly :$enhanced,
-             :$front, :$back, :$textcolor, FalseOnly :$point, :$line-type, :$point-type, :$point-size, :@offset,
+             :$front, :$back, :$textcolor, FalseOnly :$point, :$line-type, :$point-type, :$point-size, :$offset,
              :$boxed, :$hypertext) {
     my @args;
     @args.push($tag) if $tag.defined;
     @args.push(sprintf("\"%s\"", $label-text)) if $label-text.defined;
-    
-    my @at-args;
-    if @at.elems >= 2 {
-        while @at {
-            my $p = @at.shift;
-            @at-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-    } else {
-        die "Error: Found invalid coordinate";
-    }
-    
-    @args.push(sprintf("at %s",@at-args.join(","))) if @at-args.defined;
+
+    @args.push(self!tweak-coordinate(:name("at"), :coordinate($at)));
     @args.push("left") if $left.defined;
     @args.push("center") if $center.defined;
     @args.push("right") if $right.defined;
@@ -180,15 +200,7 @@ method label(:$tag, :$label-text, :@at, :$left, :$center, :$right,
 
     @args.push("point " ~ @point-args.join(" ")) if @point-args.elems > 0;
 
-    my @offset-args;
-    if @offset.elems > 0 {
-        while @offset {
-            my $p = @offset.shift;
-            @offset-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-    }
-
-    @args.push("offset " ~ @offset-args.join(",")) if @offset-args.elems > 0;
+    @args.push(self!tweak-coordinate(:name("offset"), :coordinate($offset)));
     @args.push("boxed") if $boxed.defined;
     @args.push("hypertext") if $hypertext.defined;
 
@@ -197,18 +209,10 @@ method label(:$tag, :$label-text, :@at, :$left, :$center, :$right,
 
 my subset AnyLabelRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ eq "parallel" or $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
 
-method !anylabel(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
+method !anylabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
     my @args;
     @args.push(sprintf("\"%s\"", $label)) if $label.defined;
-
-    my @offset-args;
-    if @offset.elems > 0 {
-        while @offset {
-            my $p = @offset.shift;
-            @offset-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-    }
-    @args.push("offset " ~ @offset-args.join(",")) if @offset-args.elems > 0;
+    @args.push(self!tweak-coordinate(:name("offset"), :coordinate($offset)));
     @args.push(self!tweak-fontargs(:$font-name, :$font-size));
     @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
     @args.push($enhanced ?? "enhanced" !! "noenhanced") if $enhanced.defined;
@@ -224,28 +228,28 @@ method !anylabel(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, B
     @args.join(" ");
 }
 
-method xlabel(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
-    self.command: sprintf("set xlabel %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
+method xlabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
+    self.command: sprintf("set xlabel %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
-method ylabel(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
-    self.command: sprintf("set ylabel %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
+method ylabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
+    self.command: sprintf("set ylabel %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
-method zlabel(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
-    self.command: sprintf("set zlabel %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
+method zlabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
+    self.command: sprintf("set zlabel %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
-method x2label(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
-    self.command: sprintf("set x2label %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
+method x2label(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
+    self.command: sprintf("set x2label %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
-method y2label(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
-    self.command: sprintf("set y2label %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
+method y2label(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
+    self.command: sprintf("set y2label %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
-method cblabel(Str :$label, :@offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
-    self.command: sprintf("set cblabel %s", self!anylabel(:$label, :@offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
+method cblabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
+    self.command: sprintf("set cblabel %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
 method !anyrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
@@ -378,24 +382,8 @@ method !anytics(:$axis, :$border, :$mirror,
             default { die "Error: Something went wrong." }
         }
     }
-    
-    if $offset.defined {
-        given $offset {
-            when * ~~ FalseOnly { @args.push("nooffset") }
-            when * ~~ List {
-                my @offset-args;
-                if $offset.elems > 0 {
-                    while $offset {
-                        my $p = $offset.shift;
-                        @offset-args.push(sprintf("%s %s", $p.key, $p.value));
-                    }
-                }
-                @args.push("offset " ~ @offset-args.join(",")) if @offset-args.elems > 0;
-            }
-            default { die "Error: Something went wrong." }
-        }
-    }
 
+    @args.push(self!tweak-coordinate(:name("offset"), :coordinate($offset), :enable-nooffset));
     @args.push("left") if $left.defined;
     @args.push("right") if $right.defined;
     @args.push("center") if $center.defined;
@@ -748,150 +736,71 @@ method !anyobject(:$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillsty
     @args.join(" ");
 }
 
-multi method rectangle(:$index, :@from, :@to,
+multi method rectangle(:$index, :$from, :$to,
                        :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
                        :$default, :$linewidth, :$dashtype) {
-    my @from-args;
-    if @from.elems >= 2 {
-        while @from {
-            my $p = @from.shift;
-            @from-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-        @from-args.join(" ");
-    } else {
-        die "Error: Found invalid coordinate";
-    }
 
-    my @to-args;
-    if @to.elems >= 2 {
-        while @to {
-            my $p = @to.shift;
-            @to-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-        @to-args.join(" ");
-    } else {
-        die "Error: Found invalid coordinate";
-    }
+    my @args;
+    @args.push(self!tweak-coordinate(:name("from"), :coordinate($from)));
+    @args.push(self!tweak-coordinate(:name("to"), :coordinate($to)));
 
-    self.command: sprintf("set object %d rectangle from %s to %s %s", $index, @from-args.join(","), @to-args.join(","),
-                              self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
-                                             :$default, :$linewidth, :$dashtype));
+    self.command: sprintf("set object %d rectangle %s %s", $index, @args.join(" "),
+                          self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
+                                         :$default, :$linewidth, :$dashtype));
 }
 
-multi method rectangle(:$index, :@from, :@rto,
+multi method rectangle(:$index, :$from, :$rto,
                        :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
                        :$default, :$linewidth, :$dashtype) {
-    my @from-args;
-    if @from.elems >= 2 {
-        while @from {
-            my $p = @from.shift;
-            @from-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-        @from-args.join(" ");
-    } else {
-        die "Error: Found invalid coordinate";
-    }
 
-    my @rto-args;
-    if @rto.elems >= 2 {
-        while @rto {
-            my $p = @rto.shift;
-            @rto-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-        @rto-args.join(" ");
-    } else {
-        die "Error: Found invalid coordinate";
-    }
+    my @args;
+    @args.push(self!tweak-coordinate(:name("from"), :coordinate($from)));
+    @args.push(self!tweak-coordinate(:name("rto"), :coordinate($rto)));
 
-    self.command: sprintf("set object %d rectangle from %s to %s %s", $index, @from-args.join(","), @rto-args.join(","),
-                              self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
-                                             :$default, :$linewidth, :$dashtype));
+    self.command: sprintf("set object %d rectangle %s %s", $index, @args.join(" "),
+                          self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
+                                         :$default, :$linewidth, :$dashtype));
 }
 
-method ellipse(:$index, :center(:@at), :$w, :$h,
+method ellipse(:$index, :center(:$at), :$w, :$h,
                :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
                :$default, :$linewidth, :$dashtype) {
-    my @at-args;
-    if @at.elems >= 2 {
-        while @at {
-            my $p = @at.shift;
-            @at-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-        @at-args.join(" ");
-    } else {
-        die "Error: Found invalid coordinate";
-    }
+    my @args;
+    @args.push(self!tweak-coordinate(:name("at"), :coordinate($at)));
 
-    self.command: sprintf("set object %d ellipse at %s size %d,%d %s", $index, @at-args.join(","), $w, $h,
-                              self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
-                                             :$default, :$linewidth, :$dashtype));
+    self.command: sprintf("set object %d ellipse %s size %d,%d %s", $index, @args.join(" "), $w, $h,
+                          self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
+                                         :$default, :$linewidth, :$dashtype));
 }
 
-method circle(:$index, :center(:@at), :$radius,
+method circle(:$index, :center(:$at), :$radius,
               :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
               :$default, :$linewidth, :$dashtype) {
-    my @at-args;
-    if @at.elems >= 2 {
-        while @at {
-            my $p = @at.shift;
-            @at-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-        @at-args.join(" ");
-    } else {
-        die "Error: Found invalid coordinate";
-    }
-
-    self.command: sprintf("set object %d circle at %s size %d %s", $index, @at-args.join(","), $radius,
+    my @args;
+    @args.push(self!tweak-coordinate(:name("at"), :coordinate($at)));
+    
+    self.command: sprintf("set object %d circle %s size %d %s", $index, @args.join(" "), $radius,
                               self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
                                              :$default, :$linewidth, :$dashtype));
 }
 
-method polygon(:$index, :@from, :@to,
+method polygon(:$index, :$from, :@to,
                :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
                :$default, :$linewidth, :$dashtype) {
-    my @from-args;
-    if @from.elems >= 2 {
-        while @from {
-            my $p = @from.shift;
-            @from-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-        @from-args.join(" ");
-    } else {
-        die "Error: Found invalid coordinate";
-    }
-
-    my &myproc = -> @at {
-        my @at-args;
-        if @at.elems >= 2 {
-            while @at {
-                my $p = @at.shift;
-                @at-args.push(sprintf("%s %s", $p.key, $p.value));
-            }
-            @at-args.join(" ");
-        } else {
-            die "Error: Found invalid coordinate";
-        }
-        @at-args
-    }
-
-    self.command: sprintf("set object %d polygon from %s %s %s", $index, @from-args.join(","), @to.map({ "to " ~ myproc($_).join(",") }).join(" "),
-                              self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
-                                             :$default, :$linewidth, :$dashtype));
+    my @args;
+    @args.push(self!tweak-coordinate(:name("from"), :coordinate($from)));
+ 
+    self.command: sprintf("set object %d polygon %s %s %s", $index, @args.join(" "),
+                          @to.map(-> $c { self!tweak-coordinate(:coordinate($c), :name("to")) }).join(" "),
+                          self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
+                                         :$default, :$linewidth, :$dashtype));
 }
 
-method title(:$text, :@offset, :$font-name, :$font-size, :tc(:$textcolor), :$colorspec, Bool :$enhanced) {
+method title(:$text, :$offset, :$font-name, :$font-size, :tc(:$textcolor), :$colorspec, Bool :$enhanced) {
     my @args;
     
     @args.push(sprintf("\"%s\"", $text));
-    
-    my @offset-args;
-    if @offset.elems > 0 {
-        while @offset {
-            my $p = @offset.shift;
-            @offset-args.push(sprintf("%s %s", $p.key, $p.value));
-        }
-    }
-    @args.push("offset " ~ @offset-args.join(",")) if @offset-args.elems > 0;
+    @args.push(self!tweak-coordinate(:name("offset"), :coordinate($offset)));
     @args.push(self!tweak-fontargs(:$font-name, :$font-size));
     @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
     @args.push("colorspec " ~ $colorspec) if $colorspec.defined;
