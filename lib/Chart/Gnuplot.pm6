@@ -252,7 +252,7 @@ method cblabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Boo
     self.command: sprintf("set cblabel %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
 }
 
-method !anyrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
+method !anyrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
     my @args;
     @args.push(sprintf("[%s:%s]", $min, $max));
     @args.push($reverse ?? "reverse" !! "noreverse") if $reverse.defined;
@@ -261,7 +261,7 @@ method !anyrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
     @args.join(" ");
 }
 
-multi method xrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
+multi method xrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
    self.command: sprintf("set xrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
@@ -269,7 +269,7 @@ multi method xrange(:$restore) {
     self.command: "set xrange restore";
 }
 
-multi method yrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
+multi method yrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
    self.command: sprintf("set yrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
@@ -277,7 +277,7 @@ multi method yrange(:$restore) {
     self.command: "set yrange restore";
 }
 
-multi method zrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
+multi method zrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
    self.command: sprintf("set zrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
@@ -285,7 +285,7 @@ multi method zrange(:$restore) {
     self.command: "set zrange restore";
 }
 
-multi method x2range(:$min, :$max, :$reverse, :$writeback, :$extend) {
+multi method x2range(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
    self.command: sprintf("set x2range %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
@@ -293,7 +293,7 @@ multi method x2range(:$restore) {
     self.command: "set x2range restore";
 }
 
-multi method y2range(:$min, :$max, :$reverse, :$writeback, :$extend) {
+multi method y2range(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
    self.command: sprintf("set y2range %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
@@ -301,7 +301,7 @@ multi method y2range(:$restore) {
     self.command: "set y2range restore";
 }
 
-multi method cbrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
+multi method cbrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
    self.command: sprintf("set cbrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
@@ -309,7 +309,7 @@ multi method cbrange(:$restore) {
     self.command: "set cbrange restore";
 }
 
-multi method rrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
+multi method rrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
     self.command: sprintf("set rrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
@@ -317,15 +317,15 @@ multi method rrange(:$restore) {
     self.command: "set rrange restore";
 }
 
-multi method trange(:$min, :$max, :$reverse, :$writeback, :$extend) {
-    self.command: sprintf("set trange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+multi method trange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
+    self.command: sprintf("set trange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback,  :$extend));
 }
 
 multi method trange(:$restore) {
     self.command: "set trange restore";
 }
 
-multi method urange(:$min, :$max, :$reverse, :$writeback, :$extend) {
+multi method urange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
     self.command: sprintf("set urange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
@@ -333,7 +333,7 @@ multi method urange(:$restore) {
     self.command: "set urange restore";
 }
 
-multi method vrange(:$min, :$max, :$reverse, :$writeback, :$extend) {
+multi method vrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
     self.command: sprintf("set vrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
 }
 
@@ -344,7 +344,7 @@ multi method vrange(:$restore) {
 my subset AnyTicsRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
 my subset AnyTicsOffset of Mu where { if not $_.defined { True } else { $_ ~~ FalseOnly or ($_ ~~ List and $_.all ~~ Pair|Real) } };
 
-method !anytics(:$axis, :$border, :$mirror,
+method !anytics(:$axis, :$border, Bool :$mirror,
                :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
                :$left, :$right, :$center, :$autojustify,
                :$add,
@@ -353,7 +353,7 @@ method !anytics(:$axis, :$border, :$mirror,
                :$start, :$end,
                :@tics where { if not $_.defined { True }
                               else { $_.map(-> $e { $e<label>:exists and $e<pos>:exists }).all == True and $_.map(-> $e { $e.keys.grep(* eq "label"|"pos"|"level").elems == $e.keys.elems }).all == True } },
-               :$format, :$font-name, :$font-size, :$enhanced,
+               :$format, :$font-name, :$font-size, Bool :$enhanced,
                :$numeric, :$timedate, :$geographic,
                :$rangelimited,
                :$textcolor
@@ -431,7 +431,7 @@ method !anytics(:$axis, :$border, :$mirror,
     @args.join(" ")
 }
 
-method xtics(:$axis, :$border, :$mirror,
+method xtics(:$axis, :$border, Bool :$mirror,
              :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
              :$left, :$right, :$center, :$autojustify,
              :$add,
@@ -439,7 +439,7 @@ method xtics(:$axis, :$border, :$mirror,
              :$incr,
              :$start, :$end,
              :@tics,
-             :$format, :$font-name, :$font-size, :$enhanced,
+             :$format, :$font-name, :$font-size, Bool :$enhanced,
              :$numeric, :$timedate, :$geographic,
              :$rangelimited,
              :$textcolor
@@ -458,7 +458,7 @@ method xtics(:$axis, :$border, :$mirror,
                                                            :$textcolor));
 }
 
-method ytics(:$axis, :$border, :$mirror,
+method ytics(:$axis, :$border, Bool :$mirror,
              :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
              :$left, :$right, :$center, :$autojustify,
              :$add,
@@ -466,7 +466,7 @@ method ytics(:$axis, :$border, :$mirror,
              :$incr,
              :$start, :$end,
              :@tics,
-             :$format, :$font-name, :$font-size, :$enhanced,
+             :$format, :$font-name, :$font-size, Bool :$enhanced,
              :$numeric, :$timedate, :$geographic,
              :$rangelimited,
              :$textcolor
@@ -485,7 +485,7 @@ method ytics(:$axis, :$border, :$mirror,
                                                            :$textcolor));
 }
 
-method ztics(:$axis, :$border, :$mirror,
+method ztics(:$axis, :$border, Bool :$mirror,
              :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
              :$left, :$right, :$center, :$autojustify,
              :$add,
@@ -493,7 +493,7 @@ method ztics(:$axis, :$border, :$mirror,
              :$incr,
              :$start, :$end,
              :@tics,
-             :$format, :$font-name, :$font-size, :$enhanced,
+             :$format, :$font-name, :$font-size, Bool :$enhanced,
              :$numeric, :$timedate, :$geographic,
              :$rangelimited,
              :$textcolor
@@ -512,7 +512,7 @@ method ztics(:$axis, :$border, :$mirror,
                                                            :$textcolor));
 }
 
-method x2tics(:$axis, :$border, :$mirror,
+method x2tics(:$axis, :$border, Bool :$mirror,
               :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
               :$left, :$right, :$center, :$autojustify,
               :$add,
@@ -520,7 +520,7 @@ method x2tics(:$axis, :$border, :$mirror,
               :$incr,
               :$start, :$end,
               :@tics,
-              :$format, :$font-name, :$font-size, :$enhanced,
+              :$format, :$font-name, :$font-size, Bool :$enhanced,
               :$numeric, :$timedate, :$geographic,
               :$rangelimited,
               :$textcolor
@@ -539,7 +539,7 @@ method x2tics(:$axis, :$border, :$mirror,
                                                             :$textcolor));
 }
 
-method y2tics(:$axis, :$border, :$mirror,
+method y2tics(:$axis, :$border, Bool :$mirror,
               :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
               :$left, :$right, :$center, :$autojustify,
               :$add,
@@ -547,7 +547,7 @@ method y2tics(:$axis, :$border, :$mirror,
               :$incr,
               :$start, :$end,
               :@tics,
-              :$format, :$font-name, :$font-size, :$enhanced,
+              :$format, :$font-name, :$font-size, Bool :$enhanced,
               :$numeric, :$timedate, :$geographic,
               :$rangelimited,
               :$textcolor
@@ -566,7 +566,7 @@ method y2tics(:$axis, :$border, :$mirror,
                                                             :$textcolor));
 }
 
-method cbtics(:$axis, :$border, :$mirror,
+method cbtics(:$axis, :$border, Bool :$mirror,
               :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
               :$left, :$right, :$center, :$autojustify,
               :$add,
@@ -574,7 +574,7 @@ method cbtics(:$axis, :$border, :$mirror,
               :$incr,
               :$start, :$end,
               :@tics,
-              :$format, :$font-name, :$font-size, :$enhanced,
+              :$format, :$font-name, :$font-size, Bool :$enhanced,
               :$numeric, :$timedate, :$geographic,
               :$rangelimited,
               :$textcolor
@@ -599,10 +599,10 @@ method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin,
               :$at,
               :$left, :$right, :$center, :$top, :$bottom,
               :$vertical, :$horizontal, :$Left, :$Right,
-              :$opaque, :$reverse, :$invert,
+              Bool :$opaque, Bool :$reverse, Bool :$invert,
               :$samplen, :$spacing, :$width, :$height,
               :$autotitle, :$columnheader, :$title, :$font-name, :$font-size, :$textcolor,
-              :$box, :$linestyle, :$linetype, :$linewidth,
+              Bool :$box, :$linestyle, :$linetype, :$linewidth,
               LegendMax :$maxcols, LegendMax :$maxrows) {
     my @args;
     @args.push("on") if $on.defined;
@@ -695,7 +695,7 @@ method grid(:$xtics, :$ytics, :$ztics, :$x2tics, :$y2tics, :$cbtics,
     self.command: sprintf("set grid %s", @args.join(" "));
 }
 
-method timestamp(:$format, :$top, :$bottom, :$rotate,
+method timestamp(:$format, :$top, :$bottom, Bool :$rotate,
                  :$offset-x, :$offset-y, :$font-name, :$font-size, :$textcolor) {
     my @args;
     @args.push(sprintf("\"%s\"", $format)) if $format.defined;
