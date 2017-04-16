@@ -131,9 +131,11 @@ multi method plot(:$title, :$ignore, :@range, :$function!,
     
     @args.push($function) if $function.defined;
 
-    given $title {
-        when * ~~ Str { @args.push(sprintf("title \"%s\"", $title)) }
-        when * == False { @args.push(sprintf("notitle")) }
+    if $title.defined {
+        given $title {
+            when * ~~ Str { @args.push(sprintf("title \"%s\"", $title)) }
+            when * == False { @args.push(sprintf("notitle")) }
+        }
     }
 
     @args.push(sprintf("notitle [%s]", $ignore)) if $ignore.defined;
@@ -187,9 +189,11 @@ multi method splot(:@range,
     @args.push("index") if $index.defined;
     @args.push("every") if $every.defined;
 
-    given $title {
-        when * ~~ Str { @args.push(sprintf("title \"%s\"", $title)) }
-        when * == False { @args.push(sprintf("notitle")) }
+    if $title.defined {
+        given $title {
+            when * ~~ Str { @args.push(sprintf("title \"%s\"", $title)) }
+            when * == False { @args.push(sprintf("notitle")) }
+        }
     }
 
     @args.push("with " ~ $style) if $style.defined;
@@ -215,9 +219,11 @@ multi method splot(:@range,
 
     @args.push($function) if $function.defined;
 
-    given $title {
-        when * ~~ Str { @args.push(sprintf("title \"%s\"", $title)) }
-        when * == False { @args.push(sprintf("notitle")) }
+    if $title.defined {
+        given $title {
+            when * ~~ Str { @args.push(sprintf("title \"%s\"", $title)) }
+            when * == False { @args.push(sprintf("notitle")) }
+        }
     }
 
     @args.push("with " ~ $style) if $style.defined;
