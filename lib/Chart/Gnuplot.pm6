@@ -137,7 +137,7 @@ multi method plot(:$title, :$ignore, :@range, :$function!,
     }
 
     @args.push(sprintf("notitle [%s]", $ignore)) if $ignore.defined;
-    
+
     @args.push("with " ~ $style) if $style.defined;
 
     @args.push("linestyle " ~ $linestyle) if $linestyle.defined;
@@ -161,6 +161,75 @@ multi method plot(:$title, :$ignore, :@range, :$function!,
     };
     self.command: sprintf("%s %s", $cmd, @args.join(" "));
     $!num-plot++;
+}
+
+multi method splot(:@range,
+                   :@vertices!,
+                   :$binary, :$matrix, :$index, :$every,
+                   :$title, :$style) {
+    my @args;
+
+    for @range {
+        @args.push(sprintf("[%s]", $_.join(":")));
+    }
+
+    my $tmpvariable = '$mydata' ~ ($*PID, time, @vertices.WHERE).join;
+    self.command: sprintf("%s << EOD", $tmpvariable);
+    for ^@vertices.elems -> $r {
+        self.command(@vertices[$r;*].join(" "));
+    }
+    self.command: "EOD";
+
+    @args.push($tmpvariable);
+
+    @args.push("binary") if $binary.defined;
+    @args.push("matrix") if $matrix.defined;
+    @args.push("index") if $index.defined;
+    @args.push("every") if $every.defined;
+
+    given $title {
+        when * ~~ Str { @args.push(sprintf("title \"%s\"", $title)) }
+        when * == False { @args.push(sprintf("notitle")) }
+    }
+
+    @args.push("with " ~ $style) if $style.defined;
+
+    self.command: sprintf("set terminal %s", $!terminal);
+    self.command: sprintf("set output \"%s\"", $!filename);
+
+    my $cmd = do given $!num-plot {
+        when * > 0 { "replot" }
+        default { "splot" }
+    };
+    self.command: sprintf("%s %s", $cmd, @args.join(" "));
+}
+
+multi method splot(:@range,
+                   :$function!,
+                   :$title, :$style) {
+    my @args;
+
+    for @range {
+        @args.push(sprintf("[%s]", $_.join(":")));
+    }
+
+    @args.push($function) if $function.defined;
+
+    given $title {
+        when * ~~ Str { @args.push(sprintf("title \"%s\"", $title)) }
+        when * == False { @args.push(sprintf("notitle")) }
+    }
+
+    @args.push("with " ~ $style) if $style.defined;
+
+    self.command: sprintf("set terminal %s", $!terminal);
+    self.command: sprintf("set output \"%s\"", $!filename);
+
+    my $cmd = do given $!num-plot {
+        when * > 0 { "replot" }
+        default { "splot" }
+    };
+    self.command: sprintf("%s %s", $cmd, @args.join(" "));
 }
 
 my subset LabelRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
