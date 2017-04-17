@@ -168,7 +168,8 @@ multi method plot(:$title, :$ignore, :@range, :$function!,
 multi method splot(:@range,
                    :@vertices!,
                    :$binary, :$matrix, :$index, :$every,
-                   :$title, :$style) {
+                   :$title, :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
+                   :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette) {
     my @args;
 
     for @range {
@@ -198,6 +199,18 @@ multi method splot(:@range,
 
     @args.push("with " ~ $style) if $style.defined;
 
+    @args.push("linestyle " ~ $linestyle) if $linestyle.defined;
+    @args.push("linetype " ~ $linetype) if $linetype.defined;
+    @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
+    @args.push("linecolor " ~ $linecolor) if $linecolor.defined;
+    @args.push("pointtype " ~ $pointtype) if $pointtype.defined;
+    @args.push("pointsize " ~ $pointsize) if $pointsize.defined;
+    @args.push("fill " ~ $fill) if $fill.defined;
+    @args.push("nohidden3d") if $hidden3d.defined and $hidden3d == False;
+    @args.push("nocontours") if $contours.defined and $contours == False;
+    @args.push("nosurface") if $surface.defined and $surface == False;
+    @args.push("palette") if $palette.defined;
+
     self.command: sprintf("set terminal %s", $!terminal);
     self.command: sprintf("set output \"%s\"", $!filename);
 
@@ -210,7 +223,8 @@ multi method splot(:@range,
 
 multi method splot(:@range,
                    :$function!,
-                   :$title, :$style) {
+                   :$title, :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
+                   :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette) {
     my @args;
 
     for @range {
@@ -227,6 +241,18 @@ multi method splot(:@range,
     }
 
     @args.push("with " ~ $style) if $style.defined;
+
+    @args.push("linestyle " ~ $linestyle) if $linestyle.defined;
+    @args.push("linetype " ~ $linetype) if $linetype.defined;
+    @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
+    @args.push("linecolor " ~ $linecolor) if $linecolor.defined;
+    @args.push("pointtype " ~ $pointtype) if $pointtype.defined;
+    @args.push("pointsize " ~ $pointsize) if $pointsize.defined;
+    @args.push("fill " ~ $fill) if $fill.defined;
+    @args.push("nohidden3d") if $hidden3d.defined and $hidden3d == False;
+    @args.push("nocontours") if $contours.defined and $contours == False;
+    @args.push("nosurface") if $surface.defined and $surface == False;
+    @args.push("palette") if $palette.defined;
 
     self.command: sprintf("set terminal %s", $!terminal);
     self.command: sprintf("set output \"%s\"", $!filename);
