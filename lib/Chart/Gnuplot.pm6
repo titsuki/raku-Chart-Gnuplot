@@ -89,10 +89,12 @@ multi method plot(:$title, :$ignore, :@range, :@vertices!,
     @args.push($tmpvariable);
     @args.push("using " ~ @using.join(":")) if @using.elems > 0;
     @args.push("with " ~ $style) if $style.defined;
-    
-    given $title {
-        when * ~~ Str { @args.push(sprintf("title \"%s\"", $title)) }
-        when * == False { @args.push(sprintf("notitle")) }
+
+    if $title.defined {
+        given $title {
+            when * ~~ Str { @args.push(sprintf("title \"%s\"", $title)) }
+            when * == False { @args.push(sprintf("notitle")) }
+        }
     }
 
     @args.push(sprintf("notitle [%s]", $ignore)) if $ignore.defined;
