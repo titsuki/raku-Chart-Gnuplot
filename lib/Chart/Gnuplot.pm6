@@ -70,6 +70,7 @@ method !tweak-coordinate(Mu :$coordinate!, :$name!, :$enable-nooffset = False, I
 }
 
 multi method plot(:$title, :$ignore, :@range, :@vertices!,
+                  :@using,
                   Str :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
                   :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette) {
     my @args;
@@ -86,6 +87,7 @@ multi method plot(:$title, :$ignore, :@range, :@vertices!,
     }
 
     @args.push($tmpvariable);
+    @args.push("using " ~ @using.join(":")) if @using.elems > 0;
     @args.push("with " ~ $style) if $style.defined;
     
     given $title {
