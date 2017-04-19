@@ -40,7 +40,7 @@ method !tweak-fontargs(:$font-name, :$font-size) {
     (not $font-name.defined and not $font-size.defined) ?? "" !! sprintf("font \"%s\"", @font.join(","));
 }
 
-method !tweak-coordinate(:$coordinate!, :$name!, :$enable-nooffset = False, Int :$upper-bound?) {
+method !tweak-coordinate(Mu :$coordinate!, :$name!, :$enable-nooffset = False, Int :$upper-bound?) {
     my Str $coordinate-str = "";
     if $coordinate.defined {
         given $coordinate {
