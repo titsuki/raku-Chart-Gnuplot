@@ -50,8 +50,7 @@ method !tweak-coordinate(:$coordinate!, :$name!, :$enable-nooffset = False, Int 
                     die "Error: Something went wrong."; # TODO: LTA
                 }
                 my @coordinate-args;
-                while $coordinate {
-                    my $p = $coordinate.shift;
+                for @$coordinate -> $p {
                     given $p {
                         when * ~~ Pair {
                             @coordinate-args.push(sprintf("%s %s", $p.key, $p.value));
@@ -504,9 +503,8 @@ method !anytics(:$axis, :$border, Bool :$mirror,
 
     if @tics.elems > 0 {
         my @tic-args;
-        while @tics {
+        for @tics -> $t {
             my @tmp;
-            my $t = @tics.shift;
             if $t<label>:exists {
                 @tmp.push(sprintf("\"%s\"", $t<label>));
             }
