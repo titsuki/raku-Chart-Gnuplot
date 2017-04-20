@@ -1032,7 +1032,7 @@ Chart::Gnuplot is ...
 
 =begin html
 
-    <br>Figure 1.<IMG SRC="surface.dem.00.png.png"><br>
+    <br>Figure 1.<IMG SRC="surface.dem.00.png"><br>
 
 =end html
 
