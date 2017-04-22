@@ -1036,7 +1036,7 @@ Chart::Gnuplot is ...
     
 =begin para
 
-    <br>Figure 1.<IMG SRC="surface.dem.00.png"><br>
+    <img src="surface.dem.00.png" alt="3D surface from a grid (matrix) of Z values">
 
 =end para
 
