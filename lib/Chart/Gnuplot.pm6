@@ -996,11 +996,58 @@ Chart::Gnuplot - blah blah blah
 
 =head1 SYNOPSIS
 
-  use Chart::Gnuplot;
+=head3 SOURCE
+
+    use Chart::Gnuplot;
+
+    my $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("synopsis.png"));
+    $gnu.title(:text("sin(x) curve"));
+    $gnu.plot(:function('sin(x)'));
+
+=head3 OUTPUT
+    
+=begin para
+
+    <img src="synopsis.png" alt="sin(x)">
+
+=end para
 
 =head1 DESCRIPTION
 
 Chart::Gnuplot is ...
+
+=head1 EXAMPLES
+
+=head2 3D surface from a grid (matrix) of Z values
+
+=head3 SOURCE
+
+    use Chart::Gnuplot;
+
+    my $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("surface.dem.00.png"));
+    $gnu.title(:text("3D surface from a grid (matrix) of Z values"));
+    $gnu.xrange(:min(-0.5), :max(4.5));
+    $gnu.yrange(:min(-0.5), :max(4.5));
+    $gnu.grid;
+    $gnu.command("set hidden3d");
+
+    my @grid = (q:to/EOF/).split("\n", :skip-empty)>>.split(" ", :skip-empty);
+    5 4 3 1 0
+    2 2 0 0 1
+    0 0 0 1 0
+    0 0 0 2 3
+    0 1 2 4 3
+    EOF
+
+    $gnu.splot(:vertices(@grid), :style("lines"), :title(False), :matrix);
+
+=head3 OUTPUT
+    
+=begin para
+
+    <img src="surface.dem.00.png" alt="3D surface from a grid (matrix) of Z values">
+
+=end para
 
 =head1 AUTHOR
 
