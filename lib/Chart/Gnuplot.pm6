@@ -1001,7 +1001,7 @@ Chart::Gnuplot - blah blah blah
     use Chart::Gnuplot;
 
     my $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("synopsis.png"));
-    $gnu.title(:text("Synopsis"));
+    $gnu.title(:text("sin(x) curve"));
     $gnu.plot(:function('sin(x)'));
 
 =head3 OUTPUT
