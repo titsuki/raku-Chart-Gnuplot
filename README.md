@@ -22,8 +22,10 @@ Chart::Gnuplot is ...
 EXAMPLES
 ========
 
-surface
--------
+3D surface from a grid (matrix) of Z values
+-------------------------------------------
+
+### SOURCE
 
     use Chart::Gnuplot;
 
@@ -44,8 +46,7 @@ surface
 
     $gnu.splot(:vertices(@grid), :style("lines"), :title(False), :matrix);
 
-html
-====
+### OUTPUT
 
 <br>Figure 1.<IMG SRC="surface.dem.00.png"><br>
 

@@ -1009,7 +1009,9 @@ Chart::Gnuplot is ...
 
 =head1 EXAMPLES
 
-=head2 surface
+=head2 3D surface from a grid (matrix) of Z values
+
+=head3 SOURCE
 
     use Chart::Gnuplot;
 
@@ -1030,11 +1032,13 @@ Chart::Gnuplot is ...
 
     $gnu.splot(:vertices(@grid), :style("lines"), :title(False), :matrix);
 
-=begin html
+=head3 OUTPUT
+    
+=begin para
 
     <br>Figure 1.<IMG SRC="surface.dem.00.png"><br>
 
-=end html
+=end para
 
 =head1 AUTHOR
 
