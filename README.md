@@ -8,11 +8,17 @@ Chart::Gnuplot - blah blah blah
 SYNOPSIS
 ========
 
+### SOURCE
+
     use Chart::Gnuplot;
 
     my $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("synopsis.png"));
     $gnu.title(:text("Synopsis"));
     $gnu.plot(:function('sin(x)'));
+
+### OUTPUT
+
+<img src="synopsis.png" alt="sin(x)">
 
 DESCRIPTION
 ===========

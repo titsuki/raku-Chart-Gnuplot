@@ -996,12 +996,21 @@ Chart::Gnuplot - blah blah blah
 
 =head1 SYNOPSIS
 
+=head3 SOURCE
+
     use Chart::Gnuplot;
 
     my $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("synopsis.png"));
     $gnu.title(:text("Synopsis"));
     $gnu.plot(:function('sin(x)'));
 
+=head3 OUTPUT
+    
+=begin para
+
+    <img src="synopsis.png" alt="sin(x)">
+
+=end para
 
 =head1 DESCRIPTION
 
