@@ -1015,7 +1015,7 @@ method multiplot(:$title, :$font, Bool :$enhanced, :@layout, :$rowsfirst, :$colu
     @spacing-args.push($spacing-y) if $spacing-x.defined and $spacing-y.defined;
     @args.push("spacing " ~ @spacing-args.join(","));
 
-    self.command: sprintf("set arrow %s", @args.join(" "));
+    self.command: sprintf("set multiplot %s", @args.join(" "));
 }
 
 method command(Str $command) {
