@@ -3,7 +3,7 @@
 NAME
 ====
 
-Chart::Gnuplot - blah blah blah
+Chart::Gnuplot - A Perl 6 bindings for gnuplot
 
 SYNOPSIS
 ========
@@ -23,7 +23,7 @@ SYNOPSIS
 DESCRIPTION
 ===========
 
-Chart::Gnuplot is ...
+Chart::Gnuplot is a Perl 6 bindings for gnuplot. Chart::Gnuplot runs `gnuplot` using `Proc::Async` and enables you to plot chart or graph with Perl6ish interface.
 
 EXAMPLES
 ========
