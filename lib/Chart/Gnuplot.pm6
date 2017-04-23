@@ -1050,6 +1050,84 @@ Chart::Gnuplot - A Perl 6 bindings for gnuplot
 
 Chart::Gnuplot is a Perl 6 bindings for gnuplot. Chart::Gnuplot runs C<gnuplot> using C<Proc::Async> and enables you to plot chart or graph with Perl6ish interface.
 
+=head2 METHODS
+
+=head3 terminal
+
+=head3 plot
+
+=head3 splot
+
+=head3 label
+
+=head3 xlabel
+
+=head3 ylabel
+
+=head3 zlabel
+
+=head3 x2label
+
+=head3 y2label
+
+=head3 cblabel
+
+=head3 xrange
+
+=head3 yrange
+
+=head3 zrange
+
+=head3 x2range
+
+=head3 y2range
+
+=head3 cbrange
+
+=head3 rrange
+
+=head3 trange
+
+=head3 urange
+
+=head3 vrange
+
+=head3 xtics
+
+=head3 ytics
+
+=head3 ztics
+
+=head3 x2tics
+
+=head3 y2tics
+
+=head3 cbtics
+
+=head3 legend
+
+=head3 border
+
+=head3 grid
+
+=head3 timestamp
+
+=head3 rectangle
+
+=head3 ellipse
+
+=head3 circle
+
+=head3 polygon
+
+=head3 title
+
+=head3 arrow
+
+=head3 multiplot
+
+=head3 command
+
 =head1 EXAMPLES
 
 =head2 3D surface from a grid (matrix) of Z values

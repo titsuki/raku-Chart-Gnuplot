@@ -25,6 +25,85 @@ DESCRIPTION
 
 Chart::Gnuplot is a Perl 6 bindings for gnuplot. Chart::Gnuplot runs `gnuplot` using `Proc::Async` and enables you to plot chart or graph with Perl6ish interface.
 
+METHODS
+-------
+
+### terminal
+
+### plot
+
+### splot
+
+### label
+
+### xlabel
+
+### ylabel
+
+### zlabel
+
+### x2label
+
+### y2label
+
+### cblabel
+
+### xrange
+
+### yrange
+
+### zrange
+
+### x2range
+
+### y2range
+
+### cbrange
+
+### rrange
+
+### trange
+
+### urange
+
+### vrange
+
+### xtics
+
+### ytics
+
+### ztics
+
+### x2tics
+
+### y2tics
+
+### cbtics
+
+### legend
+
+### border
+
+### grid
+
+### timestamp
+
+### rectangle
+
+### ellipse
+
+### circle
+
+### polygon
+
+### title
+
+### arrow
+
+### multiplot
+
+### command
+
 EXAMPLES
 ========
 
