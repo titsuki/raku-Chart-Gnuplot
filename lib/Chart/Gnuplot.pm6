@@ -29,7 +29,7 @@ submethod DESTROY {
 
 method terminal($terminal) {
     $!terminal = $terminal;
-    self.command: sprintf("set terminal \"%s\"", $!terminal);
+    self.command: sprintf("set terminal %s", $!terminal);
 }
 
 method !tweak-fontargs(:$font-name, :$font-size) {
