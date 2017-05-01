@@ -10,6 +10,7 @@ has %.options;
 has $!filename;
 has Int $!num-plot;
 has $!promise;
+has @!msg-pool;
 
 my subset FalseOnly of Bool where { if not $_.defined { True } else { $_ == False } }
 
@@ -17,7 +18,14 @@ submethod BUILD(:$!terminal!, Str :$!filename, :$!persist = True, :$!debug = Fal
     my @opts;
     @opts.push('-persist') if $!persist;
     $!gnuplot = Proc::Async.new(:w, "gnuplot", @opts.join(" "));
-    $!gnuplot.stderr.tap(-> $v {}) if not $!debug;
+
+    if $!debug {
+        $!gnuplot.stderr.act(-> $v { @!msg-pool.push($v); });
+        $!gnuplot.stdout.act(-> $v { @!msg-pool.push($v); });
+    } else {
+        $!gnuplot.stderr.act({;});
+        $!gnuplot.stdout.act({;});
+    }
     $!promise = $!gnuplot.start;
     $!num-plot = 0;
 }
@@ -1020,6 +1028,13 @@ method multiplot(:$title, :$font, Bool :$enhanced, :@layout, :$rowsfirst, :$colu
 
 method command(Str $command) {
     try sink await $!gnuplot.say: $command;
+
+    if $!debug {
+        sleep .5 unless @!msg-pool;
+        $*ERR.say: $command;
+        $*ERR.print: @!msg-pool.join;
+        @!msg-pool = ();
+    }
 }
 
 =begin pod
