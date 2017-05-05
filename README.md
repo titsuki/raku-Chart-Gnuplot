@@ -30,6 +30,12 @@ METHODS
 
 ### terminal
 
+Defined as:
+
+    method terminal($terminal)
+
+Tells gnuplot what kind of output to generate.
+
 ### plot
 
 ### splot

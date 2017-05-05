@@ -1069,6 +1069,12 @@ Chart::Gnuplot is a Perl 6 bindings for gnuplot. Chart::Gnuplot runs C<gnuplot> 
 
 =head3 terminal
 
+Defined as:
+
+        method terminal($terminal)
+
+Tells gnuplot what kind of output to generate.
+
 =head3 plot
 
 =head3 splot
