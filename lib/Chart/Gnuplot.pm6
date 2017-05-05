@@ -1031,7 +1031,7 @@ method command(Str $command) {
 
     if $!debug {
         sleep .5 unless @!msg-pool;
-        $*ERR.say: $command;
+        $*ERR.print: $command ~ "\n"; # for IO::Capture::Simple
         $*ERR.print: @!msg-pool.join;
         @!msg-pool = ();
     }
