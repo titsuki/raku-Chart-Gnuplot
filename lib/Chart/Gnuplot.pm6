@@ -1193,6 +1193,6 @@ titsuki <titsuki@cpan.org>
 
 Copyright 2017 titsuki
 
-This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+This library is free software; you can redistribute it and/or modify it under the GNU General Public License version 3.0.
 
 =end pod
