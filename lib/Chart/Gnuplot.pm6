@@ -15,9 +15,12 @@ has @!msg-pool;
 my subset FalseOnly of Bool where { if not $_.defined { True } else { $_ == False } }
 
 submethod BUILD(:$!terminal!, Str :$!filename, :$!persist = True, :$!debug = False) {
+    my $HOME = qq:x/echo \$HOME/.subst(/\s*/,"",:g);
+    my $prefix = "$HOME/.p6chart-gnuplot";
+
     my @opts;
     @opts.push('-persist') if $!persist;
-    $!gnuplot = Proc::Async.new(:w, "gnuplot", @opts.join(" "));
+    $!gnuplot = Proc::Async.new(:w, "$prefix/bin/gnuplot", @opts.join(" "));
 
     if $!debug {
         $!gnuplot.stderr.act(-> $v { @!msg-pool.push($v); });
