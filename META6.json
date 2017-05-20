@@ -5,7 +5,7 @@
   "build-depends" : [ ],
   "depends" : [ ],
   "description" : "A Perl 6 bindings for gnuplot",
-  "license" : "Artistic-2.0",
+  "license" : "GPL-3.0",
   "name" : "Chart::Gnuplot",
   "perl" : "6.c",
   "provides" : {
