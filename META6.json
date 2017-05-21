@@ -14,6 +14,8 @@
   "resources" : [ ],
   "source-url" : "git://github.com/titsuki/p6-Chart-Gnuplot.git",
   "tags" : [ ],
-  "test-depends" : [ ],
+  "test-depends" : [
+    "IO::Capture::Simple"
+  ],
   "version" : "*"
 }
