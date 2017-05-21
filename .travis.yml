@@ -8,6 +8,6 @@ install:
   - rakudobrew build-zef
   - zef install --depsonly --/test --/build .
 script:
-  - perl6 -MZef::Build -e 'Zef::Build.build(~$*CWD)'
+  - perl6 -MZef::Build -e 'Zef::Build.new.build(~$*CWD)'
   - PERL6LIB=$PWD/lib prove -e perl6 -vr t/
 sudo: false
