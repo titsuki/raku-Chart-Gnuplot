@@ -1029,6 +1029,10 @@ method multiplot(:$title, :$font, Bool :$enhanced, :@layout, :$rowsfirst, :$colu
     self.command: sprintf("set multiplot %s", @args.join(" "));
 }
 
+method dispose {
+    self.command: "exit";
+}
+
 method command(Str $command) {
     try sink await $!gnuplot.say: $command;
 
