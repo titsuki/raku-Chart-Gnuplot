@@ -1,4 +1,4 @@
-class Build {
+class Builder {
     method build($workdir) {
         if $*DISTRO.is-win {
             die "Sorry, this binding doesn't support windows";
