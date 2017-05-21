@@ -31,8 +31,4 @@ class Build {
         shell("make install");
         chdir($goback);
     }
-    method isa($what) {
-        return True if $what.^name eq 'Panda::Builder';
-        callsame;
-    }
 }
