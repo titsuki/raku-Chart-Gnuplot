@@ -2,7 +2,9 @@
   "authors" : [
     "titsuki"
   ],
-  "build-depends" : [ ],
+  "build-depends" : [
+    "zef"
+  ],
   "depends" : [ ],
   "description" : "A Perl 6 bindings for gnuplot",
   "license" : "GPL-3.0",
