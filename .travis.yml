@@ -1,6 +1,5 @@
 os:
   - linux
-  - osx
 language: perl6
 perl6:
   - latest
