@@ -38,9 +38,9 @@ submethod DESTROY {
     await $!promise;
 }
 
-method terminal($terminal) {
+method terminal($terminal, :&writer? = -> $msg { self.command: $msg }) {
     $!terminal = $terminal;
-    self.command: sprintf("set terminal %s", $!terminal);
+    &writer(sprintf("set terminal %s", $!terminal));
 }
 
 method !tweak-fontargs(:$font-name, :$font-size) {
@@ -83,15 +83,16 @@ method !tweak-coordinate(Mu :$coordinate!, :$name!, :$enable-nooffset = False, I
 multi method plot(:$title, :$ignore, :@range, :@vertices!,
                   :@using,
                   Str :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
-                  :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette) {
+                  :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette,
+                  :&writer? = -> $msg { self.command: $msg }) {
     my @args;
 
     my $tmpvariable = '$mydata' ~ ($*PID, time, @vertices.WHERE).join;
-    self.command: sprintf("%s << EOD", $tmpvariable);
+    &writer(sprintf("%s << EOD", $tmpvariable));
     for ^@vertices.elems -> $r {
-        self.command(@vertices[$r;*].join(" "));
+        &writer(@vertices[$r;*].join(" "));
     }
-    self.command: "EOD";
+    &writer("EOD");
 
     for @range {
         @args.push(sprintf("[%s]", $_.join(":")));
@@ -123,20 +124,21 @@ multi method plot(:$title, :$ignore, :@range, :@vertices!,
     @args.push("nosurface") if $surface.defined and $surface == False;
     @args.push("palette") if $palette.defined;
 
-    self.command: sprintf("set terminal %s", $!terminal);
-    self.command: sprintf("set output \"%s\"", $!filename);
+    &writer(sprintf("set terminal %s", $!terminal));
+    &writer(sprintf("set output \"%s\"", $!filename));
 
     my $cmd = do given $!num-plot {
         when * > 0 { "replot" }
         default { "plot" }
     };
-    self.command: sprintf("%s %s",$cmd, @args.join(" "));
+    &writer(sprintf("%s %s",$cmd, @args.join(" ")));
     $!num-plot++;
 }
 
 multi method plot(:$title, :$ignore, :@range, :$function!,
                   Str :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
-                  :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette) {
+                  :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette,
+                  :&writer? = -> $msg { self.command: $msg }) {
     my @args;
 
     for @range {
@@ -168,14 +170,15 @@ multi method plot(:$title, :$ignore, :@range, :$function!,
     @args.push("nosurface") if $surface.defined and $surface == False;
     @args.push("palette") if $palette.defined;
 
-    self.command: sprintf("set terminal %s", $!terminal);
-    self.command: sprintf("set output \"%s\"", $!filename);
+    &writer(sprintf("set terminal %s", $!terminal));
+    &writer(sprintf("set output \"%s\"", $!filename));
 
     my $cmd = do given $!num-plot {
         when * > 0 { "replot" }
         default { "plot" }
     };
-    self.command: sprintf("%s %s", $cmd, @args.join(" "));
+
+    &writer(sprintf("%s %s", $cmd, @args.join(" ")));
     $!num-plot++;
 }
 
@@ -183,7 +186,7 @@ multi method splot(:@range,
                    :@vertices!,
                    :$binary, :$matrix, :$index, :$every,
                    :$title, :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
-                   :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette) {
+                   :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
 
     for @range {
@@ -191,11 +194,11 @@ multi method splot(:@range,
     }
 
     my $tmpvariable = '$mydata' ~ ($*PID, time, @vertices.WHERE).join;
-    self.command: sprintf("%s << EOD", $tmpvariable);
+    &writer(sprintf("%s << EOD", $tmpvariable));
     for ^@vertices.elems -> $r {
-        self.command(@vertices[$r;*].join(" "));
+        &writer(@vertices[$r;*].join(" "));
     }
-    self.command: "EOD";
+    &writer("EOD");
 
     @args.push($tmpvariable);
 
@@ -225,20 +228,20 @@ multi method splot(:@range,
     @args.push("nosurface") if $surface.defined and $surface == False;
     @args.push("palette") if $palette.defined;
 
-    self.command: sprintf("set terminal %s", $!terminal);
-    self.command: sprintf("set output \"%s\"", $!filename);
+    &writer(sprintf("set terminal %s", $!terminal));
+    &writer(sprintf("set output \"%s\"", $!filename));
 
     my $cmd = do given $!num-plot {
         when * > 0 { "replot" }
         default { "splot" }
     };
-    self.command: sprintf("%s %s", $cmd, @args.join(" "));
+    &writer(sprintf("%s %s", $cmd, @args.join(" ")));
 }
 
 multi method splot(:@range,
                    :$function!,
                    :$title, :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
-                   :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette) {
+                   :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
 
     for @range {
@@ -268,14 +271,14 @@ multi method splot(:@range,
     @args.push("nosurface") if $surface.defined and $surface == False;
     @args.push("palette") if $palette.defined;
 
-    self.command: sprintf("set terminal %s", $!terminal);
-    self.command: sprintf("set output \"%s\"", $!filename);
+    &writer(sprintf("set terminal %s", $!terminal));
+    &writer(sprintf("set output \"%s\"", $!filename));
 
     my $cmd = do given $!num-plot {
         when * > 0 { "replot" }
         default { "splot" }
     };
-    self.command: sprintf("%s %s", $cmd, @args.join(" "));
+    &writer(sprintf("%s %s", $cmd, @args.join(" ")));
 }
 
 my subset LabelRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
@@ -283,7 +286,7 @@ my subset LabelRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Boo
 method label(:$tag, :$label-text, :$at, :$left, :$center, :$right,
              LabelRotate :$rotate, :$font-name, :$font-size, FalseOnly :$enhanced,
              :$front, :$back, :$textcolor, FalseOnly :$point, :$line-type, :$point-type, :$point-size, :$offset,
-             :$boxed, :$hypertext) {
+             :$boxed, :$hypertext, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
     @args.push($tag) if $tag.defined;
     @args.push(sprintf("\"%s\"", $label-text)) if $label-text.defined;
@@ -319,12 +322,12 @@ method label(:$tag, :$label-text, :$at, :$left, :$center, :$right,
     @args.push("boxed") if $boxed.defined;
     @args.push("hypertext") if $hypertext.defined;
 
-    self.command: sprintf("set label %s", @args.join(" "));
+    &writer(sprintf("set label %s", @args.join(" ")));
 }
 
 my subset AnyLabelRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ eq "parallel" or $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
 
-method !anylabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
+method !anylabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
     @args.push(sprintf("\"%s\"", $label)) if $label.defined;
     @args.push(self!tweak-coordinate(:name("offset"), :coordinate($offset)));
@@ -343,28 +346,28 @@ method !anylabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, B
     @args.join(" ");
 }
 
-method xlabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
-    self.command: sprintf("set xlabel %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
+method xlabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate, :&writer? = -> $msg { self.command: $msg }) {
+    &writer(sprintf("set xlabel %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate)));
 }
 
-method ylabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
-    self.command: sprintf("set ylabel %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
+method ylabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate, :&writer? = -> $msg { self.command: $msg }) {
+    &writer(sprintf("set ylabel %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate)));
 }
 
-method zlabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
-    self.command: sprintf("set zlabel %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
+method zlabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate, :&writer? = -> $msg { self.command: $msg }) {
+    &writer(sprintf("set zlabel %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate)));
 }
 
-method x2label(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
-    self.command: sprintf("set x2label %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
+method x2label(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate, :&writer? = -> $msg { self.command: $msg }) {
+    &writer(sprintf("set x2label %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate)));
 }
 
-method y2label(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
-    self.command: sprintf("set y2label %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
+method y2label(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate, :&writer? = -> $msg { self.command: $msg }) {
+    &writer(sprintf("set y2label %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate)));
 }
 
-method cblabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate) {
-    self.command: sprintf("set cblabel %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate));
+method cblabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate, :&writer? = -> $msg { self.command: $msg }) {
+    &writer(sprintf("set cblabel %s", self!anylabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate)));
 }
 
 method !anyrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
@@ -376,84 +379,84 @@ method !anyrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) 
     @args.join(" ");
 }
 
-multi method xrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
-   self.command: sprintf("set xrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+multi method xrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend, :&writer? = -> $msg { self.command: $msg }) {
+   &writer(sprintf("set xrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend)));
 }
 
-multi method xrange(:$restore) {
-    self.command: "set xrange restore";
+multi method xrange(:$restore, :&writer? = -> $msg { self.command: $msg }) {
+    &writer("set xrange restore");
 }
 
-multi method yrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
-   self.command: sprintf("set yrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+multi method yrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend, :&writer? = -> $msg { self.command: $msg }) {
+   &writer(sprintf("set yrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend)));
 }
 
-multi method yrange(:$restore) {
-    self.command: "set yrange restore";
+multi method yrange(:$restore, :&writer? = -> $msg { self.command: $msg }) {
+    &writer("set yrange restore");
 }
 
-multi method zrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
-   self.command: sprintf("set zrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+multi method zrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend, :&writer? = -> $msg { self.command: $msg }) {
+   &writer(sprintf("set zrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend)));
 }
 
-multi method zrange(:$restore) {
-    self.command: "set zrange restore";
+multi method zrange(:$restore, :&writer? = -> $msg { self.command: $msg }) {
+    &writer("set zrange restore");
 }
 
-multi method x2range(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
-   self.command: sprintf("set x2range %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+multi method x2range(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend, :&writer? = -> $msg { self.command: $msg }) {
+   &writer(sprintf("set x2range %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend)));
 }
 
-multi method x2range(:$restore) {
-    self.command: "set x2range restore";
+multi method x2range(:$restore, :&writer? = -> $msg { self.command: $msg }) {
+    &writer("set x2range restore");
 }
 
-multi method y2range(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
-   self.command: sprintf("set y2range %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+multi method y2range(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend, :&writer? = -> $msg { self.command: $msg }) {
+   &writer(sprintf("set y2range %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend)));
 }
 
-multi method y2range(:$restore) {
-    self.command: "set y2range restore";
+multi method y2range(:$restore, :&writer? = -> $msg { self.command: $msg }) {
+    &writer("set y2range restore");
 }
 
-multi method cbrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
-   self.command: sprintf("set cbrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+multi method cbrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend, :&writer? = -> $msg { self.command: $msg }) {
+    &writer(sprintf("set cbrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend)));
 }
 
-multi method cbrange(:$restore) {
-    self.command: "set cbrange restore";
+multi method cbrange(:$restore, :&writer? = -> $msg { self.command: $msg }) {
+    &writer("set cbrange restore");
 }
 
-multi method rrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
-    self.command: sprintf("set rrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+multi method rrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend, :&writer? = -> $msg { self.command: $msg }) {
+    &writer(sprintf("set rrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend)));
 }
 
-multi method rrange(:$restore) {
-    self.command: "set rrange restore";
+multi method rrange(:$restore, :&writer? = -> $msg { self.command: $msg }) {
+    &writer("set rrange restore");
 }
 
-multi method trange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
-    self.command: sprintf("set trange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback,  :$extend));
+multi method trange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend, :&writer? = -> $msg { self.command: $msg }) {
+    &writer(sprintf("set trange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback,  :$extend)));
 }
 
-multi method trange(:$restore) {
-    self.command: "set trange restore";
+multi method trange(:$restore, :&writer? = -> $msg { self.command: $msg }) {
+    &writer("set trange restore");
 }
 
-multi method urange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
-    self.command: sprintf("set urange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+multi method urange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend, :&writer? = -> $msg { self.command: $msg }) {
+    &writer(sprintf("set urange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend)));
 }
 
-multi method urange(:$restore) {
-    self.command: "set urange restore";
+multi method urange(:$restore, :&writer? = -> $msg { self.command: $msg }) {
+    &writer("set urange restore");
 }
 
-multi method vrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
-    self.command: sprintf("set vrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend));
+multi method vrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend, :&writer? = -> $msg { self.command: $msg }) {
+    &writer(sprintf("set vrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend)));
 }
 
-multi method vrange(:$restore) {
-    self.command: "set vrange restore";
+multi method vrange(:$restore, :&writer? = -> $msg { self.command: $msg }) {
+    &writer("set vrange restore");
 }
 
 my subset AnyTicsRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
@@ -556,7 +559,7 @@ method xtics(:$axis, :$border, Bool :$mirror,
              :$format, :$font-name, :$font-size, Bool :$enhanced,
              :$numeric, :$timedate, :$geographic,
              :$rangelimited,
-             :$textcolor
+             :$textcolor, :&writer? = -> $msg { self.command: $msg }
             ) {
     self.command: sprintf("set xtics %s", self!anytics(:$axis, :$border, :$mirror,
                                                            :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
@@ -583,20 +586,20 @@ method ytics(:$axis, :$border, Bool :$mirror,
              :$format, :$font-name, :$font-size, Bool :$enhanced,
              :$numeric, :$timedate, :$geographic,
              :$rangelimited,
-             :$textcolor
+             :$textcolor, :&writer? = -> $msg { self.command: $msg }
             ) {
-    self.command: sprintf("set ytics %s", self!anytics(:$axis, :$border, :$mirror,
-                                                           :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
-                                                           :$left, :$right, :$center, :$autojustify,
-                                                           :$add,
-                                                           :$autofreq,
-                                                           :$incr,
-                                                           :$start, :$end,
-                                                           :@tics,
-                                                           :$format, :$font-name, :$font-size, :$enhanced,
-                                                           :$numeric, :$timedate, :$geographic,
-                                                           :$rangelimited,
-                                                           :$textcolor));
+    &writer(sprintf("set ytics %s", self!anytics(:$axis, :$border, :$mirror,
+                                                 :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
+                                                 :$left, :$right, :$center, :$autojustify,
+                                                 :$add,
+                                                 :$autofreq,
+                                                 :$incr,
+                                                 :$start, :$end,
+                                                 :@tics,
+                                                 :$format, :$font-name, :$font-size, :$enhanced,
+                                                 :$numeric, :$timedate, :$geographic,
+                                                 :$rangelimited,
+                                                 :$textcolor)));
 }
 
 method ztics(:$axis, :$border, Bool :$mirror,
@@ -610,20 +613,20 @@ method ztics(:$axis, :$border, Bool :$mirror,
              :$format, :$font-name, :$font-size, Bool :$enhanced,
              :$numeric, :$timedate, :$geographic,
              :$rangelimited,
-             :$textcolor
+             :$textcolor, :&writer? = -> $msg { self.command: $msg }
             ) {
-    self.command: sprintf("set ztics %s", self!anytics(:$axis, :$border, :$mirror,
-                                                           :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
-                                                           :$left, :$right, :$center, :$autojustify,
-                                                           :$add,
-                                                           :$autofreq,
-                                                           :$incr,
-                                                           :$start, :$end,
-                                                           :@tics,
-                                                           :$format, :$font-name, :$font-size, :$enhanced,
-                                                           :$numeric, :$timedate, :$geographic,
-                                                           :$rangelimited,
-                                                           :$textcolor));
+    &writer(sprintf("set ztics %s", self!anytics(:$axis, :$border, :$mirror,
+                                                 :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
+                                                 :$left, :$right, :$center, :$autojustify,
+                                                 :$add,
+                                                 :$autofreq,
+                                                 :$incr,
+                                                 :$start, :$end,
+                                                 :@tics,
+                                                 :$format, :$font-name, :$font-size, :$enhanced,
+                                                 :$numeric, :$timedate, :$geographic,
+                                                 :$rangelimited,
+                                                 :$textcolor)));
 }
 
 method x2tics(:$axis, :$border, Bool :$mirror,
@@ -637,20 +640,20 @@ method x2tics(:$axis, :$border, Bool :$mirror,
               :$format, :$font-name, :$font-size, Bool :$enhanced,
               :$numeric, :$timedate, :$geographic,
               :$rangelimited,
-              :$textcolor
+              :$textcolor, :&writer? = -> $msg { self.command: $msg }
              ) {
-    self.command: sprintf("set x2tics %s", self!anytics(:$axis, :$border, :$mirror,
-                                                            :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
-                                                            :$left, :$right, :$center, :$autojustify,
-                                                            :$add,
-                                                            :$autofreq,
-                                                            :$incr,
-                                                            :$start, :$end,
-                                                            :@tics,
-                                                            :$format, :$font-name, :$font-size, :$enhanced,
-                                                            :$numeric, :$timedate, :$geographic,
-                                                            :$rangelimited,
-                                                            :$textcolor));
+    &writer(sprintf("set x2tics %s", self!anytics(:$axis, :$border, :$mirror,
+                                                  :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
+                                                  :$left, :$right, :$center, :$autojustify,
+                                                  :$add,
+                                                  :$autofreq,
+                                                  :$incr,
+                                                  :$start, :$end,
+                                                  :@tics,
+                                                  :$format, :$font-name, :$font-size, :$enhanced,
+                                                  :$numeric, :$timedate, :$geographic,
+                                                  :$rangelimited,
+                                                  :$textcolor)));
 }
 
 method y2tics(:$axis, :$border, Bool :$mirror,
@@ -664,20 +667,20 @@ method y2tics(:$axis, :$border, Bool :$mirror,
               :$format, :$font-name, :$font-size, Bool :$enhanced,
               :$numeric, :$timedate, :$geographic,
               :$rangelimited,
-              :$textcolor
+              :$textcolor, :&writer? = -> $msg { self.command: $msg }
              ) {
-    self.command: sprintf("set y2tics %s", self!anytics(:$axis, :$border, :$mirror,
-                                                            :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
-                                                            :$left, :$right, :$center, :$autojustify,
-                                                            :$add,
-                                                            :$autofreq,
-                                                            :$incr,
-                                                            :$start, :$end,
-                                                            :@tics,
-                                                            :$format, :$font-name, :$font-size, :$enhanced,
-                                                            :$numeric, :$timedate, :$geographic,
-                                                            :$rangelimited,
-                                                            :$textcolor));
+    &writer(sprintf("set y2tics %s", self!anytics(:$axis, :$border, :$mirror,
+                                                  :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
+                                                  :$left, :$right, :$center, :$autojustify,
+                                                  :$add,
+                                                  :$autofreq,
+                                                  :$incr,
+                                                  :$start, :$end,
+                                                  :@tics,
+                                                  :$format, :$font-name, :$font-size, :$enhanced,
+                                                  :$numeric, :$timedate, :$geographic,
+                                                  :$rangelimited,
+                                                  :$textcolor)));
 }
 
 method cbtics(:$axis, :$border, Bool :$mirror,
@@ -691,20 +694,20 @@ method cbtics(:$axis, :$border, Bool :$mirror,
               :$format, :$font-name, :$font-size, Bool :$enhanced,
               :$numeric, :$timedate, :$geographic,
               :$rangelimited,
-              :$textcolor
+              :$textcolor, :&writer? = -> $msg { self.command: $msg }
              ) {
-    self.command: sprintf("set cbtics %s", self!anytics(:$axis, :$border, :$mirror,
-                                                            :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
-                                                            :$left, :$right, :$center, :$autojustify,
-                                                            :$add,
-                                                            :$autofreq,
-                                                            :$incr,
-                                                            :$start, :$end,
-                                                            :@tics,
-                                                            :$format, :$font-name, :$font-size, :$enhanced,
-                                                            :$numeric, :$timedate, :$geographic,
-                                                            :$rangelimited,
-                                                            :$textcolor));
+    &writer(sprintf("set cbtics %s", self!anytics(:$axis, :$border, :$mirror,
+                                                  :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
+                                                  :$left, :$right, :$center, :$autojustify,
+                                                  :$add,
+                                                  :$autofreq,
+                                                  :$incr,
+                                                  :$start, :$end,
+                                                  :@tics,
+                                                  :$format, :$font-name, :$font-size, :$enhanced,
+                                                  :$numeric, :$timedate, :$geographic,
+                                                  :$rangelimited,
+                                                  :$textcolor)));
 }
 
 my subset LegendMax of Cool where { if not $_.defined { True } else { $_ eq "auto" or $_ ~~ Real } };
@@ -717,7 +720,7 @@ method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin,
               :$samplen, :$spacing, :$width, :$height,
               :$autotitle, :$columnheader, :$title, :$font-name, :$font-size, :$textcolor,
               Bool :$box, :$linestyle, :$linetype, :$linewidth,
-              LegendMax :$maxcols, LegendMax :$maxrows) {
+              LegendMax :$maxcols, LegendMax :$maxrows, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
     @args.push("on") if $on.defined;
     @args.push("off") if $off.defined;
@@ -765,11 +768,11 @@ method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin,
         @args.push("maxrows auto") if $maxrows eq "auto";
     }
 
-    self.command: sprintf("set key %s", @args.join(" "));
+    &writer(sprintf("set key %s", @args.join(" ")));
 }
 
 method border(:$integer, :$front, :$back, :$behind,
-              :lw(:$linewidth), :ls(:$linestyle), :lt(:$linetype)) {
+              :lw(:$linewidth), :ls(:$linestyle), :lt(:$linetype), :&writer? = -> $msg { self.command: $msg }) {
     my @args;
     @args.push($integer) if $integer.defined;
     @args.push("front") if $front.defined;
@@ -779,12 +782,12 @@ method border(:$integer, :$front, :$back, :$behind,
     @args.push("linestyle " ~ $linestyle) if $linestyle.defined;
     @args.push("linetype " ~ $linetype) if $linetype.defined;
 
-    self.command: sprintf("set border %s", @args.join(" "));
+    &writer(sprintf("set border %s", @args.join(" ")));
 }
 
 method grid(:$xtics, :$ytics, :$ztics, :$x2tics, :$y2tics, :$cbtics,
             :$polar, :$layerdefault, :$front, :$back,
-            :ls(:@linestyle), :lt(:@linetype), :lw(:@linewidth)) {
+            :ls(:@linestyle), :lt(:@linetype), :lw(:@linewidth), :&writer? = -> $msg { self.command: $msg }) {
     my @args;
     @args.push($xtics) if $xtics.defined;
     @args.push($ytics) if $ytics.defined;
@@ -806,11 +809,11 @@ method grid(:$xtics, :$ytics, :$ztics, :$x2tics, :$y2tics, :$cbtics,
     @args.push("linetype " ~ @linetype[1]) if @linetype.elems == 2;
     @args.push("linewidth " ~ @linewidth[1]) if @linewidth.elems == 2;
 
-    self.command: sprintf("set grid %s", @args.join(" "));
+    &writer(sprintf("set grid %s", @args.join(" ")));
 }
 
 method timestamp(:$format, :$top, :$bottom, Bool :$rotate,
-                 :$offset-x, :$offset-y, :$font-name, :$font-size, :$textcolor) {
+                 :$offset-x, :$offset-y, :$font-name, :$font-size, :$textcolor, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
     @args.push(sprintf("\"%s\"", $format)) if $format.defined;
     @args.push("top") if $top.defined;
@@ -831,11 +834,11 @@ method timestamp(:$format, :$top, :$bottom, Bool :$rotate,
 
     @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
 
-    self.command: sprintf("set timestamp %s", @args.join(" "));
+    &writer(sprintf("set timestamp %s", @args.join(" ")));
 }
 
 method !anyobject(:$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
-                  :$default, :$linewidth, :$dashtype) {
+                  :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }) {
 
     my @args;
     @args.push("front") if $front.defined;
@@ -852,65 +855,65 @@ method !anyobject(:$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillsty
 
 multi method rectangle(:$index, :$from, :$to,
                        :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
-                       :$default, :$linewidth, :$dashtype) {
+                       :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }) {
 
     my @args;
     @args.push(self!tweak-coordinate(:name("from"), :coordinate($from)));
     @args.push(self!tweak-coordinate(:name("to"), :coordinate($to)));
 
-    self.command: sprintf("set object %d rectangle %s %s", $index, @args.join(" "),
-                          self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
-                                         :$default, :$linewidth, :$dashtype));
-}
+    &writer(sprintf("set object %d rectangle %s %s", $index, @args.join(" "),
+                    self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
+                                   :$default, :$linewidth, :$dashtype)));
+           }
 
 multi method rectangle(:$index, :$from, :$rto,
                        :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
-                       :$default, :$linewidth, :$dashtype) {
+                       :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }) {
 
     my @args;
     @args.push(self!tweak-coordinate(:name("from"), :coordinate($from)));
     @args.push(self!tweak-coordinate(:name("rto"), :coordinate($rto)));
 
-    self.command: sprintf("set object %d rectangle %s %s", $index, @args.join(" "),
-                          self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
-                                         :$default, :$linewidth, :$dashtype));
-}
+    &writer(sprintf("set object %d rectangle %s %s", $index, @args.join(" "),
+                    self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
+                                   :$default, :$linewidth, :$dashtype)));
+           }
 
 method ellipse(:$index, :center(:$at), :$w, :$h,
                :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
-               :$default, :$linewidth, :$dashtype) {
+               :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
     @args.push(self!tweak-coordinate(:name("at"), :coordinate($at)));
 
-    self.command: sprintf("set object %d ellipse %s size %d,%d %s", $index, @args.join(" "), $w, $h,
-                          self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
-                                         :$default, :$linewidth, :$dashtype));
+    &writer(sprintf("set object %d ellipse %s size %d,%d %s", $index, @args.join(" "), $w, $h,
+                    self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
+                                   :$default, :$linewidth, :$dashtype)));
 }
 
 method circle(:$index, :center(:$at), :$radius,
               :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
-              :$default, :$linewidth, :$dashtype) {
+              :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
     @args.push(self!tweak-coordinate(:name("at"), :coordinate($at)));
     
-    self.command: sprintf("set object %d circle %s size %d %s", $index, @args.join(" "), $radius,
-                              self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
-                                             :$default, :$linewidth, :$dashtype));
+    &writer(sprintf("set object %d circle %s size %d %s", $index, @args.join(" "), $radius,
+                    self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
+                                   :$default, :$linewidth, :$dashtype)));
 }
 
 method polygon(:$index, :$from, :@to,
                :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
-               :$default, :$linewidth, :$dashtype) {
+               :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
     @args.push(self!tweak-coordinate(:name("from"), :coordinate($from)));
  
-    self.command: sprintf("set object %d polygon %s %s %s", $index, @args.join(" "),
-                          @to.map(-> $c { self!tweak-coordinate(:coordinate($c), :name("to")) }).join(" "),
-                          self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
-                                         :$default, :$linewidth, :$dashtype));
+    &writer(sprintf("set object %d polygon %s %s %s", $index, @args.join(" "),
+                    @to.map(-> $c { self!tweak-coordinate(:coordinate($c), :name("to")) }).join(" "),
+                    self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
+                                   :$default, :$linewidth, :$dashtype)));
 }
 
-method title(:$text, :$offset, :$font-name, :$font-size, :tc(:$textcolor), :$colorspec, Bool :$enhanced) {
+method title(:$text, :$offset, :$font-name, :$font-size, :tc(:$textcolor), :$colorspec, Bool :$enhanced, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
     
     @args.push(sprintf("\"%s\"", $text));
@@ -920,14 +923,14 @@ method title(:$text, :$offset, :$font-name, :$font-size, :tc(:$textcolor), :$col
     @args.push("colorspec " ~ $colorspec) if $colorspec.defined;
     @args.push($enhanced ?? "enhanced" !! "noenhanced") if $enhanced.defined;
 
-    self.command: sprintf("set title %s", @args.join(" "));
+    &writer(sprintf("set title %s", @args.join(" ")));
 }
 
 multi method arrow(:$tag, :$from, :$to, Bool :$head, :$backhead, :$heads,
              :$head-length, :$head-angle, :$back-angle,
              :$filled, :$empty, :$border,
              :$front, :$back,
-             :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor), :dt(:$dashtype)
+             :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor), :dt(:$dashtype), :&writer? = -> $msg { self.command: $msg }
             ) {
     my @args;
 
@@ -956,14 +959,14 @@ multi method arrow(:$tag, :$from, :$to, Bool :$head, :$backhead, :$heads,
     @args.push("linecolor " ~ $linecolor) if $linecolor.defined;
     @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
 
-    self.command: sprintf("set arrow %s", @args.join(" "));
+    &writer(sprintf("set arrow %s", @args.join(" ")));
 }
 
 multi method arrow(:$tag, :$from, :$rto, Bool :$head, :$backhead, :$heads,
              :$head-length, :$head-angle, :$back-angle,
              :$filled, :$empty, :$border,
              :$front, :$back,
-             :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor), :dt(:$dashtype)
+             :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor), :dt(:$dashtype), :&writer? = -> $msg { self.command: $msg }
             ) {
     my @args;
 
@@ -992,12 +995,12 @@ multi method arrow(:$tag, :$from, :$rto, Bool :$head, :$backhead, :$heads,
     @args.push("linecolor " ~ $linecolor) if $linecolor.defined;
     @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
 
-    self.command: sprintf("set arrow %s", @args.join(" "));
+    &writer(sprintf("set arrow %s", @args.join(" ")));
 }
 
 method multiplot(:$title, :$font, Bool :$enhanced, :@layout, :$rowsfirst, :$columnsfirst,
                  :$downwards, :$upwards, :$scale-x, :$scale-y, :$offset-x, :$offset-y, :@margins,
-                 :$spacing-x, :$spacing-y) {
+                 :$spacing-x, :$spacing-y, :&writer = -> $msg { self.command: $msg }) {
     my @args;
 
     @args.push("title " ~ $title) if $title.defined;
@@ -1026,7 +1029,7 @@ method multiplot(:$title, :$font, Bool :$enhanced, :@layout, :$rowsfirst, :$colu
     @spacing-args.push($spacing-y) if $spacing-x.defined and $spacing-y.defined;
     @args.push("spacing " ~ @spacing-args.join(","));
 
-    self.command: sprintf("set multiplot %s", @args.join(" "));
+    &writer(sprintf("set multiplot %s", @args.join(" ")));
 }
 
 method dispose {
