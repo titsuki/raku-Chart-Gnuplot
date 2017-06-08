@@ -131,7 +131,7 @@ multi method plot(:$title, :$ignore, :@range, :@vertices!,
         when * > 0 { "replot" }
         default { "plot" }
     };
-    &writer(sprintf("%s %s",$cmd, @args.join(" ")));
+    &writer(sprintf("%s %s",$cmd, @args.grep(* ne "").join(" ")));
     $!num-plot++;
 }
 
@@ -178,7 +178,7 @@ multi method plot(:$title, :$ignore, :@range, :$function!,
         default { "plot" }
     };
 
-    &writer(sprintf("%s %s", $cmd, @args.join(" ")));
+    &writer(sprintf("%s %s", $cmd, @args.grep(* ne "").join(" ")));
     $!num-plot++;
 }
 
@@ -235,7 +235,7 @@ multi method splot(:@range,
         when * > 0 { "replot" }
         default { "splot" }
     };
-    &writer(sprintf("%s %s", $cmd, @args.join(" ")));
+    &writer(sprintf("%s %s", $cmd, @args.grep(* ne "").join(" ")));
 }
 
 multi method splot(:@range,
@@ -278,7 +278,7 @@ multi method splot(:@range,
         when * > 0 { "replot" }
         default { "splot" }
     };
-    &writer(sprintf("%s %s", $cmd, @args.join(" ")));
+    &writer(sprintf("%s %s", $cmd, @args.grep(* ne "").join(" ")));
 }
 
 my subset LabelRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
@@ -322,7 +322,7 @@ method label(:$tag, :$label-text, :$at, :$left, :$center, :$right,
     @args.push("boxed") if $boxed.defined;
     @args.push("hypertext") if $hypertext.defined;
 
-    &writer(sprintf("set label %s", @args.join(" ")));
+    &writer(sprintf("set label %s", @args.grep(* ne "").join(" ")));
 }
 
 my subset AnyLabelRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ eq "parallel" or $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
@@ -343,7 +343,7 @@ method !anylabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, B
             default { die "Error: Something went wrong." }
         }
     }
-    @args.join(" ");
+    @args.grep(* ne "").join(" ");
 }
 
 method xlabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate, :&writer? = -> $msg { self.command: $msg }) {
@@ -376,7 +376,7 @@ method !anyrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) 
     @args.push($reverse ?? "reverse" !! "noreverse") if $reverse.defined;
     @args.push($writeback ?? "writeback" !! "nowriteback") if $writeback.defined;
     @args.push($extend ?? "extend" !! "noextend") if $extend.defined;
-    @args.join(" ");
+    @args.grep(* ne "").join(" ");
 }
 
 multi method xrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend, :&writer? = -> $msg { self.command: $msg }) {
@@ -545,7 +545,7 @@ method !anytics(:$axis, :$border, Bool :$mirror,
     @args.push("geographic") if $geographic.defined;
     @args.push("rangelimited") if $rangelimited.defined;
     @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
-    @args.join(" ")
+    @args.grep(* ne "").join(" ")
 }
 
 method xtics(:$axis, :$border, Bool :$mirror,
@@ -768,7 +768,7 @@ method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin,
         @args.push("maxrows auto") if $maxrows eq "auto";
     }
 
-    &writer(sprintf("set key %s", @args.join(" ")));
+    &writer(sprintf("set key %s", @args.grep(* ne "").join(" ")));
 }
 
 method border(:$integer, :$front, :$back, :$behind,
@@ -782,7 +782,7 @@ method border(:$integer, :$front, :$back, :$behind,
     @args.push("linestyle " ~ $linestyle) if $linestyle.defined;
     @args.push("linetype " ~ $linetype) if $linetype.defined;
 
-    &writer(sprintf("set border %s", @args.join(" ")));
+    &writer(sprintf("set border %s", @args.grep(* ne "").join(" ")));
 }
 
 method grid(:$xtics, :$ytics, :$ztics, :$x2tics, :$y2tics, :$cbtics,
@@ -809,7 +809,7 @@ method grid(:$xtics, :$ytics, :$ztics, :$x2tics, :$y2tics, :$cbtics,
     @args.push("linetype " ~ @linetype[1]) if @linetype.elems == 2;
     @args.push("linewidth " ~ @linewidth[1]) if @linewidth.elems == 2;
 
-    &writer(sprintf("set grid %s", @args.join(" ")));
+    &writer(sprintf("set grid %s", @args.grep(* ne "").join(" ")));
 }
 
 method timestamp(:$format, :$top, :$bottom, Bool :$rotate,
@@ -834,7 +834,7 @@ method timestamp(:$format, :$top, :$bottom, Bool :$rotate,
 
     @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
 
-    &writer(sprintf("set timestamp %s", @args.join(" ")));
+    &writer(sprintf("set timestamp %s", @args.grep(* ne "").join(" ")));
 }
 
 method !anyobject(:$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
@@ -850,7 +850,7 @@ method !anyobject(:$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillsty
     @args.push("default") if $default.defined;
     @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
     @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
-    @args.join(" ");
+    @args.grep(* ne "").join(" ");
 }
 
 multi method rectangle(:$index, :$from, :$to,
@@ -861,7 +861,7 @@ multi method rectangle(:$index, :$from, :$to,
     @args.push(self!tweak-coordinate(:name("from"), :coordinate($from)));
     @args.push(self!tweak-coordinate(:name("to"), :coordinate($to)));
 
-    &writer(sprintf("set object %d rectangle %s %s", $index, @args.join(" "),
+    &writer(sprintf("set object %d rectangle %s %s", $index, @args.grep(* ne "").join(" "),
                     self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
                                    :$default, :$linewidth, :$dashtype)));
            }
@@ -874,7 +874,7 @@ multi method rectangle(:$index, :$from, :$rto,
     @args.push(self!tweak-coordinate(:name("from"), :coordinate($from)));
     @args.push(self!tweak-coordinate(:name("rto"), :coordinate($rto)));
 
-    &writer(sprintf("set object %d rectangle %s %s", $index, @args.join(" "),
+    &writer(sprintf("set object %d rectangle %s %s", $index, @args.grep(* ne "").join(" "),
                     self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
                                    :$default, :$linewidth, :$dashtype)));
            }
@@ -885,7 +885,7 @@ method ellipse(:$index, :center(:$at), :$w, :$h,
     my @args;
     @args.push(self!tweak-coordinate(:name("at"), :coordinate($at)));
 
-    &writer(sprintf("set object %d ellipse %s size %d,%d %s", $index, @args.join(" "), $w, $h,
+    &writer(sprintf("set object %d ellipse %s size %d,%d %s", $index, @args.grep(* ne "").join(" "), $w, $h,
                     self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
                                    :$default, :$linewidth, :$dashtype)));
 }
@@ -896,7 +896,7 @@ method circle(:$index, :center(:$at), :$radius,
     my @args;
     @args.push(self!tweak-coordinate(:name("at"), :coordinate($at)));
     
-    &writer(sprintf("set object %d circle %s size %d %s", $index, @args.join(" "), $radius,
+    &writer(sprintf("set object %d circle %s size %d %s", $index, @args.grep(* ne "").join(" "), $radius,
                     self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
                                    :$default, :$linewidth, :$dashtype)));
 }
@@ -907,7 +907,7 @@ method polygon(:$index, :$from, :@to,
     my @args;
     @args.push(self!tweak-coordinate(:name("from"), :coordinate($from)));
  
-    &writer(sprintf("set object %d polygon %s %s %s", $index, @args.join(" "),
+    &writer(sprintf("set object %d polygon %s %s %s", $index, @args.grep(* ne "").join(" "),
                     @to.map(-> $c { self!tweak-coordinate(:coordinate($c), :name("to")) }).join(" "),
                     self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
                                    :$default, :$linewidth, :$dashtype)));
@@ -923,7 +923,7 @@ method title(:$text, :$offset, :$font-name, :$font-size, :tc(:$textcolor), :$col
     @args.push("colorspec " ~ $colorspec) if $colorspec.defined;
     @args.push($enhanced ?? "enhanced" !! "noenhanced") if $enhanced.defined;
 
-    &writer(sprintf("set title %s", @args.join(" ")));
+    &writer(sprintf("set title %s", @args.grep(* ne "").join(" ")));
 }
 
 multi method arrow(:$tag, :$from, :$to, Bool :$head, :$backhead, :$heads,
@@ -959,7 +959,7 @@ multi method arrow(:$tag, :$from, :$to, Bool :$head, :$backhead, :$heads,
     @args.push("linecolor " ~ $linecolor) if $linecolor.defined;
     @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
 
-    &writer(sprintf("set arrow %s", @args.join(" ")));
+    &writer(sprintf("set arrow %s", @args.grep(* ne "").join(" ")));
 }
 
 multi method arrow(:$tag, :$from, :$rto, Bool :$head, :$backhead, :$heads,
@@ -995,7 +995,7 @@ multi method arrow(:$tag, :$from, :$rto, Bool :$head, :$backhead, :$heads,
     @args.push("linecolor " ~ $linecolor) if $linecolor.defined;
     @args.push("dashtype " ~ $dashtype) if $dashtype.defined;
 
-    &writer(sprintf("set arrow %s", @args.join(" ")));
+    &writer(sprintf("set arrow %s", @args.grep(* ne "").join(" ")));
 }
 
 method multiplot(:$title, :$font, Bool :$enhanced, :@layout, :$rowsfirst, :$columnsfirst,
@@ -1029,7 +1029,7 @@ method multiplot(:$title, :$font, Bool :$enhanced, :@layout, :$rowsfirst, :$colu
     @spacing-args.push($spacing-y) if $spacing-x.defined and $spacing-y.defined;
     @args.push("spacing " ~ @spacing-args.join(","));
 
-    &writer(sprintf("set multiplot %s", @args.join(" ")));
+    &writer(sprintf("set multiplot %s", @args.grep(* ne "").join(" ")));
 }
 
 method dispose {
