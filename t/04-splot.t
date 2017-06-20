@@ -36,3 +36,5 @@ sub comp(@lhs, @rhs) returns Bool {
     my @expected = rx:s/\$mydata<[\d]>+ \<\< EOD/, '1 1 1', '2 2 2', '3 3 3', 'EOD', 'set terminal svg', 'set output "actual-xyz.svg"', rx:s/splot \$mydata<[\d]>+/;
     ok comp(@actual, @expected), 'Given :verteices([$[1,1,1],$[2,2,2],$[3,3,3]]) as an argument, then Chart::Gnuplot.splot should plot a xyz graph.';
 }
+
+done-testing;
