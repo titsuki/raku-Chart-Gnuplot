@@ -252,3 +252,5 @@ sub comp(@lhs, @rhs) returns Bool {
     my @expected = 'set xlabel "mylabel" rotate by 90';
     is @actual, @expected, 'Given :label, :rotate as arguments, then Chart::Gnuplot.xlabel should set these properties.';
 }
+
+done-testing;
