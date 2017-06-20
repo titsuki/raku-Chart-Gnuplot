@@ -561,7 +561,7 @@ method xtics(:$axis, :$border, Bool :$mirror,
              :$rangelimited,
              :$textcolor, :&writer? = -> $msg { self.command: $msg }
             ) {
-    self.command: sprintf("set xtics %s", self!anytics(:$axis, :$border, :$mirror,
+    &writer(sprintf("set xtics %s", self!anytics(:$axis, :$border, :$mirror,
                                                            :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, :$rotate, :$offset,
                                                            :$left, :$right, :$center, :$autojustify,
                                                            :$add,
@@ -572,7 +572,7 @@ method xtics(:$axis, :$border, Bool :$mirror,
                                                            :$format, :$font-name, :$font-size, :$enhanced,
                                                            :$numeric, :$timedate, :$geographic,
                                                            :$rangelimited,
-                                                           :$textcolor));
+                                                           :$textcolor)));
 }
 
 method ytics(:$axis, :$border, Bool :$mirror,
