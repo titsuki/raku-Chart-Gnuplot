@@ -98,3 +98,5 @@ sub comp(@lhs, @rhs) returns Bool {
     my @expected = 'set timestamp "%d" textcolor rgb "blue"';
     is @actual, @expected, 'Given :format, :textcolor as arguments, then Chart::Gnuplot.timestamp should set these properties.';
 }
+
+done-testing;

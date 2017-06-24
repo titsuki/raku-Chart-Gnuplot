@@ -127,3 +127,4 @@ sub comp(@lhs, @rhs) returns Bool {
     is @actual, @expected, 'Given :linetype as arguments, then Chart::Gnuplot.grid should set these properties.';
 }
 
+done-testing;

@@ -26,3 +26,5 @@ sub comp(@lhs, @rhs) returns Bool {
     my @expected = 'set object 1 polygon from graph 0,graph 0 to graph 1,graph 1';
     is @actual, @expected, 'Given :index, :from, :to as arguments, then Chart::Gnuplot.polygon should set these properties.';
 }
+
+done-testing;

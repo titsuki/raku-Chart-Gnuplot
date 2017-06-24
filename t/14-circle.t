@@ -26,3 +26,5 @@ sub comp(@lhs, @rhs) returns Bool {
     my @expected = 'set object 1 circle at graph 1,graph 1 size 3';
     is @actual, @expected, 'Given :index, :center, :radius as arguments, then Chart::Gnuplot.circle should set these properties.';
 }
+
+done-testing;

@@ -44,3 +44,5 @@ sub comp(@lhs, @rhs) returns Bool {
     my @expected = 'set multiplot title "Perl6 is fun" layout 2,2';
     is @actual, @expected, 'Given :title, :layout as arguments, then Chart::Gnuplot.multiplot should set these properties.';
 }
+
+done-testing;

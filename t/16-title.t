@@ -26,3 +26,5 @@ sub comp(@lhs, @rhs) returns Bool {
     my @expected = 'set title "Perl6 is fun"';
     is @actual, @expected, 'Given :text as arguments, then Chart::Gnuplot.title should set these properties.';
 }
+
+done-testing;

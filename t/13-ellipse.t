@@ -26,3 +26,5 @@ sub comp(@lhs, @rhs) returns Bool {
     my @expected = 'set object 1 ellipse at graph 1,graph 1 size 1,1';
     is @actual, @expected, 'Given :index, :center, :w, :h as arguments, then Chart::Gnuplot.ellipse should set these properties.';
 }
+
+done-testing;
