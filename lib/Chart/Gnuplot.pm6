@@ -786,16 +786,24 @@ method border(:$integer, :$front, :$back, :$behind,
     &writer(sprintf("set border %s", @args.grep(* ne "").join(" ")));
 }
 
-method grid(:$xtics, :$ytics, :$ztics, :$x2tics, :$y2tics, :$cbtics,
+method grid(Bool :$xtics, TrueOnly :$mxtics, Bool :$ytics, TrueOnly :$mytics, Bool :$ztics, TrueOnly :$mztics, Bool :$x2tics, TrueOnly :$mx2tics, Bool :$y2tics, TrueOnly :$my2tics, Bool :$cbtics, TrueOnly :$mcbtics,
             :$polar, :$layerdefault, :$front, :$back,
             :ls(:@linestyle), :lt(:@linetype), :lw(:@linewidth), :&writer? = -> $msg { self.command: $msg }) {
     my @args;
-    @args.push($xtics) if $xtics.defined;
-    @args.push($ytics) if $ytics.defined;
-    @args.push($ztics) if $ztics.defined;
-    @args.push($x2tics) if $x2tics.defined;
-    @args.push($y2tics) if $y2tics.defined;
-    @args.push($cbtics) if $cbtics.defined;
+    @args.push($xtics ?? "xtics" !! "noxtics") if $xtics.defined;
+    @args.push("mxtics") if $mxtics.defined;
+    @args.push($ytics ?? "ytics" !! "noytics") if $ytics.defined;
+    @args.push("mytics") if $mytics.defined;
+    @args.push($ztics ?? "ztics" !! "noztics") if $ztics.defined;
+    @args.push("mztics") if $mztics.defined;
+
+    @args.push($x2tics ?? "x2tics" !! "nox2tics") if $x2tics.defined;
+    @args.push("mx2tics") if $mx2tics.defined;
+    @args.push($y2tics ?? "y2tics" !! "noy2tics") if $y2tics.defined;
+    @args.push("my2tics") if $my2tics.defined;
+    @args.push($cbtics ?? "cbtics" !! "nocbtics") if $cbtics.defined;
+    @args.push("mcbtics") if $mcbtics.defined;
+
     @args.push("polar " ~ $polar) if $polar.defined;
     @args.push("layerdefault") if $layerdefault.defined;
     @args.push("front") if $front.defined;
