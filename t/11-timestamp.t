@@ -59,7 +59,7 @@ sub comp(@lhs, @rhs) returns Bool {
     my @actual;
     $gnu.timestamp(:format('%d'), :offset("graph" => 1), :writer(-> $msg { @actual.push($msg); }));
     $gnu.dispose;
-    my @expected = 'set timestamp "%d" graph 1';
+    my @expected = 'set timestamp "%d" offset graph 1';
     is @actual, @expected, 'Given :format, :offset(Pair) as arguments, then Chart::Gnuplot.timestamp should set these properties.';
 }
 
