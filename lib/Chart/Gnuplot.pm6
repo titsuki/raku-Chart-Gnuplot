@@ -777,7 +777,7 @@ method border(:$integer, :$front, :$back, :$behind,
     @args.push($integer) if $integer.defined;
     @args.push("front") if $front.defined;
     @args.push("back") if $back.defined;
-    @args.push("begind") if $behind.defined;
+    @args.push("behind") if $behind.defined;
     @args.push("linewidth " ~ $linewidth) if $linewidth.defined;
     @args.push("linestyle " ~ $linestyle) if $linestyle.defined;
     @args.push("linetype " ~ $linetype) if $linetype.defined;
