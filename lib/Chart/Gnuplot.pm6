@@ -13,6 +13,7 @@ has $!promise;
 has @!msg-pool;
 
 my subset FalseOnly of Bool where { if not $_.defined { True } else { $_ == False } }
+my subset TrueOnly of Bool where { if not $_.defined { True } else { $_ == True } }
 
 submethod BUILD(:$!terminal!, Str :$!filename, :$!persist = True, :$!debug = False) {
     my $HOME = qq:x/echo \$HOME/.subst(/\s*/,"",:g);
