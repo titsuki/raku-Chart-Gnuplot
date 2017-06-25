@@ -856,18 +856,17 @@ method !anyobject(:$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillsty
     @args.grep(* ne "").join(" ");
 }
 
-multi method rectangle(:$index, :$from, :$to,
+multi method rectangle(:$index!, :$from, :$to,
                        :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
                        :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }) {
 
     my @args;
     @args.push(self!tweak-coordinate(:name("from"), :coordinate($from)));
     @args.push(self!tweak-coordinate(:name("to"), :coordinate($to)));
-
-    &writer(sprintf("set object %d rectangle %s %s", $index, @args.grep(* ne "").join(" "),
-                    self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
-                                   :$default, :$linewidth, :$dashtype)));
-           }
+    @args.push(self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
+                              :$default, :$linewidth, :$dashtype));
+    &writer(sprintf("set object %d rectangle %s", $index, @args.grep(* ne "").join(" ")))
+}
 
 multi method rectangle(:$index, :$from, :$rto,
                        :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
@@ -876,32 +875,32 @@ multi method rectangle(:$index, :$from, :$rto,
     my @args;
     @args.push(self!tweak-coordinate(:name("from"), :coordinate($from)));
     @args.push(self!tweak-coordinate(:name("rto"), :coordinate($rto)));
+    @args.push(self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
+                              :$default, :$linewidth, :$dashtype));
+    &writer(sprintf("set object %d rectangle %s", $index, @args.grep(* ne "").join(" ")));
+}
 
-    &writer(sprintf("set object %d rectangle %s %s", $index, @args.grep(* ne "").join(" "),
-                    self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
-                                   :$default, :$linewidth, :$dashtype)));
-           }
-
-method ellipse(:$index, :center(:$at), :$w, :$h,
+method ellipse(:$index, :center(:$at), :$w!, :$h!,
                :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
                :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
     @args.push(self!tweak-coordinate(:name("at"), :coordinate($at)));
-
-    &writer(sprintf("set object %d ellipse %s size %d,%d %s", $index, @args.grep(* ne "").join(" "), $w, $h,
-                    self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
-                                   :$default, :$linewidth, :$dashtype)));
+    @args.push(sprintf("size %s,%s", $w, $h));
+    @args.push(self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
+                              :$default, :$linewidth, :$dashtype));
+    &writer(sprintf("set object %d ellipse %s", $index, @args.grep(* ne "").join(" ")));
 }
 
-method circle(:$index, :center(:$at), :$radius,
+method circle(:$index, :center(:$at), :$radius!,
               :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
               :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
     @args.push(self!tweak-coordinate(:name("at"), :coordinate($at)));
+    @args.push(sprintf("size %s", $radius));
+    @args.push(self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
+                              :$default, :$linewidth, :$dashtype));
     
-    &writer(sprintf("set object %d circle %s size %d %s", $index, @args.grep(* ne "").join(" "), $radius,
-                    self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
-                                   :$default, :$linewidth, :$dashtype)));
+    &writer(sprintf("set object %d circle %s", $index, @args.grep(* ne "").join(" ")));
 }
 
 method polygon(:$index, :$from, :@to,
@@ -909,11 +908,10 @@ method polygon(:$index, :$from, :@to,
                :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
     @args.push(self!tweak-coordinate(:name("from"), :coordinate($from)));
- 
-    &writer(sprintf("set object %d polygon %s %s %s", $index, @args.grep(* ne "").join(" "),
-                    @to.map(-> $c { self!tweak-coordinate(:coordinate($c), :name("to")) }).join(" "),
-                    self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
-                                   :$default, :$linewidth, :$dashtype)));
+    @args.push(@to.map(-> $c { self!tweak-coordinate(:coordinate($c), :name("to")) }).join(" "));
+    @args.push(self!anyobject(:$front, :$back, :$behind, :$clip, :$fillcolor, :$fillstyle,
+                              :$default, :$linewidth, :$dashtype));
+    &writer(sprintf("set object %d polygon %s", $index, @args.grep(* ne "").join(" ")));
 }
 
 method title(:$text, :$offset, :$font-name, :$font-size, :tc(:$textcolor), :$colorspec, Bool :$enhanced, :&writer? = -> $msg { self.command: $msg }) {
