@@ -45,4 +45,13 @@ sub comp(@lhs, @rhs) returns Bool {
     is @actual, @expected, 'Given :title, :layout as arguments, then Chart::Gnuplot.multiplot should set these properties.';
 }
 
+{
+    my $gnu = Chart::Gnuplot.new(:terminal("svg"), :filename("actual.svg"));
+    my @actual;
+    $gnu.multiplot(:title("Perl6 is fun"), :offset("graph" => 0), :writer(-> $msg { @actual.push($msg); }));
+    $gnu.dispose;
+    my @expected = 'set multiplot title "Perl6 is fun" offset graph 0';
+    is @actual, @expected, 'Given :title, :offset as arguments, then Chart::Gnuplot.multiplot should set these properties.';
+}
+
 done-testing;
