@@ -24,7 +24,7 @@ sub comp(@lhs, @rhs) returns Bool {
     $gnu.border(:integer(8), :front, :writer(-> $msg { @actual.push($msg); }));
     $gnu.dispose;
     my @expected = 'set border 8 front';
-    is @actual, @expected, 'Given :integer, :front as arguments, then Chart::Gnuplot.legend should set these properties.';
+    is @actual, @expected, 'Given :integer, :front as arguments, then Chart::Gnuplot.border should set these properties.';
 }
 
 
@@ -34,7 +34,7 @@ sub comp(@lhs, @rhs) returns Bool {
     $gnu.border(:integer(8), :back, :writer(-> $msg { @actual.push($msg); }));
     $gnu.dispose;
     my @expected = 'set border 8 back';
-    is @actual, @expected, 'Given :integer, :back as arguments, then Chart::Gnuplot.legend should set these properties.';
+    is @actual, @expected, 'Given :integer, :back as arguments, then Chart::Gnuplot.border should set these properties.';
 }
 
 {
@@ -43,7 +43,7 @@ sub comp(@lhs, @rhs) returns Bool {
     $gnu.border(:integer(8), :behind, :writer(-> $msg { @actual.push($msg); }));
     $gnu.dispose;
     my @expected = 'set border 8 behind';
-    is @actual, @expected, 'Given :integer, :behind as arguments, then Chart::Gnuplot.legend should set these properties.';
+    is @actual, @expected, 'Given :integer, :behind as arguments, then Chart::Gnuplot.border should set these properties.';
 }
 
 {
@@ -52,7 +52,7 @@ sub comp(@lhs, @rhs) returns Bool {
     $gnu.border(:integer(8), :linewidth(5), :writer(-> $msg { @actual.push($msg); }));
     $gnu.dispose;
     my @expected = 'set border 8 linewidth 5';
-    is @actual, @expected, 'Given :integer, :linewidth as arguments, then Chart::Gnuplot.legend should set these properties.';
+    is @actual, @expected, 'Given :integer, :linewidth as arguments, then Chart::Gnuplot.border should set these properties.';
 }
 
 {
@@ -61,7 +61,7 @@ sub comp(@lhs, @rhs) returns Bool {
     $gnu.border(:integer(8), :linestyle(1), :writer(-> $msg { @actual.push($msg); }));
     $gnu.dispose;
     my @expected = 'set border 8 linestyle 1';
-    is @actual, @expected, 'Given :integer, :linestyle as arguments, then Chart::Gnuplot.legend should set these properties.';
+    is @actual, @expected, 'Given :integer, :linestyle as arguments, then Chart::Gnuplot.border should set these properties.';
 }
 
 {
@@ -70,7 +70,7 @@ sub comp(@lhs, @rhs) returns Bool {
     $gnu.border(:integer(8), :linetype(1), :writer(-> $msg { @actual.push($msg); }));
     $gnu.dispose;
     my @expected = 'set border 8 linetype 1';
-    is @actual, @expected, 'Given :integer, :linetype as arguments, then Chart::Gnuplot.legend should set these properties.';
+    is @actual, @expected, 'Given :integer, :linetype as arguments, then Chart::Gnuplot.border should set these properties.';
 }
 
 done-testing;
