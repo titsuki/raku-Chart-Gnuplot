@@ -833,13 +833,7 @@ method timestamp(:$format, :$top, :$bottom, Bool :$rotate,
     @args.push($rotate ?? "rotate" !! "norotate") if $rotate.defined;
 
     @args.push(self!tweak-coordinate(:name("offset"), :coordinate($offset))) if $offset.defined;
-
-    my @font;
-    if $font-name.defined {
-        @font.push($font-name);
-        @font.push($font-size) if $font-size.defined;
-        @args.push(sprintf("font \"%s\"", @font.join(",")));
-    }
+    @args.push(self!tweak-fontargs(:$font-name, :$font-size));
 
     @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
 
