@@ -1001,36 +1001,23 @@ multi method arrow(:$tag, :$from, :$rto, Bool :$head, :$backhead, :$heads,
     &writer(sprintf("set arrow %s", @args.grep(* ne "").join(" ")));
 }
 
-method multiplot(:$title, :$font, Bool :$enhanced, :@layout, :$rowsfirst, :$columnsfirst,
-                 :$downwards, :$upwards, :$scale-x, :$scale-y, :$offset-x, :$offset-y, :@margins,
-                 :$spacing-x, :$spacing-y, :&writer = -> $msg { self.command: $msg }) {
+method multiplot(:$title, :$font-name, :$font-size, Bool :$enhanced, :@layout, :$rowsfirst, :$columnsfirst,
+                 :$downwards, :$upwards, :$scale, :$offset, :$margins,
+                 :$spacing, :&writer = -> $msg { self.command: $msg }) {
     my @args;
 
-    @args.push("title " ~ $title) if $title.defined;
-    @args.push("font " ~ $font) if $font.defined;
+    @args.push(sprintf("title \"%s\"", $title)) if $title.defined;
+    @args.push(self!tweak-fontargs(:$font-name, :$font-size));
     @args.push($enhanced ?? "enhanced" !! "noenhanced") if $enhanced.defined;
     @args.push("layout " ~ @layout.join(",")) if @layout.elems > 0;
     @args.push("rowsfirst") if $rowsfirst.defined;
     @args.push("columnsfirst") if $columnsfirst.defined;
     @args.push("downwards") if $downwards.defined;
     @args.push("upwards") if $upwards.defined;
-
-    my @scale-args;
-    @scale-args.push($scale-x) if $scale-x.defined;
-    @scale-args.push($scale-y) if $scale-x.defined and $scale-y.defined;
-    @args.push("scale " ~ @scale-args.join(","));
-
-    my @off-args;
-    @off-args.push($offset-x) if $offset-x.defined;
-    @off-args.push($offset-y) if $offset-x.defined and $offset-y.defined;
-    @args.push("offset " ~ @off-args.join(","));
-
-    @args.push("margins " ~ @margins.join(",")) if @margins.elems == 4;
-
-    my @spacing-args;
-    @spacing-args.push($spacing-x) if $spacing-x.defined;
-    @spacing-args.push($spacing-y) if $spacing-x.defined and $spacing-y.defined;
-    @args.push("spacing " ~ @spacing-args.join(","));
+    @args.push("scale " ~ $scale.join(",")) if $scale.defined;
+    @args.push(self!tweak-coordinate(:name("offset"), :coordinate($offset)));
+    @args.push("margins " ~ $margins.join(",")) if $margins.elems == 4;
+    @args.push("spacing " ~ $spacing.join(",")) if $spacing.defined;
 
     &writer(sprintf("set multiplot %s", @args.grep(* ne "").join(" ")));
 }
