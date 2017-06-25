@@ -731,7 +731,7 @@ method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin,
     @args.push("rmargin") if $rmargin.defined;
     @args.push("tmargin") if $tmargin.defined;
     @args.push("bmargin") if $bmargin.defined;
-    @args.push(sprintf("at %s", $at)) if $at.defined;
+    @args.push(self!tweak-coordinate(:name("at"), :coordinate($at)));
     @args.push("left") if $left.defined;
     @args.push("right") if $right.defined;
     @args.push("top") if $top.defined;
