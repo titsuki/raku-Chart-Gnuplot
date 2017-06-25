@@ -299,8 +299,8 @@ method label(:$tag, :$label-text, :$at, :$left, :$center, :$right,
 
     if $rotate.defined {
         given $rotate {
+            when $_ ~~ Bool and $_ == False { @args.push("norotate") }
             when * ~~ Real { @args.push("rotate by $rotate") }
-            when * == False { @args.push("norotate") }
             default { die "Error: Something went wrong." }
         }
     }
@@ -338,9 +338,9 @@ method !anylabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, B
     
     if $rotate.defined {
         given $rotate {
+            when $_ ~~ Bool and $_ == False { @args.push("norotate") }
             when * ~~ Real { @args.push("rotate by $rotate") }
             when * eq "parallel" { @args.push("rotate parallel") }
-            when * == False { @args.push("norotate") }
             default { die "Error: Something went wrong." }
         }
     }
@@ -496,8 +496,8 @@ method !anytics(:$axis, :$border, Bool :$mirror,
     
     if $rotate.defined {
         given $rotate {
+            when $_ ~~ Bool and $_ == False { @args.push("norotate") }
             when * ~~ Real { @args.push("rotate by $rotate") }
-            when * == False { @args.push("norotate") }
             default { die "Error: Something went wrong." }
         }
     }

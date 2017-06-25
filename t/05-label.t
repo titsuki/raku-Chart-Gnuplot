@@ -202,6 +202,24 @@ sub comp(@lhs, @rhs) returns Bool {
 {
     my $gnu = Chart::Gnuplot.new(:terminal("svg"), :filename("actual.svg"));
     my @actual;
+    $gnu.xlabel(:label("mylabel"), :rotate(False), :writer(-> $msg { @actual.push($msg); }));
+    $gnu.dispose;
+    my @expected = 'set xlabel "mylabel" norotate';
+    is @actual, @expected, 'Given :label, :rotate(False) as arguments, then Chart::Gnuplot.xlabel should set these properties.';
+}
+
+{
+    my $gnu = Chart::Gnuplot.new(:terminal("svg"), :filename("actual.svg"));
+    my @actual;
+    $gnu.xlabel(:label("mylabel"), :rotate(90), :writer(-> $msg { @actual.push($msg); }));
+    $gnu.dispose;
+    my @expected = 'set xlabel "mylabel" rotate by 90';
+    is @actual, @expected, 'Given :label, :rotate(90) as arguments, then Chart::Gnuplot.xlabel should set these properties.';
+}
+
+{
+    my $gnu = Chart::Gnuplot.new(:terminal("svg"), :filename("actual.svg"));
+    my @actual;
     $gnu.xlabel(:label("mylabel"), :offset(["graph" => 1, "graph" => 1]), :writer(-> $msg { @actual.push($msg); }));
     $gnu.dispose;
     my @expected = 'set xlabel "mylabel" offset graph 1,graph 1';

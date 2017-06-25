@@ -18,6 +18,23 @@ sub comp(@lhs, @rhs) returns Bool {
     True
 }
 
+{
+    my $gnu = Chart::Gnuplot.new(:terminal("svg"), :filename("actual.svg"));
+    my @actual;
+    $gnu.xtics(:axis, :rotate(False), :writer(-> $msg { @actual.push($msg); }));
+    $gnu.dispose;
+    my @expected = 'set xtics axis norotate';
+    is @actual, @expected, 'Given :axis, :rotate(False) as arguments, then Chart::Gnuplot.xtics should set these properties.';
+}
+
+{
+    my $gnu = Chart::Gnuplot.new(:terminal("svg"), :filename("actual.svg"));
+    my @actual;
+    $gnu.xtics(:axis, :rotate(90), :writer(-> $msg { @actual.push($msg); }));
+    $gnu.dispose;
+    my @expected = 'set xtics axis rotate by 90';
+    is @actual, @expected, 'Given :axis, :rotate(90) as arguments, then Chart::Gnuplot.xtics should set these properties.';
+}
 
 {
     my $gnu = Chart::Gnuplot.new(:terminal("svg"), :filename("actual.svg"));
