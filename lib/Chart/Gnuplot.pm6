@@ -825,17 +825,14 @@ method grid(Bool :$xtics, TrueOnly :$mxtics, Bool :$ytics, TrueOnly :$mytics, Bo
 }
 
 method timestamp(:$format, :$top, :$bottom, Bool :$rotate,
-                 :$offset-x, :$offset-y, :$font-name, :$font-size, :$textcolor, :&writer? = -> $msg { self.command: $msg }) {
+                 :$offset, :$font-name, :$font-size, :$textcolor, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
     @args.push(sprintf("\"%s\"", $format)) if $format.defined;
     @args.push("top") if $top.defined;
     @args.push("bottom") if $bottom.defined;
     @args.push($rotate ?? "rotate" !! "norotate") if $rotate.defined;
 
-    my @off-args;
-    @off-args.push($offset-x) if $offset-x.defined;
-    @off-args.push($offset-y) if $offset-x.defined and $offset-y.defined;
-    @args.push(sprintf("offset %s", @off-args.join(","))) if @off-args.elems > 0;
+    @args.push(self!tweak-coordinate(:name("offset"), :coordinate($offset))) if $offset.defined;
 
     my @font;
     if $font-name.defined {

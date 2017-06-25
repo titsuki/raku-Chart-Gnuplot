@@ -57,19 +57,19 @@ sub comp(@lhs, @rhs) returns Bool {
 {
     my $gnu = Chart::Gnuplot.new(:terminal("svg"), :filename("actual.svg"));
     my @actual;
-    $gnu.timestamp(:format('%d'), :offset-x("graph" => 1), :writer(-> $msg { @actual.push($msg); }));
+    $gnu.timestamp(:format('%d'), :offset("graph" => 1), :writer(-> $msg { @actual.push($msg); }));
     $gnu.dispose;
     my @expected = 'set timestamp "%d" graph 1';
-    is @actual, @expected, 'Given :format, :offset-x as arguments, then Chart::Gnuplot.timestamp should set these properties.';
+    is @actual, @expected, 'Given :format, :offset(Pair) as arguments, then Chart::Gnuplot.timestamp should set these properties.';
 }
 
 {
     my $gnu = Chart::Gnuplot.new(:terminal("svg"), :filename("actual.svg"));
     my @actual;
-    $gnu.timestamp(:format('%d'), :offset-x("graph" => 1), :offset-y("graph" => 1), :writer(-> $msg { @actual.push($msg); }));
+    $gnu.timestamp(:format('%d'), :offset(["graph" => 1, "graph" => 1]), :writer(-> $msg { @actual.push($msg); }));
     $gnu.dispose;
-    my @expected = 'set timestamp "%d" graph 1 , graph 1';
-    is @actual, @expected, 'Given :format, :offset-x, :offset-y as arguments, then Chart::Gnuplot.timestamp should set these properties.';
+    my @expected = 'set timestamp "%d" offset graph 1,graph 1';
+    is @actual, @expected, 'Given :format, :offset(List) as arguments, then Chart::Gnuplot.timestamp should set these properties.';
 }
 
 {
