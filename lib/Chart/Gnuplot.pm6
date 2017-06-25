@@ -58,7 +58,7 @@ method !tweak-coordinate(Mu :$coordinate!, :$name!, :$enable-nooffset = False, I
         given $coordinate {
             when * ~~ FalseOnly and $enable-nooffset { $coordinate-str = "nooffset" }
             when * ~~ Pair {
-                $coordinate-str = sprintf("%s %s", $_.key, $_.value);
+                $coordinate-str = ($name, sprintf("%s %s", $_.key, $_.value)).join(" ");
             }
             when * ~~ List {
                 if $upper-bound.defined and $coordinate.elems > $upper-bound {
