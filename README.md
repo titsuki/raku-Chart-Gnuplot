@@ -23,7 +23,7 @@ SYNOPSIS
 DESCRIPTION
 ===========
 
-Chart::Gnuplot is a Perl 6 bindings for gnuplot. Chart::Gnuplot runs `gnuplot` using `Proc::Async` and enables you to plot chart or graph with Perl6ish interface.
+Chart::Gnuplot is a Perl 6 naive bindings for gnuplot. Chart::Gnuplot runs `gnuplot` using `Proc::Async` and enables you to plot chart or graph with Perl6ish interface.
 
 METHODS
 -------
