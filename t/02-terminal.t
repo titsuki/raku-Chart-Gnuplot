@@ -4,10 +4,9 @@ use Chart::Gnuplot;
 use IO::Capture::Simple;
 
 {
-	my $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("sample.png"), :debug);
-    my $msg = capture_stderr({ $gnu.terminal("png"); });
-    $msg.say;
-    nok $msg ~~ /unknown/, "Chart::Gnuplot.terminal should accept \"png\" as an argument.";
+	my $gnu = Chart::Gnuplot.new(:terminal("svg"), :filename("sample.svg"), :debug);
+    my $msg = capture_stderr({ $gnu.terminal("svg"); });
+    nok $msg ~~ /unknown/, "Chart::Gnuplot.terminal should accept \"svg\" as an argument.";
 }
 
 {
