@@ -87,7 +87,7 @@ method !tweak-coordinate(Mu :$coordinate!, :$name!, :$enable-nooffset = False, I
 multi method plot(:$title, :$ignore, :@range, :@vertices!,
                   :@using,
                   Str :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
-                  :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette,
+                  :pt(:$pointtype), :ps(:$pointsize), :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette,
                   :&writer? = -> $msg { self.command: $msg }) {
     my @args;
 
@@ -141,7 +141,7 @@ multi method plot(:$title, :$ignore, :@range, :@vertices!,
 
 multi method plot(:$title, :$ignore, :@range, :$function!,
                   Str :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
-                  :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette,
+                  :pt(:$pointtype), :ps(:$pointsize), :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette,
                   :&writer? = -> $msg { self.command: $msg }) {
     my @args;
 
@@ -190,7 +190,7 @@ multi method splot(:@range,
                    :@vertices!,
                    :$binary, :$matrix, :$index, :$every,
                    :$title, :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
-                   :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette, :&writer? = -> $msg { self.command: $msg }) {
+                   :pt(:$pointtype), :ps(:$pointsize), :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
 
     for @range {
@@ -245,7 +245,7 @@ multi method splot(:@range,
 multi method splot(:@range,
                    :$function!,
                    :$title, :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
-                   :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette, :&writer? = -> $msg { self.command: $msg }) {
+                   :pt(:$pointtype), :ps(:$pointsize), :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
 
     for @range {
