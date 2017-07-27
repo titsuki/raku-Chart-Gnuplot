@@ -6,6 +6,7 @@ use IO::Capture::Simple;
 {
 	my $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("sample.png"), :debug);
     my $msg = capture_stderr({ $gnu.terminal("png"); });
+    $msg.say;
     nok $msg ~~ /unknown/, "Chart::Gnuplot.terminal should accept \"png\" as an argument.";
 }
 
