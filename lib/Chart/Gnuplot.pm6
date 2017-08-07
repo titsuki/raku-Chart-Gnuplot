@@ -84,7 +84,7 @@ method !tweak-coordinate(Mu :$coordinate!, :$name!, :$enable-nooffset = False, I
     $coordinate-str;
 }
 
-multi method plot(:$title, :$ignore, :@range, :@vertices!,
+multi method plot(:$title, :$ignore, :@range, :@vertices!, :$smooth,
                   :@using,
                   Str :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
                   :pt(:$pointtype), :ps(:$pointsize), :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette,
@@ -104,6 +104,7 @@ multi method plot(:$title, :$ignore, :@range, :@vertices!,
 
     @args.push($tmpvariable);
     @args.push("using " ~ @using.join(":")) if @using.elems > 0;
+    @args.push(sprintf("smooth %s", $smooth)) if $smooth.defined;
     @args.push("with " ~ $style) if $style.defined;
 
     if $title.defined {
@@ -114,7 +115,6 @@ multi method plot(:$title, :$ignore, :@range, :@vertices!,
     }
 
     @args.push(sprintf("notitle [%s]", $ignore)) if $ignore.defined;
-
 
     @args.push("linestyle " ~ $linestyle) if $linestyle.defined;
     @args.push("linetype " ~ $linetype) if $linetype.defined;
@@ -139,7 +139,7 @@ multi method plot(:$title, :$ignore, :@range, :@vertices!,
     $!num-plot++;
 }
 
-multi method plot(:$title, :$ignore, :@range, :$function!,
+multi method plot(:$title, :$ignore, :@range, :$function!, :$smooth,
                   Str :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
                   :pt(:$pointtype), :ps(:$pointsize), :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette,
                   :&writer? = -> $msg { self.command: $msg }) {
@@ -159,7 +159,7 @@ multi method plot(:$title, :$ignore, :@range, :$function!,
     }
 
     @args.push(sprintf("notitle [%s]", $ignore)) if $ignore.defined;
-
+    @args.push(sprintf("smooth %s", $smooth)) if $smooth.defined;
     @args.push("with " ~ $style) if $style.defined;
 
     @args.push("linestyle " ~ $linestyle) if $linestyle.defined;
@@ -187,7 +187,7 @@ multi method plot(:$title, :$ignore, :@range, :$function!,
 }
 
 multi method splot(:@range,
-                   :@vertices!,
+                   :@vertices!, :$smooth,
                    :$binary, :$matrix, :$index, :$every,
                    :$title, :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
                    :pt(:$pointtype), :ps(:$pointsize), :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette, :&writer? = -> $msg { self.command: $msg }) {
@@ -218,6 +218,7 @@ multi method splot(:@range,
         }
     }
 
+    @args.push(sprintf("smooth %s", $smooth)) if $smooth.defined;
     @args.push("with " ~ $style) if $style.defined;
 
     @args.push("linestyle " ~ $linestyle) if $linestyle.defined;
@@ -243,7 +244,7 @@ multi method splot(:@range,
 }
 
 multi method splot(:@range,
-                   :$function!,
+                   :$function!, :$smooth,
                    :$title, :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
                    :pt(:$pointtype), :ps(:$pointsize), :$fill, FalseOnly :$hidden3d, FalseOnly :$contours, FalseOnly :$surface, :$palette, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
@@ -261,6 +262,7 @@ multi method splot(:@range,
         }
     }
 
+    @args.push(sprintf("smooth %s", $smooth)) if $smooth.defined;
     @args.push("with " ~ $style) if $style.defined;
 
     @args.push("linestyle " ~ $linestyle) if $linestyle.defined;
@@ -1078,7 +1080,7 @@ Tells gnuplot what kind of output to generate.
 Defined as:
 
         multi method plot(
-                :$title, :$ignore, :@range, :@vertices!,
+                :$title, :$ignore, :@range, :@vertices!, :$smooth,
                 :@using,
                 Str :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
                 :pt(:$pointtype), :ps(:$pointsize), :$fill, FalseOnly :$hidden3d, FalseOnly :$contours,
@@ -1087,7 +1089,7 @@ Defined as:
         )
 
         multi method plot(
-              :$title, :$ignore, :@range, :$function!,
+              :$title, :$ignore, :@range, :$function!, :$smooth,
               Str :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
               :pt(:$pointtype), :ps(:$pointsize), :$fill, FalseOnly :$hidden3d, FalseOnly :$contours,
               FalseOnly :$surface, :$palette,
@@ -1102,7 +1104,7 @@ Defined as:
 
         multi method splot(
               :@range,
-              :@vertices!,
+              :@vertices!, :$smooth,
               :$binary, :$matrix, :$index, :$every,
               :$title, :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
               :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours,
@@ -1111,7 +1113,7 @@ Defined as:
 
         multi method splot(
               :@range,
-              :$function!,
+              :$function!, :$smooth,
               :$title, :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
               :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours,
               FalseOnly :$surface, :$palette, :&writer? = -> $msg { self.command: $msg }

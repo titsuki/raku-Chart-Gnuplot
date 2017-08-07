@@ -41,7 +41,7 @@ Tells gnuplot what kind of output to generate.
 Defined as:
 
     multi method plot(
-            :$title, :$ignore, :@range, :@vertices!,
+            :$title, :$ignore, :@range, :@vertices!, :$smooth,
             :@using,
             Str :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
             :pt(:$pointtype), :ps(:$pointsize), :$fill, FalseOnly :$hidden3d, FalseOnly :$contours,
@@ -50,7 +50,7 @@ Defined as:
     )
 
     multi method plot(
-          :$title, :$ignore, :@range, :$function!,
+          :$title, :$ignore, :@range, :$function!, :$smooth,
           Str :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
           :pt(:$pointtype), :ps(:$pointsize), :$fill, FalseOnly :$hidden3d, FalseOnly :$contours,
           FalseOnly :$surface, :$palette,
@@ -65,7 +65,7 @@ Defined as:
 
     multi method splot(
           :@range,
-          :@vertices!,
+          :@vertices!, :$smooth,
           :$binary, :$matrix, :$index, :$every,
           :$title, :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
           :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours,
@@ -74,7 +74,7 @@ Defined as:
 
     multi method splot(
           :@range,
-          :$function!,
+          :$function!, :$smooth,
           :$title, :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
           :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours,
           FalseOnly :$surface, :$palette, :&writer? = -> $msg { self.command: $msg }
