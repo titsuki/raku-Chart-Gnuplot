@@ -44,7 +44,7 @@ Defined as:
             :$title, :$ignore, :@range, :@vertices!,
             :@using,
             Str :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
-            :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours,
+            :pt(:$pointtype), :ps(:$pointsize), :$fill, FalseOnly :$hidden3d, FalseOnly :$contours,
             FalseOnly :$surface, :$palette,
             :&writer? = -> $msg { self.command: $msg }
     )
@@ -52,7 +52,7 @@ Defined as:
     multi method plot(
           :$title, :$ignore, :@range, :$function!,
           Str :$style, :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor),
-          :$pointtype, :$pointsize, :$fill, FalseOnly :$hidden3d, FalseOnly :$contours,
+          :pt(:$pointtype), :ps(:$pointsize), :$fill, FalseOnly :$hidden3d, FalseOnly :$contours,
           FalseOnly :$surface, :$palette,
           :&writer? = -> $msg { self.command: $msg }
     )
