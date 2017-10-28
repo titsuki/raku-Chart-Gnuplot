@@ -1,12 +1,13 @@
+# The portions of the code are licensed under the Artistic License 2.0:
+# zef ( https://github.com/ugexe/zef ) by ugexe
+
+# Relicensed under the GPL:
+# p6-ChartGnuplot by titsuki
+
 use Zef;
 use Zef::Fetch;
 
 class Build {
-    # The portions of the code are licensed under the Artistic License 2.0:
-    # zef ( https://github.com/ugexe/zef ) by ugexe
-
-    # Relicensed under the GPL:
-    # p6-ChartGnuplot by titsuki
 
     method extract(IO() $archive-file, IO() $extract-to) {
         die "archive file does not exist: {$archive-file.absolute}"
