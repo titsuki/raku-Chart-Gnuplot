@@ -7,6 +7,11 @@ has &!writer;
 
 submethod BUILD(:&!writer) { }
 
+method writer(&writer) {
+    &!writer = &writer;
+    self
+}
+
 method !anyobject(:$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
                   :$default, :$linewidth, :$dashtype, :&writer? = &!writer) {
 

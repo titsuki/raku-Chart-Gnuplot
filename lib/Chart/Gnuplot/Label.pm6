@@ -11,6 +11,11 @@ has &!writer;
 
 submethod BUILD(:&!writer) { }
 
+method writer(&writer) {
+    &!writer = &writer;
+    self
+}
+
 method label(:$tag, :$label-text, :$at, :$left, :$center, :$right,
              LabelRotate :$rotate, :$font-name, :$font-size, FalseOnly :$enhanced,
              :$front, :$back, :$textcolor, FalseOnly :$point, :$line-type, :$point-type, :$point-size, :$offset,

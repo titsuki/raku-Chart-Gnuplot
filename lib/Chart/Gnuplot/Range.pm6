@@ -5,6 +5,11 @@ has &!writer;
 
 submethod BUILD(:&!writer) { }
 
+method writer(&writer) {
+    &!writer = &writer;
+    self
+}
+
 method !anyrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$extend) {
     my @args;
     @args.push(sprintf("[%s:%s]", $min, $max));

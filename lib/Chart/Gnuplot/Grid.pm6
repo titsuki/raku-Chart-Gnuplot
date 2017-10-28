@@ -5,6 +5,11 @@ has &!writer;
 
 submethod BUILD(:&!writer) { }
 
+method writer(&writer) {
+    &!writer = &writer;
+    self
+}
+
 my subset FalseOnly of Bool where { if not $_.defined { True } else { $_ == False } }
 my subset TrueOnly of Bool where { if not $_.defined { True } else { $_ == True } }
 

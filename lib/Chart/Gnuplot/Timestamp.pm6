@@ -7,6 +7,11 @@ has &!writer;
 
 submethod BUILD(:&!writer) { }
 
+method writer(&writer) {
+    &!writer = &writer;
+    self
+}
+
 method timestamp(:$format, :$top, :$bottom, Bool :$rotate,
                  :$offset, :$font-name, :$font-size, :$textcolor, :&writer? = &!writer) {
     my @args;

@@ -7,6 +7,11 @@ has &!writer;
 
 submethod BUILD(:&!writer) { }
 
+method writer(&writer) {
+    &!writer = &writer;
+    self
+}
+
 multi method arrow(
     :$tag, :$from, :$to, Bool :$head, :$backhead, :$heads,
     :$head-length, :$head-angle, :$back-angle,

@@ -7,6 +7,11 @@ has &!writer;
 
 submethod BUILD(:&!writer) { }
 
+method writer(&writer) {
+    &!writer = &writer;
+    self
+}
+
 my subset FalseOnly of Bool where { if not $_.defined { True } else { $_ == False } }
 my subset TrueOnly of Bool where { if not $_.defined { True } else { $_ == True } }
 my subset AnyTicsRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };

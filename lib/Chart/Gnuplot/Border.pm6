@@ -5,6 +5,11 @@ has &!writer;
 
 submethod BUILD(:&!writer) { }
 
+method writer(&writer) {
+    &!writer = &writer;
+    self
+}
+
 method border(:$integer, :$front, :$back, :$behind,
               :lw(:$linewidth), :ls(:$linestyle), :lt(:$linetype), :&writer? = &!writer) {
     my @args;
