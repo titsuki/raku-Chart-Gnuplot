@@ -11,7 +11,20 @@
   "name" : "Chart::Gnuplot",
   "perl" : "6.c",
   "provides" : {
-    "Chart::Gnuplot" : "lib/Chart/Gnuplot.pm6"
+    "Chart::Gnuplot" : "lib/Chart/Gnuplot.pm6",
+    "Chart::Gnuplot::Arrow" : "lib/Chart/Gnuplot/Arrow.pm6",
+    "Chart::Gnuplot::Border" : "lib/Chart/Gnuplot/Border.pm6",
+    "Chart::Gnuplot::Grid" : "lib/Chart/Gnuplot/Grid.pm6",
+    "Chart::Gnuplot::Label" : "lib/Chart/Gnuplot/Label.pm6",
+    "Chart::Gnuplot::Legend" : "lib/Chart/Gnuplot/Legend.pm6",
+    "Chart::Gnuplot::Object" : "lib/Chart/Gnuplot/Object.pm6",
+    "Chart::Gnuplot::Output" : "lib/Chart/Gnuplot/Output.pm6",
+    "Chart::Gnuplot::Range" : "lib/Chart/Gnuplot/Range.pm6",
+    "Chart::Gnuplot::Terminal" : "lib/Chart/Gnuplot/Terminal.pm6",
+    "Chart::Gnuplot::Tics" : "lib/Chart/Gnuplot/Tics.pm6",
+    "Chart::Gnuplot::Timestamp" : "lib/Chart/Gnuplot/Timestamp.pm6",
+    "Chart::Gnuplot::Title" : "lib/Chart/Gnuplot/Title.pm6",
+    "Chart::Gnuplot::Util" : "lib/Chart/Gnuplot/Util.pm6"
   },
   "resources" : [ ],
   "source-url" : "git://github.com/titsuki/p6-Chart-Gnuplot.git",
