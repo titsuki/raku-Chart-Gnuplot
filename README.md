@@ -11,14 +11,34 @@ SYNOPSIS
 ### SOURCE
 
     use Chart::Gnuplot;
+    my $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("histogram.png"));
 
-    my $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("synopsis.png"));
-    $gnu.title(:text("sin(x) curve"));
-    $gnu.plot(:function('sin(x)'));
+    my @data = (q:to/EOF/).split("\n", :skip-empty)>>.split(" ", :skip-empty);
+    Year Male Female
+    1950 100 90
+    1960 100 90
+    1970 80 70
+    1980 130 140
+    1990 140 120
+    2000 200 210
+    2010 240 230
+    2020 400 420
+    EOF
+
+    my ($header, *@body) = @data;
+
+    $gnu.command("set style histogram clustered");
+    $gnu.legend(:left);
+    $gnu.xtics(:tics((@body>>.[0]).pairs.map(-> (:key($pos), :value($year)) { %(:label($year), :pos($pos)) }) ));
+    $gnu.xlabel(:label($header[0]));
+    $gnu.plot(:vertices(@body), :using([2]), :style("histogram"), :title($header[1]), :fill("solid 1.0"));
+    $gnu.plot(:vertices(@body), :using([3]), :style("histogram"), :title($header[2]), :fill("solid 1.0"));
+
+    $gnu.dispose;
 
 ### OUTPUT
 
-<img src="synopsis.png" alt="sin(x)">
+<img src="histogram.png" alt="histogram">
 
 DESCRIPTION
 ===========
@@ -597,10 +617,27 @@ EXAMPLES
     EOF
 
     $gnu.splot(:vertices(@grid), :style("lines"), :title(False), :matrix);
+    $gnu.dispose;
 
 ### OUTPUT
 
 <img src="surface.dem.00.png" alt="3D surface from a grid (matrix) of Z values">
+
+sin(x)
+------
+
+### SOURCE
+
+    use Chart::Gnuplot;
+
+    my $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("sinx.png"));
+    $gnu.title(:text("sin(x) curve"));
+    $gnu.plot(:function('sin(x)'));
+    $gnu.dispose;
+
+### OUTPUT
+
+<img src="sinx.png" alt="sin(x)">
 
 AUTHOR
 ======
