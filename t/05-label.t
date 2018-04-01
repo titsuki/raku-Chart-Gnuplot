@@ -76,10 +76,28 @@ sub comp(@lhs, @rhs) returns Bool {
 {
     my $gnu = Chart::Gnuplot.new(:terminal("svg"), :filename("actual.svg"));
     my @actual;
+    $gnu.label(:label-text("mylabel"), :rotate(1), :writer(-> $msg { @actual.push($msg); }));
+    $gnu.dispose;
+    my @expected = 'set label "mylabel" rotate by 1';
+    is @actual, @expected, 'Given :label-text, :rotate(1) as arguments, then Chart::Gnuplot.label should set these properties.';
+}
+
+{
+    my $gnu = Chart::Gnuplot.new(:terminal("svg"), :filename("actual.svg"));
+    my @actual;
+    $gnu.label(:label-text("mylabel"), :rotate(0), :writer(-> $msg { @actual.push($msg); }));
+    $gnu.dispose;
+    my @expected = 'set label "mylabel" rotate by 0';
+    is @actual, @expected, 'Given :label-text, :rotate(0) as arguments, then Chart::Gnuplot.label should set these properties.';
+}
+
+{
+    my $gnu = Chart::Gnuplot.new(:terminal("svg"), :filename("actual.svg"));
+    my @actual;
     $gnu.label(:label-text("mylabel"), :rotate(90), :writer(-> $msg { @actual.push($msg); }));
     $gnu.dispose;
     my @expected = 'set label "mylabel" rotate by 90';
-    is @actual, @expected, 'Given :label-text, :rotate as arguments, then Chart::Gnuplot.label should set these properties.';
+    is @actual, @expected, 'Given :label-text, :rotate(90) as arguments, then Chart::Gnuplot.label should set these properties.';
 }
 
 {
