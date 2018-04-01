@@ -1,5 +1,5 @@
 use v6;
-unit class Chart::Gnuplot::Range;
+unit class Chart::Gnuplot::Range:ver<0.0.3>;
 
 has &!writer;
 

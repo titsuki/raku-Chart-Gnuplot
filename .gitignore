@@ -5,3 +5,8 @@
 /resources/*.so
 /resources/*.dylib
 .precomp/
+/Chart-Gnuplot-*
+/gnuplot-*
+/example/*
+*.svg
+*.png

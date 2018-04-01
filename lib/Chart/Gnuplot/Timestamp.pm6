@@ -1,5 +1,5 @@
 use v6;
-unit class Chart::Gnuplot::Timestamp;
+unit class Chart::Gnuplot::Timestamp:ver<0.0.3>;
 
 use Chart::Gnuplot::Util;
 

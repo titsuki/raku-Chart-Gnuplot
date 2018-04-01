@@ -1,0 +1,25 @@
+Revision history for Chart-Gnuplot
+
+{{$NEXT}}
+
+0.0.3  2018-04-01T16:07:27+09:00
+    - Fixes:
+       - Make sure dispose correctly [#27]
+       - Fix subset related portions of the code [#28]
+    - Additions:
+       - Add the user-defined subset description [#29]
+    - Efficiency:
+
+0.0.2
+    - Fixes:
+       - Use svg instead of png [#20]
+       - Employ delegation [#21]
+       - Fix Build.pm [#22]
+       - Use a more practical example for synopsis [#23]
+    - Additions:
+       - Add aliases for pt, ps [#19]
+       - Add smooth argument [c531dcb]
+    - Efficiency:
+
+0.0.1
+    - Initial version

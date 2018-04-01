@@ -1,6 +1,7 @@
 {
+  "author" : "cpan:TITSUKI",
   "authors" : [
-    "titsuki"
+    "Itsuki Toyota"
   ],
   "build-depends" : [
     "zef"
@@ -33,5 +34,5 @@
   "test-depends" : [
     "IO::Capture::Simple"
   ],
-  "version" : "0.0.2"
+  "version" : "0.0.3"
 }

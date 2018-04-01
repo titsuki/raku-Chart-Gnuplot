@@ -1,5 +1,5 @@
 use v6;
-unit class Chart::Gnuplot::Border;
+unit class Chart::Gnuplot::Border:ver<0.0.3>;
 
 has &!writer;
 
