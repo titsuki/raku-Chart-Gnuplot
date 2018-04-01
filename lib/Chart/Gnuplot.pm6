@@ -694,6 +694,8 @@ multi method arrow(:$tag, :$from, :$rto, Bool :$head, :$backhead, :$heads,
 
 method dispose {
     self.command: "exit";
+    $!gnuplot.close-stdin;
+    await $!promise;
 }
 
 method command(Str $command) {
