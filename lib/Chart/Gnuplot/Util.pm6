@@ -1,8 +1,7 @@
 use v6;
 unit class Chart::Gnuplot::Util;
 
-my subset FalseOnly of Bool where { if not $_.defined { True } else { $_ == False } }
-my subset TrueOnly of Bool where { if not $_.defined { True } else { $_ == True } }
+use Chart::Gnuplot::Subset;
 
 sub tweak-fontargs(:$font-name, :$font-size) is export {
     my @font;

@@ -2,6 +2,7 @@ use v6;
 unit class Chart::Gnuplot::Legend;
 
 use Chart::Gnuplot::Util;
+use Chart::Gnuplot::Subset;
 
 has &!writer;
 
@@ -11,8 +12,6 @@ method writer(&writer) {
     &!writer = &writer;
     self
 }
-
-my subset LegendMax of Cool where { if not $_.defined { True } else { $_ eq "auto" or $_ ~~ Real } };
 
 method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin, :$tmargin, :$bmargin,
               :$at,

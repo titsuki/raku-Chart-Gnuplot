@@ -14,6 +14,7 @@ use Chart::Gnuplot::Tics;
 use Chart::Gnuplot::Timestamp;
 use Chart::Gnuplot::Title;
 use Chart::Gnuplot::Util;
+use Chart::Gnuplot::Subset;
 
 has $!gnuplot;
 has Bool $.persist;
@@ -36,9 +37,6 @@ has Chart::Gnuplot::Terminal $.terminal;
 has Chart::Gnuplot::Tics $.tics;
 has Chart::Gnuplot::Timestamp $.timestamp;
 has Chart::Gnuplot::Title $.title;
-
-my subset FalseOnly of Bool where { $_ == False or $_ ~~ Bool:U }
-my subset TrueOnly of Bool where { $_ == True or $_ ~~ Bool:U }
 
 submethod BUILD(:$terminal!, Str :$filename, :$!persist = True, :$!debug = False, :&!writer? = -> $msg { self.command: $msg }) {
     my $HOME = qq:x/echo \$HOME/.subst(/\s*/,"",:g);

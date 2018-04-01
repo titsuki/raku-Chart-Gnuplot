@@ -2,6 +2,7 @@ use v6;
 unit class Chart::Gnuplot::Tics;
 
 use Chart::Gnuplot::Util;
+use Chart::Gnuplot::Subset;
 
 has &!writer;
 
@@ -12,11 +13,6 @@ method writer(&writer) {
     self
 }
 
-my subset FalseOnly of Bool where { if not $_.defined { True } else { $_ == False } }
-my subset TrueOnly of Bool where { if not $_.defined { True } else { $_ == True } }
-my subset AnyTicsRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
-my subset AnyTicsOffset of Mu where { if not $_.defined { True } else { $_ ~~ FalseOnly or ($_ ~~ List and $_.all ~~ Pair|Real) } };
-
 method !anytics(:$axis, :$border, Bool :$mirror,
                :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
                :$left, :$right, :$center, :$autojustify,
@@ -24,8 +20,7 @@ method !anytics(:$axis, :$border, Bool :$mirror,
                :$autofreq,
                :$incr,
                :$start, :$end,
-               :@tics where { if not $_.defined { True }
-                              else { $_.map(-> $e { $e<label>:exists and $e<pos>:exists }).all == True and $_.map(-> $e { $e.keys.grep(* eq "label"|"pos"|"level").elems == $e.keys.elems }).all == True } },
+               AnyTicsTics :$tics,
                :$format, :$font-name, :$font-size, Bool :$enhanced,
                :$numeric, :$timedate, :$geographic,
                :$rangelimited,
@@ -50,7 +45,7 @@ method !anytics(:$axis, :$border, Bool :$mirror,
     
     if $rotate.defined {
         given $rotate {
-            when $_ ~~ Bool and $_ == False { @args.push("norotate") }
+            when $_ === False { @args.push("norotate") }
             when * ~~ Real { @args.push("rotate by $rotate") }
             default { die "Error: Something went wrong." }
         }
@@ -74,9 +69,9 @@ method !anytics(:$axis, :$border, Bool :$mirror,
         }
     }
 
-    if @tics.elems > 0 {
+    if @($tics).elems > 0 {
         my @tic-args;
-        for @tics -> $t {
+        for @($tics) -> $t {
             my @tmp;
             if $t<label>:exists {
                 @tmp.push(sprintf("\"%s\"", $t<label>));
