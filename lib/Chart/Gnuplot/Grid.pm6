@@ -1,6 +1,8 @@
 use v6;
 unit class Chart::Gnuplot::Grid;
 
+use Chart::Gnuplot::Subset;
+
 has &!writer;
 
 submethod BUILD(:&!writer) { }
@@ -9,9 +11,6 @@ method writer(&writer) {
     &!writer = &writer;
     self
 }
-
-my subset FalseOnly of Bool where { if not $_.defined { True } else { $_ == False } }
-my subset TrueOnly of Bool where { if not $_.defined { True } else { $_ == True } }
 
 method grid(Bool :$xtics, TrueOnly :$mxtics, Bool :$ytics, TrueOnly :$mytics, Bool :$ztics, TrueOnly :$mztics, Bool :$x2tics, TrueOnly :$mx2tics, Bool :$y2tics, TrueOnly :$my2tics, Bool :$cbtics, TrueOnly :$mcbtics,
             :$polar, :$layerdefault, :$front, :$back,

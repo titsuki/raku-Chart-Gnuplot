@@ -2,10 +2,7 @@ use v6;
 unit class Chart::Gnuplot::Label;
 
 use Chart::Gnuplot::Util;
-
-my subset LabelRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
-my subset FalseOnly of Bool where { if not $_.defined { True } else { $_ == False } }
-my subset TrueOnly of Bool where { if not $_.defined { True } else { $_ == True } }
+use Chart::Gnuplot::Subset;
 
 has &!writer;
 
@@ -31,18 +28,18 @@ method label(:$tag, :$label-text, :$at, :$left, :$center, :$right,
 
     if $rotate.defined {
         given $rotate {
-            when $_ ~~ Bool and $_ == False { @args.push("norotate") }
+            when $_ === False { @args.push("norotate") }
             when * ~~ Real { @args.push("rotate by $rotate") }
             default { die "Error: Something went wrong." }
         }
     }
 
     @args.push(tweak-fontargs(:$font-name, :$font-size));
-    @args.push("noenhanced") if $enhanced.defined and $enhanced == False;
+    @args.push("noenhanced") if $enhanced.defined and $enhanced === False;
     @args.push("front") if $front.defined;
     @args.push("back") if $back.defined;
     @args.push("textcolor " ~ $textcolor) if $textcolor.defined;
-    @args.push("nopoint") if $point.defined and $point == False;
+    @args.push("nopoint") if $point.defined and $point === False;
 
     my @point-args;
     @point-args.push("lt " ~ $line-type) if $line-type.defined;
@@ -58,8 +55,6 @@ method label(:$tag, :$label-text, :$at, :$left, :$center, :$right,
     &writer(sprintf("set label %s", @args.grep(* ne "").join(" ")));
 }
 
-my subset AnyLabelRotate of Cool where { if not $_.defined { True } elsif $_ ~~ Bool and $_ == True { False } else { $_ eq "parallel" or $_ ~~ Real or ($_ ~~ Bool and $_ == False) } };
-
 method !anylabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, AnyLabelRotate :$rotate, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
     @args.push(sprintf("\"%s\"", $label)) if $label.defined;
@@ -70,7 +65,7 @@ method !anylabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, B
     
     if $rotate.defined {
         given $rotate {
-            when $_ ~~ Bool and $_ == False { @args.push("norotate") }
+            when $_ === False { @args.push("norotate") }
             when * ~~ Real { @args.push("rotate by $rotate") }
             when * eq "parallel" { @args.push("rotate parallel") }
             default { die "Error: Something went wrong." }

@@ -20,6 +20,7 @@
     "Chart::Gnuplot::Object" : "lib/Chart/Gnuplot/Object.pm6",
     "Chart::Gnuplot::Output" : "lib/Chart/Gnuplot/Output.pm6",
     "Chart::Gnuplot::Range" : "lib/Chart/Gnuplot/Range.pm6",
+    "Chart::Gnuplot::Subset" : "lib/Chart/Gnuplot/Subset.pm6",
     "Chart::Gnuplot::Terminal" : "lib/Chart/Gnuplot/Terminal.pm6",
     "Chart::Gnuplot::Tics" : "lib/Chart/Gnuplot/Tics.pm6",
     "Chart::Gnuplot::Timestamp" : "lib/Chart/Gnuplot/Timestamp.pm6",
