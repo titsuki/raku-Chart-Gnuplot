@@ -37,8 +37,8 @@ has Chart::Gnuplot::Tics $.tics;
 has Chart::Gnuplot::Timestamp $.timestamp;
 has Chart::Gnuplot::Title $.title;
 
-my subset FalseOnly of Bool where { if not $_.defined { True } else { $_ == False } }
-my subset TrueOnly of Bool where { if not $_.defined { True } else { $_ == True } }
+my subset FalseOnly of Bool where { $_ == False or $_ ~~ Bool:U }
+my subset TrueOnly of Bool where { $_ == True or $_ ~~ Bool:U }
 
 submethod BUILD(:$terminal!, Str :$filename, :$!persist = True, :$!debug = False, :&!writer? = -> $msg { self.command: $msg }) {
     my $HOME = qq:x/echo \$HOME/.subst(/\s*/,"",:g);
