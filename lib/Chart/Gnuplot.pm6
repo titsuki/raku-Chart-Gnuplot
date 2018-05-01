@@ -331,6 +331,11 @@ method x2label(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Boo
     $!label.x2label(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate, :&writer);
 }
 
+method y2label(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, Cool :$rotate, :&writer? = -> $msg { self.command: $msg }) {
+
+    $!label.y2label(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate, :&writer);
+}
+
 method cblabel(Str :$label, :$offset, :$font-name, :$font-size, :$textcolor, Bool :$enhanced, Cool :$rotate, :&writer? = -> $msg { self.command: $msg }) {
 
     $!label.cblabel(:$label, :$offset, :$font-name, :$font-size, :$textcolor, :$enhanced, :$rotate, :&writer);
