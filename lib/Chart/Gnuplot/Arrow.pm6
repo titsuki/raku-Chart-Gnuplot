@@ -1,5 +1,5 @@
 use v6;
-unit class Chart::Gnuplot::Arrow:ver<0.0.4>;
+unit class Chart::Gnuplot::Arrow:ver<0.0.5>;
 
 use Chart::Gnuplot::Util;
 
