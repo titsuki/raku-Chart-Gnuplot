@@ -233,6 +233,7 @@ multi method splot(:@range,
         default { "splot" }
     };
     &writer(sprintf("%s %s", $cmd, @args.grep(* ne "").join(" ")));
+    $!num-plot++;
 }
 
 multi method splot(:@range,
@@ -277,6 +278,7 @@ multi method splot(:@range,
         default { "splot" }
     };
     &writer(sprintf("%s %s", $cmd, @args.grep(* ne "").join(" ")));
+    $!num-plot++;
 }
 
 method multiplot(:$title, :$font-name, :$font-size, Bool :$enhanced, :@layout, :$rowsfirst, :$columnsfirst,
