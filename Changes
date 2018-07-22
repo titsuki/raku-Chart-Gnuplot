@@ -2,6 +2,12 @@ Revision history for Chart-Gnuplot
 
 {{$NEXT}}
 
+0.0.6  2018-07-23T01:31:44+09:00
+    - Fixes:
+       - Add --test-depends [a402011]
+    - Additions:
+    - Efficiency:
+
 0.0.5  2018-07-19T22:44:12+09:00
     - Fixes:
        - Add missing num-plot increment [e613d9e]
