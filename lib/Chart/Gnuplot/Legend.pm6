@@ -1,5 +1,5 @@
 use v6;
-unit class Chart::Gnuplot::Legend:ver<0.0.6>;
+unit class Chart::Gnuplot::Legend:ver<0.0.7>;
 
 use Chart::Gnuplot::Util;
 use Chart::Gnuplot::Subset;
