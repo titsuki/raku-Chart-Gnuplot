@@ -6,49 +6,9 @@
 
 use Zef;
 use Zef::Fetch;
+use Zef::Extract;
 
 class Build {
-
-    method extract(IO() $archive-file, IO() $extract-to) {
-        die "archive file does not exist: {$archive-file.absolute}"
-        unless $archive-file.e && $archive-file.f;
-        die "target extraction directory {$extract-to.absolute} does not exist and could not be created"
-        unless ($extract-to.e && $extract-to.d) || mkdir($extract-to);
-
-        my $passed;
-        react {
-            my $cwd := $archive-file.parent;
-            my $ENV := %*ENV;
-            my $proc = zrun-async('tar', '-zxvf', $archive-file.basename, '-C', $extract-to.relative($cwd));
-            whenever $proc.stdout(:bin) { }
-            whenever $proc.stderr(:bin) { }
-            whenever $proc.start(:$ENV, :$cwd) { $passed = $_.so }
-        }
-
-        my $meta6-prefix = self.list($archive-file).sort.first({ .IO.basename eq 'VERSION' });
-        my $extracted-to = $extract-to.child($meta6-prefix);
-        ($passed && $extracted-to.e) ?? $extracted-to.parent !! False;
-    }
-
-    method list(IO() $archive-file) {
-        die "archive file does not exist: {$archive-file.absolute}"
-        unless $archive-file.e && $archive-file.f;
-
-        my $passed;
-        my $output = Buf.new;
-        react {
-            my $cwd := $archive-file.parent;
-            my $ENV := %*ENV;
-            my $proc = zrun-async('tar', '--list', '-f', $archive-file.basename);
-            whenever $proc.stdout(:bin) { $output.append($_) }
-            whenever $proc.stderr(:bin) { }
-            whenever $proc.start(:$ENV, :$cwd) { $passed = $_.so }
-        }
-
-        my @extracted-paths = $output.decode.lines;
-        $passed ?? @extracted-paths.grep(*.defined) !! ();
-    }
-
     method build($workdir) {
         if $*DISTRO.is-win {
             die "Sorry, this binding doesn't support windows";
@@ -67,17 +27,21 @@ class Build {
             { module => "Zef::Service::Shell::curl" },
         ];
         my $fetcher      = Zef::Fetch.new(:backends(@fetch-backends));
-        my $uri          = 'http://ftp.cstug.cz/pub/CTAN/graphics/gnuplot/5.0.5/gnuplot-5.0.5.tar.gz';
-        my $archive-file = $uri.IO.basename.IO.e
-        ?? $uri.IO.basename.IO
-        !! $fetcher.fetch($uri, $uri.IO.basename);
-        
-        my $extract-dir = $archive-file.IO.basename.subst(/\.tar\.gz/, '').IO.e
-        ?? $archive-file.IO.basename.subst(/\.tar\.gz/, '').IO
-        !! self.extract($archive-file, $*CWD);
+        my $uri          = 'http://ftp.cstug.cz/pub/CTAN/graphics/gnuplot/5.2.5/gnuplot-5.2.5.tar.gz';
+        my $archive-file = "gnuplot-5.2.5.tar.gz".IO.e
+        ?? "gnuplot-5.2.5.tar.gz"
+        !! $fetcher.fetch($uri, "gnuplot-5.2.5.tar.gz");
 
-        shell("./configure --prefix=$prefix", :cwd($extract-dir.relative));
-        shell("make", :cwd($extract-dir.relative));
-        shell("make install", :cwd($extract-dir.relative));
+        my @extract-backends = [
+            { module => "Zef::Service::Shell::tar" },
+            { module => "Zef::Service::Shell::p5tar" },
+        ];
+        my $extractor = Zef::Extract.new(:backends(@extract-backends));
+        my $extract-dir = $extractor.extract($archive-file, $*CWD);
+        chdir("gnuplot-5.2.5");
+        shell("./configure --prefix=$prefix");
+        shell("make");
+        shell("make install");
+        chdir($goback);
     }
 }
