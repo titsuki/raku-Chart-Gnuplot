@@ -1,6 +1,7 @@
 use v6;
 use Test;
 use Chart::Gnuplot;
+use Chart::Gnuplot::Subset;
 
 sub comp(@lhs, @rhs) returns Bool {
     return False if @lhs.elems != @rhs.elems;
@@ -66,7 +67,8 @@ sub comp(@lhs, @rhs) returns Bool {
 {
     my $gnu = Chart::Gnuplot.new(:terminal("svg"), :filename("actual.svg"));
     my @actual;
-    $gnu.xtics(:axis, :tics([{:label("I love"), :pos(0.1)}, {:label("Perl 6"), :pos(0.5)}]), :writer(-> $msg { @actual.push($msg); }));
+    my AnyTicsTic @tics = (%(:label("I love"), :pos(0.1)), %(:label("Perl 6"), :pos(0.5)));
+    $gnu.xtics(:axis, :tics(@tics), :writer(-> $msg { @actual.push($msg); }));
     $gnu.dispose;
     my @expected = 'set xtics axis ("I love" 0.1,"Perl 6" 0.5)';
     is @actual, @expected, 'Given :axis, :tics as arguments, then Chart::Gnuplot.xtics should set these properties.';
