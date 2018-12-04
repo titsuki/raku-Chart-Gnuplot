@@ -11,6 +11,7 @@ SYNOPSIS
 ### SOURCE
 
     use Chart::Gnuplot;
+    use Chart::Gnuplot::Subset;
     my $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("histogram.png"));
 
     my @data = (q:to/EOF/).split("\n", :skip-empty)>>.split(" ", :skip-empty);
@@ -29,7 +30,8 @@ SYNOPSIS
 
     $gnu.command("set style histogram clustered");
     $gnu.legend(:left);
-    $gnu.xtics(:tics((@body>>.[0]).pairs.map(-> (:key($pos), :value($year)) { %(:label($year), :pos($pos)) }) ));
+    my AnyTicsTic @tics = (@body>>.[0]).pairs.map(-> (:key($pos), :value($year)) { %(:label($year), :pos($pos)) });
+    $gnu.xtics(:tics(@tics));
     $gnu.xlabel(:label($header[0]));
     $gnu.plot(:vertices(@body), :using([2]), :style("histogram"), :title($header[1]), :fill("solid 1.0"));
     $gnu.plot(:vertices(@body), :using([3]), :style("histogram"), :title($header[2]), :fill("solid 1.0"));
