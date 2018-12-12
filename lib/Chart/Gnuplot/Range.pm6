@@ -1,6 +1,8 @@
 use v6;
 unit class Chart::Gnuplot::Range:ver<0.0.8>;
 
+use Chart::Gnuplot::Subset;
+
 has &!writer;
 
 submethod BUILD(:&!writer) { }
@@ -23,7 +25,7 @@ multi method xrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$exten
    &writer(sprintf("set xrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend)));
 }
 
-multi method xrange(:$restore, :&writer? = &!writer) {
+multi method xrange(TrueOnly :$restore, :&writer? = &!writer) {
     &writer("set xrange restore");
 }
 
@@ -31,7 +33,7 @@ multi method yrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$exten
    &writer(sprintf("set yrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend)));
 }
 
-multi method yrange(:$restore, :&writer? = &!writer) {
+multi method yrange(TrueOnly :$restore, :&writer? = &!writer) {
     &writer("set yrange restore");
 }
 
@@ -39,7 +41,7 @@ multi method zrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$exten
    &writer(sprintf("set zrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend)));
 }
 
-multi method zrange(:$restore, :&writer? = &!writer) {
+multi method zrange(TrueOnly :$restore, :&writer? = &!writer) {
     &writer("set zrange restore");
 }
 
@@ -47,7 +49,7 @@ multi method x2range(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$exte
    &writer(sprintf("set x2range %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend)));
 }
 
-multi method x2range(:$restore, :&writer? = &!writer) {
+multi method x2range(TrueOnly :$restore, :&writer? = &!writer) {
     &writer("set x2range restore");
 }
 
@@ -55,7 +57,7 @@ multi method y2range(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$exte
    &writer(sprintf("set y2range %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend)));
 }
 
-multi method y2range(:$restore, :&writer? = &!writer) {
+multi method y2range(TrueOnly :$restore, :&writer? = &!writer) {
     &writer("set y2range restore");
 }
 
@@ -63,7 +65,7 @@ multi method cbrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$exte
     &writer(sprintf("set cbrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend)));
 }
 
-multi method cbrange(:$restore, :&writer? = &!writer) {
+multi method cbrange(TrueOnly :$restore, :&writer? = &!writer) {
     &writer("set cbrange restore");
 }
 
@@ -71,7 +73,7 @@ multi method rrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$exten
     &writer(sprintf("set rrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend)));
 }
 
-multi method rrange(:$restore, :&writer? = &!writer) {
+multi method rrange(TrueOnly :$restore, :&writer? = &!writer) {
     &writer("set rrange restore");
 }
 
@@ -79,7 +81,7 @@ multi method trange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$exten
     &writer(sprintf("set trange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback,  :$extend)));
 }
 
-multi method trange(:$restore, :&writer? = &!writer) {
+multi method trange(TrueOnly :$restore, :&writer? = &!writer) {
     &writer("set trange restore");
 }
 
@@ -87,7 +89,7 @@ multi method urange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$exten
     &writer(sprintf("set urange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend)));
 }
 
-multi method urange(:$restore, :&writer? = &!writer) {
+multi method urange(TrueOnly :$restore, :&writer? = &!writer) {
     &writer("set urange restore");
 }
 
@@ -95,7 +97,7 @@ multi method vrange(:$min, :$max, Bool :$reverse, Bool :$writeback, Bool :$exten
     &writer(sprintf("set vrange %s", self!anyrange(:$min, :$max, :$reverse, :$writeback, :$extend)));
 }
 
-multi method vrange(:$restore, :&writer? = &!writer) {
+multi method vrange(TrueOnly :$restore, :&writer? = &!writer) {
     &writer("set vrange restore");
 }
 

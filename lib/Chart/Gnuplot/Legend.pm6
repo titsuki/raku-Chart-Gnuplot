@@ -13,13 +13,13 @@ method writer(&writer) {
     self
 }
 
-method legend(:$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin, :$tmargin, :$bmargin,
+method legend(TrueOnly :$on, TrueOnly :$off, TrueOnly :$default, TrueOnly :$inside, TrueOnly :$outside, TrueOnly :$lmargin, TrueOnly :$rmargin, TrueOnly :$tmargin, TrueOnly :$bmargin,
               :$at,
-              :$left, :$right, :$center, :$top, :$bottom,
-              :$vertical, :$horizontal, :$Left, :$Right,
+              TrueOnly :$left, TrueOnly :$right, TrueOnly :$center, TrueOnly :$top, TrueOnly :$bottom,
+              TrueOnly :$vertical, TrueOnly :$horizontal, TrueOnly :$Left, TrueOnly :$Right,
               Bool :$opaque, Bool :$reverse, Bool :$invert,
               :$samplen, :$spacing, :$width, :$height,
-              :$autotitle, :$columnheader, :$title, :$font-name, :$font-size, :$textcolor,
+              TrueOnly :$autotitle, TrueOnly :$columnheader, :$title, :$font-name, :$font-size, :$textcolor,
               Bool :$box, :$linestyle, :$linetype, :$linewidth,
               LegendMax :$maxcols, LegendMax :$maxrows, :&writer? = &!writer) {
     my @args;

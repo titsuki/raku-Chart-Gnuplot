@@ -1,6 +1,8 @@
 use v6;
 unit class Chart::Gnuplot::Border:ver<0.0.8>;
 
+use Chart::Gnuplot::Subset;
+
 has &!writer;
 
 submethod BUILD(:&!writer) { }
@@ -10,7 +12,7 @@ method writer(&writer) {
     self
 }
 
-method border(:$integer, :$front, :$back, :$behind,
+method border(:$integer, TrueOnly :$front, TrueOnly :$back, TrueOnly :$behind,
               :lw(:$linewidth), :ls(:$linestyle), :lt(:$linetype), :&writer? = &!writer) {
     my @args;
     @args.push($integer) if $integer.defined;

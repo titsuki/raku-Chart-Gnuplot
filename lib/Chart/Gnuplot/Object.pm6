@@ -2,6 +2,7 @@ use v6;
 unit class Chart::Gnuplot::Object:ver<0.0.8>;
 
 use Chart::Gnuplot::Util;
+use Chart::Gnuplot::Subset;
 
 has &!writer;
 
@@ -12,8 +13,8 @@ method writer(&writer) {
     self
 }
 
-method !anyobject(:$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
-                  :$default, :$linewidth, :$dashtype, :&writer? = &!writer) {
+method !anyobject(TrueOnly :$front, TrueOnly :$back, TrueOnly :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
+                  TrueOnly :$default, :$linewidth, :$dashtype, :&writer? = &!writer) {
 
     my @args;
     @args.push("front") if $front.defined;
@@ -29,8 +30,8 @@ method !anyobject(:$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillsty
 }
 
 multi method rectangle(:$index!, :$from, :$to,
-                       :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
-                       :$default, :$linewidth, :$dashtype, :&writer? = &!writer) {
+                       TrueOnly :$front, TrueOnly :$back, TrueOnly :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
+                       TrueOnly :$default, :$linewidth, :$dashtype, :&writer? = &!writer) {
 
     my @args;
     @args.push(tweak-coordinate(:name("from"), :coordinate($from)));
@@ -41,8 +42,8 @@ multi method rectangle(:$index!, :$from, :$to,
 }
 
 multi method rectangle(:$index, :$from, :$rto,
-                       :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
-                       :$default, :$linewidth, :$dashtype, :&writer? = &!writer) {
+                       TrueOnly :$front, TrueOnly :$back, TrueOnly :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
+                       TrueOnly :$default, :$linewidth, :$dashtype, :&writer? = &!writer) {
 
     my @args;
     @args.push(tweak-coordinate(:name("from"), :coordinate($from)));
@@ -53,8 +54,8 @@ multi method rectangle(:$index, :$from, :$rto,
 }
 
 method ellipse(:$index, :center(:$at), :$w!, :$h!,
-               :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
-               :$default, :$linewidth, :$dashtype, :&writer? = &!writer) {
+               TrueOnly :$front, TrueOnly :$back, TrueOnly :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
+               TrueOnly :$default, :$linewidth, :$dashtype, :&writer? = &!writer) {
     my @args;
     @args.push(tweak-coordinate(:name("at"), :coordinate($at)));
     @args.push(sprintf("size %s,%s", $w, $h));
@@ -64,8 +65,8 @@ method ellipse(:$index, :center(:$at), :$w!, :$h!,
 }
 
 method circle(:$index, :center(:$at), :$radius!,
-              :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
-              :$default, :$linewidth, :$dashtype, :&writer? = &!writer) {
+              TrueOnly :$front, TrueOnly :$back, TrueOnly :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
+              TrueOnly :$default, :$linewidth, :$dashtype, :&writer? = &!writer) {
     my @args;
     @args.push(tweak-coordinate(:name("at"), :coordinate($at)));
     @args.push(sprintf("size %s", $radius));
@@ -76,8 +77,8 @@ method circle(:$index, :center(:$at), :$radius!,
 }
 
 method polygon(:$index, :$from, :@to,
-               :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
-               :$default, :$linewidth, :$dashtype, :&writer? = &!writer) {
+               TrueOnly :$front, TrueOnly :$back, TrueOnly :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
+               TrueOnly :$default, :$linewidth, :$dashtype, :&writer? = &!writer) {
     my @args;
     @args.push(tweak-coordinate(:name("from"), :coordinate($from)));
     @args.push(@to.map(-> $c { tweak-coordinate(:coordinate($c), :name("to")) }).join(" "));

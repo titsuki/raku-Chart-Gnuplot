@@ -2,6 +2,7 @@ use v6;
 unit class Chart::Gnuplot::Timestamp:ver<0.0.8>;
 
 use Chart::Gnuplot::Util;
+use Chart::Gnuplot::Subset;
 
 has &!writer;
 
@@ -12,7 +13,7 @@ method writer(&writer) {
     self
 }
 
-method timestamp(:$format, :$top, :$bottom, Bool :$rotate,
+method timestamp(Str :$format, TrueOnly :$top, TrueOnly :$bottom, Bool :$rotate,
                  :$offset, :$font-name, :$font-size, :$textcolor, :&writer? = &!writer) {
     my @args;
     @args.push(sprintf("\"%s\"", $format)) if $format.defined;

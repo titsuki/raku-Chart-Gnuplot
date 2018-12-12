@@ -2,6 +2,7 @@ use v6;
 unit class Chart::Gnuplot::Arrow:ver<0.0.8>;
 
 use Chart::Gnuplot::Util;
+use Chart::Gnuplot::Subset;
 
 has &!writer;
 
@@ -13,10 +14,10 @@ method writer(&writer) {
 }
 
 multi method arrow(
-    :$tag, :$from, :$to, Bool :$head, :$backhead, :$heads,
+    :$tag, :$from, :$to, Bool :$head, TrueOnly :$backhead, TrueOnly :$heads,
     :$head-length, :$head-angle, :$back-angle,
-    :$filled, :$empty, :$border,
-    :$front, :$back,
+    Bool :$filled, TrueOnly :$empty, TrueOnly :$border,
+    TrueOnly :$front, TrueOnly :$back,
     :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor), :dt(:$dashtype), :&writer? = &!writer
 ) {
     my @args;
@@ -50,10 +51,10 @@ multi method arrow(
 }
 
 multi method arrow(
-    :$tag, :$from, :$rto, Bool :$head, :$backhead, :$heads,
+    :$tag, :$from, :$rto, Bool :$head, TrueOnly :$backhead, TrueOnly :$heads,
     :$head-length, :$head-angle, :$back-angle,
-    :$filled, :$empty, :$border,
-    :$front, :$back,
+    Bool :$filled, TrueOnly :$empty, TrueOnly :$border,
+    TrueOnly :$front, TrueOnly :$back,
     :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor), :dt(:$dashtype), :&writer? = &!writer
 ) {
     my @args;

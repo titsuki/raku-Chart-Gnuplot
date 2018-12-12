@@ -12,8 +12,9 @@ method writer(&writer) {
     self
 }
 
-method grid(Bool :$xtics, TrueOnly :$mxtics, Bool :$ytics, TrueOnly :$mytics, Bool :$ztics, TrueOnly :$mztics, Bool :$x2tics, TrueOnly :$mx2tics, Bool :$y2tics, TrueOnly :$my2tics, Bool :$cbtics, TrueOnly :$mcbtics,
-            :$polar, :$layerdefault, :$front, :$back,
+method grid(Bool :$xtics, TrueOnly :$mxtics, Bool :$ytics, TrueOnly :$mytics, Bool :$ztics, TrueOnly :$mztics,
+            Bool :$x2tics, TrueOnly :$mx2tics, Bool :$y2tics, TrueOnly :$my2tics, Bool :$cbtics, TrueOnly :$mcbtics,
+            :$polar, TrueOnly :$layerdefault, TrueOnly :$front, TrueOnly :$back,
             :ls(:@linestyle), :lt(:@linetype), :lw(:@linewidth), :&writer? = &!writer) {
     my @args;
     @args.push($xtics ?? "xtics" !! "noxtics") if $xtics.defined;
