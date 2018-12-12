@@ -1,5 +1,5 @@
 use v6;
-unit class Chart::Gnuplot::Border:ver<0.0.9>;
+unit class Chart::Gnuplot::Border:ver<0.0.10>;
 
 use Chart::Gnuplot::Subset;
 

@@ -2,6 +2,12 @@ Revision history for Chart-Gnuplot
 
 {{$NEXT}}
 
+0.0.10  2018-12-13T08:20:16+09:00
+    - Fixes:
+       - Fix typo clabel -> cblabel [#38]
+    - Additions:
+    - Efficiency:
+
 0.0.9  2018-12-13T08:04:14+09:00
     - Fixes:
        - Fix type constraint for tics [#36]
