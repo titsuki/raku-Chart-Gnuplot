@@ -65,6 +65,9 @@ submethod BUILD(:$terminal!, Str :$filename, :$!persist = True, :$!debug = False
     $!output = Chart::Gnuplot::Output.new(:$filename, :&!writer);
     $!range = Chart::Gnuplot::Range.new(:&!writer);
     $!terminal = Chart::Gnuplot::Terminal.new(:type($terminal), :&!writer);
+    $!tics = Chart::Gnuplot::Tics.new(:&!writer);
+    $!timestamp = Chart::Gnuplot::Timestamp.new(:&!writer);
+    $!title = Chart::Gnuplot::Title.new(:&!writer);
 }
 
 submethod DESTROY {
