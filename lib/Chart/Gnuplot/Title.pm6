@@ -12,7 +12,7 @@ method writer(&writer) {
     self
 }
 
-method title(:$text, :$offset, :$font-name, :$font-size, :tc(:$textcolor), :$colorspec, Bool :$enhanced, :&writer? = &!writer) {
+method title(Str :$text, :$offset, :$font-name, :$font-size, :tc(:$textcolor), :$colorspec, Bool :$enhanced, :&writer? = &!writer) {
     my @args;
     
     @args.push(sprintf("\"%s\"", $text));

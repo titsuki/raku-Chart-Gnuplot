@@ -13,17 +13,17 @@ method writer(&writer) {
     self
 }
 
-method !anytics(:$axis, :$border, Bool :$mirror,
-               :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
-               :$left, :$right, :$center, :$autojustify,
-               :$add,
-               :$autofreq,
+method !anytics(TrueOnly :$axis, TrueOnly :$border, Bool :$mirror,
+                TrueOnly :$in, TrueOnly :$out, TrueOnly :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
+                TrueOnly :$left, TrueOnly :$right, TrueOnly :$center, TrueOnly :$autojustify,
+                TrueOnly :$add,
+                TrueOnly :$autofreq,
                :$incr,
                :$start, :$end,
                :@tics where Array[AnyTicsTic] | Array[],
                :$format, :$font-name, :$font-size, Bool :$enhanced,
-               :$numeric, :$timedate, :$geographic,
-               :$rangelimited,
+               TrueOnly :$numeric, TrueOnly :$timedate, TrueOnly :$geographic,
+               TrueOnly :$rangelimited,
                :$textcolor
                ) {
     my @args;
@@ -98,17 +98,17 @@ method !anytics(:$axis, :$border, Bool :$mirror,
     @args.grep(* ne "").join(" ")
 }
 
-method xtics(:$axis, :$border, Bool :$mirror,
-             :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
-             :$left, :$right, :$center, :$autojustify,
-             :$add,
-             :$autofreq,
+method xtics(TrueOnly :$axis, TrueOnly :$border, Bool :$mirror,
+             TrueOnly :$in, TrueOnly :$out, TrueOnly :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
+             TrueOnly :$left, TrueOnly :$right, TrueOnly :$center, TrueOnly :$autojustify,
+             TrueOnly :$add,
+             TrueOnly :$autofreq,
              :$incr,
              :$start, :$end,
              :@tics where Array[AnyTicsTic] | Array[],
              :$format, :$font-name, :$font-size, Bool :$enhanced,
-             :$numeric, :$timedate, :$geographic,
-             :$rangelimited,
+             TrueOnly :$numeric, TrueOnly :$timedate, TrueOnly :$geographic,
+             TrueOnly :$rangelimited,
              :$textcolor, :&writer? = &!writer
             ) {
     &writer(sprintf("set xtics %s", self!anytics(:$axis, :$border, :$mirror,
@@ -125,17 +125,17 @@ method xtics(:$axis, :$border, Bool :$mirror,
                                                            :$textcolor)));
 }
 
-method ytics(:$axis, :$border, Bool :$mirror,
-             :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
-             :$left, :$right, :$center, :$autojustify,
-             :$add,
-             :$autofreq,
+method ytics(TrueOnly :$axis, TrueOnly :$border, Bool :$mirror,
+             TrueOnly :$in, TrueOnly :$out, TrueOnly :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
+             TrueOnly :$left, TrueOnly :$right, TrueOnly :$center, TrueOnly :$autojustify,
+             TrueOnly :$add,
+             TrueOnly :$autofreq,
              :$incr,
              :$start, :$end,
              :@tics where Array[AnyTicsTic] | Array[],
              :$format, :$font-name, :$font-size, Bool :$enhanced,
-             :$numeric, :$timedate, :$geographic,
-             :$rangelimited,
+             TrueOnly :$numeric, TrueOnly :$timedate, TrueOnly :$geographic,
+             TrueOnly :$rangelimited,
              :$textcolor, :&writer? = &!writer
             ) {
     &writer(sprintf("set ytics %s", self!anytics(:$axis, :$border, :$mirror,
@@ -152,17 +152,17 @@ method ytics(:$axis, :$border, Bool :$mirror,
                                                  :$textcolor)));
 }
 
-method ztics(:$axis, :$border, Bool :$mirror,
-             :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
-             :$left, :$right, :$center, :$autojustify,
-             :$add,
-             :$autofreq,
+method ztics(TrueOnly :$axis, TrueOnly :$border, Bool :$mirror,
+             TrueOnly :$in, TrueOnly :$out, TrueOnly :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
+             TrueOnly :$left, TrueOnly :$right, TrueOnly :$center, TrueOnly :$autojustify,
+             TrueOnly :$add,
+             TrueOnly :$autofreq,
              :$incr,
              :$start, :$end,
              :@tics where Array[AnyTicsTic] | Array[],
              :$format, :$font-name, :$font-size, Bool :$enhanced,
-             :$numeric, :$timedate, :$geographic,
-             :$rangelimited,
+             TrueOnly :$numeric, TrueOnly :$timedate, TrueOnly :$geographic,
+             TrueOnly :$rangelimited,
              :$textcolor, :&writer? = &!writer
             ) {
     &writer(sprintf("set ztics %s", self!anytics(:$axis, :$border, :$mirror,
@@ -179,17 +179,17 @@ method ztics(:$axis, :$border, Bool :$mirror,
                                                  :$textcolor)));
 }
 
-method x2tics(:$axis, :$border, Bool :$mirror,
-              :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
-              :$left, :$right, :$center, :$autojustify,
-              :$add,
-              :$autofreq,
+method x2tics(TrueOnly :$axis, TrueOnly :$border, Bool :$mirror,
+              TrueOnly :$in, TrueOnly :$out, TrueOnly :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
+              TrueOnly :$left, TrueOnly :$right, TrueOnly :$center, TrueOnly :$autojustify,
+              TrueOnly :$add,
+              TrueOnly :$autofreq,
               :$incr,
               :$start, :$end,
               :@tics where Array[AnyTicsTic] | Array[],
               :$format, :$font-name, :$font-size, Bool :$enhanced,
-              :$numeric, :$timedate, :$geographic,
-              :$rangelimited,
+              TrueOnly :$numeric, TrueOnly :$timedate, TrueOnly :$geographic,
+              TrueOnly :$rangelimited,
               :$textcolor, :&writer? = &!writer
              ) {
     &writer(sprintf("set x2tics %s", self!anytics(:$axis, :$border, :$mirror,
@@ -206,17 +206,17 @@ method x2tics(:$axis, :$border, Bool :$mirror,
                                                   :$textcolor)));
 }
 
-method y2tics(:$axis, :$border, Bool :$mirror,
-              :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
-              :$left, :$right, :$center, :$autojustify,
-              :$add,
-              :$autofreq,
+method y2tics(TrueOnly :$axis, TrueOnly :$border, Bool :$mirror,
+              TrueOnly :$in, TrueOnly :$out, TrueOnly :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
+              TrueOnly :$left, TrueOnly :$right, TrueOnly :$center, TrueOnly :$autojustify,
+              TrueOnly :$add,
+              TrueOnly :$autofreq,
               :$incr,
               :$start, :$end,
               :@tics where Array[AnyTicsTic] | Array[],
               :$format, :$font-name, :$font-size, Bool :$enhanced,
-              :$numeric, :$timedate, :$geographic,
-              :$rangelimited,
+              TrueOnly :$numeric, TrueOnly :$timedate, TrueOnly :$geographic,
+              TrueOnly :$rangelimited,
               :$textcolor, :&writer? = &!writer
              ) {
     &writer(sprintf("set y2tics %s", self!anytics(:$axis, :$border, :$mirror,
@@ -233,17 +233,17 @@ method y2tics(:$axis, :$border, Bool :$mirror,
                                                   :$textcolor)));
 }
 
-method cbtics(:$axis, :$border, Bool :$mirror,
-              :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
-              :$left, :$right, :$center, :$autojustify,
-              :$add,
-              :$autofreq,
+method cbtics(TrueOnly :$axis, TrueOnly :$border, Bool :$mirror,
+              TrueOnly :$in, TrueOnly :$out, TrueOnly :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
+              TrueOnly :$left, TrueOnly :$right, TrueOnly :$center, TrueOnly :$autojustify,
+              TrueOnly :$add,
+              TrueOnly :$autofreq,
               :$incr,
               :$start, :$end,
               :@tics where Array[AnyTicsTic] | Array[],
               :$format, :$font-name, :$font-size, Bool :$enhanced,
-              :$numeric, :$timedate, :$geographic,
-              :$rangelimited,
+              TrueOnly :$numeric, TrueOnly :$timedate, TrueOnly :$geographic,
+              TrueOnly :$rangelimited,
               :$textcolor, :&writer? = &!writer
              ) {
     &writer(sprintf("set cbtics %s", self!anytics(:$axis, :$border, :$mirror,

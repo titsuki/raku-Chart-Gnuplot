@@ -13,10 +13,10 @@ method writer(&writer) {
     self
 }
 
-method label(:$tag, :$label-text, :$at, :$left, :$center, :$right,
+method label(:$tag, Str :$label-text, :$at, TrueOnly :$left, TrueOnly :$center, TrueOnly :$right,
              LabelRotate :$rotate, :$font-name, :$font-size, FalseOnly :$enhanced,
-             :$front, :$back, :$textcolor, FalseOnly :$point, :$line-type, :$point-type, :$point-size, :$offset,
-             :$boxed, :$hypertext, :&writer? = -> $msg { self.command: $msg }) {
+             TrueOnly :$front, TrueOnly :$back, :$textcolor, FalseOnly :$point, :$line-type, :$point-type, :$point-size, :$offset,
+             TrueOnly :$boxed, TrueOnly :$hypertext, :&writer? = -> $msg { self.command: $msg }) {
     my @args;
     @args.push($tag) if $tag.defined;
     @args.push(sprintf("\"%s\"", $label-text)) if $label-text.defined;

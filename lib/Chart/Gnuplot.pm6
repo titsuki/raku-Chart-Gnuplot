@@ -444,10 +444,10 @@ Draws a 3-dimensional plot.
 Defined as:
 
         method label(
-               :$tag, :$label-text, :$at, :$left, :$center, :$right,
+               :$tag, Str :$label-text, :$at, TrueOnly :$left, TrueOnly :$center, TrueOnly :$right,
                LabelRotate :$rotate, :$font-name, :$font-size, FalseOnly :$enhanced,
-               :$front, :$back, :$textcolor, FalseOnly :$point, :$line-type, :$point-type, :$point-size, :$offset,
-               :$boxed, :$hypertext, :&writer? = -> $msg { self.command: $msg }
+               TrueOnly :$front, TrueOnly :$back, :$textcolor, FalseOnly :$point, :$line-type, :$point-type, :$point-size, :$offset,
+               TrueOnly :$boxed, TrueOnly :$hypertext, :&writer? = -> $msg { self.command: $msg }
         )
 
 Places the text string at the corresponding 2D or 3D position.
@@ -527,7 +527,7 @@ Defined as:
               :&writer? = -> $msg { self.command: $msg }
         )
 
-        multi method xrange(:$restore, :&writer? = -> $msg { self.command: $msg })
+        multi method xrange(TrueOnly :$restore, :&writer? = -> $msg { self.command: $msg })
 
 Sets the horizontal range that will be displayed.
 
@@ -540,7 +540,7 @@ Defined as:
               :&writer? = -> $msg { self.command: $msg }
         )
 
-        multi method yrange(:$restore, :&writer? = -> $msg { self.command: $msg })
+        multi method yrange(TrueOnly :$restore, :&writer? = -> $msg { self.command: $msg })
 
 Sets the vertical range that will be displayed.
 
@@ -553,7 +553,7 @@ Defined as:
               :&writer? = -> $msg { self.command: $msg }
         )
 
-        multi method zrange(:$restore, :&writer? = -> $msg { self.command: $msg })
+        multi method zrange(TrueOnly :$restore, :&writer? = -> $msg { self.command: $msg })
 
 Sets the range that will be displayed on the z axis.
 
@@ -566,7 +566,7 @@ Defined as:
               :&writer? = -> $msg { self.command: $msg }
         )
 
-        multi method x2range(:$restore, :&writer? = -> $msg { self.command: $msg })
+        multi method x2range(TrueOnly :$restore, :&writer? = -> $msg { self.command: $msg })
 
 Sets the range that will be displayed on the x2 axis.
 
@@ -579,7 +579,7 @@ Defined as:
               :&writer? = -> $msg { self.command: $msg }
         )
 
-        multi method y2range(:$restore, :&writer? = -> $msg { self.command: $msg })
+        multi method y2range(TrueOnly :$restore, :&writer? = -> $msg { self.command: $msg })
 
 Sets the range that will be displayed on the y2 axis.
 
@@ -592,7 +592,7 @@ Defined as:
               :&writer? = -> $msg { self.command: $msg }
         )
 
-        multi method cbrange(:$restore, :&writer? = -> $msg { self.command: $msg })
+        multi method cbrange(TrueOnly :$restore, :&writer? = -> $msg { self.command: $msg })
 
 Sets the range of values which are colored.
 
@@ -605,7 +605,7 @@ Defined as:
               :&writer? = -> $msg { self.command: $msg }
         )
 
-        multi method rrange(:$restore, :&writer? = -> $msg { self.command: $msg })
+        multi method rrange(TrueOnly :$restore, :&writer? = -> $msg { self.command: $msg })
 
 Sets the range that will be displayed on the r axis.
 
@@ -618,7 +618,7 @@ Defined as:
               :&writer? = -> $msg { self.command: $msg }
         )
 
-        multi method trange(:$restore, :&writer? = -> $msg { self.command: $msg })
+        multi method trange(TrueOnly :$restore, :&writer? = -> $msg { self.command: $msg })
 
 Sets the parametric range used to compute x and y values when in parametric or polar modes.
 
@@ -631,7 +631,7 @@ Defined as:
               :&writer? = -> $msg { self.command: $msg }
         )
 
-        multi method urange(:$restore, :&writer? = -> $msg { self.command: $msg })
+        multi method urange(TrueOnly :$restore, :&writer? = -> $msg { self.command: $msg })
 
 Set the parametric ranges used to compute x, y, and z values when in splot parametric mode.
 
@@ -644,7 +644,7 @@ Defined as:
               :&writer? = -> $msg { self.command: $msg }
         )
 
-        multi method vrange(:$restore, :&writer? = -> $msg { self.command: $msg })
+        multi method vrange(TrueOnly :$restore, :&writer? = -> $msg { self.command: $msg })
 
 Set the parametric ranges used to compute x, y, and z values when in splot parametric mode.
 
@@ -653,17 +653,17 @@ Set the parametric ranges used to compute x, y, and z values when in splot param
 Defined as:
 
         method xtics(
-               :$axis, :$border, Bool :$mirror,
-               :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
-               :$left, :$right, :$center, :$autojustify,
-               :$add,
-               :$autofreq,
+               TrueOnly :$axis, TrueOnly :$border, Bool :$mirror,
+               TrueOnly :$in, TrueOnly :$out, TrueOnly :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
+               TrueOnly :$left, TrueOnly :$right, TrueOnly :$center, TrueOnly :$autojustify,
+               TrueOnly :$add,
+               TrueOnly :$autofreq,
                :$incr,
                :$start, :$end,
                :@tics where Array[AnyTicsTic] | Array[],
                :$format, :$font-name, :$font-size, Bool :$enhanced,
-               :$numeric, :$timedate, :$geographic,
-               :$rangelimited,
+               TrueOnly :$numeric, TrueOnly :$timedate, TrueOnly :$geographic,
+               TrueOnly :$rangelimited,
                :$textcolor, :&writer? = -> $msg { self.command: $msg }
         )
 
@@ -674,17 +674,17 @@ Controls the major (labeled) tics on the x axis.
 Defined as:
 
         method ytics(
-               :$axis, :$border, Bool :$mirror,
-               :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
-               :$left, :$right, :$center, :$autojustify,
-               :$add,
-               :$autofreq,
+               TrueOnly :$axis, TrueOnly :$border, Bool :$mirror,
+               TrueOnly :$in, TrueOnly :$out, TrueOnly :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
+               TrueOnly :$left, TrueOnly :$right, TrueOnly :$center, TrueOnly :$autojustify,
+               TrueOnly :$add,
+               TrueOnly :$autofreq,
                :$incr,
                :$start, :$end,
                :@tics where Array[AnyTicsTic] | Array[],
                :$format, :$font-name, :$font-size, Bool :$enhanced,
-               :$numeric, :$timedate, :$geographic,
-               :$rangelimited,
+               TrueOnly :$numeric, TrueOnly :$timedate, TrueOnly :$geographic,
+               TrueOnly :$rangelimited,
                :$textcolor, :&writer? = -> $msg { self.command: $msg }
         )
 
@@ -695,17 +695,17 @@ Controls the major (labeled) tics on the y axis.
 Defined as:
 
         method ztics(
-               :$axis, :$border, Bool :$mirror,
-               :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
-               :$left, :$right, :$center, :$autojustify,
-               :$add,
-               :$autofreq,
+               TrueOnly :$axis, TrueOnly :$border, Bool :$mirror,
+               TrueOnly :$in, TrueOnly :$out, TrueOnly :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
+               TrueOnly :$left, TrueOnly :$right, TrueOnly :$center, TrueOnly :$autojustify,
+               TrueOnly :$add,
+               TrueOnly :$autofreq,
                :$incr,
                :$start, :$end,
                :@tics where Array[AnyTicsTic] | Array[],
                :$format, :$font-name, :$font-size, Bool :$enhanced,
-               :$numeric, :$timedate, :$geographic,
-               :$rangelimited,
+               TrueOnly :$numeric, TrueOnly :$timedate, TrueOnly :$geographic,
+               TrueOnly :$rangelimited,
                :$textcolor, :&writer? = -> $msg { self.command: $msg }
         )
 
@@ -716,17 +716,17 @@ Controls the major (labeled) tics on the z axis.
 Defined as:
 
         method x2tics(
-               :$axis, :$border, Bool :$mirror,
-               :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
-               :$left, :$right, :$center, :$autojustify,
-               :$add,
-               :$autofreq,
+               TrueOnly :$axis, TrueOnly :$border, Bool :$mirror,
+               TrueOnly :$in, TrueOnly :$out, TrueOnly :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
+               TrueOnly :$left, TrueOnly :$right, TrueOnly :$center, TrueOnly :$autojustify,
+               TrueOnly :$add,
+               TrueOnly :$autofreq,
                :$incr,
                :$start, :$end,
                :@tics where Array[AnyTicsTic] | Array[],
                :$format, :$font-name, :$font-size, Bool :$enhanced,
-               :$numeric, :$timedate, :$geographic,
-               :$rangelimited,
+               TrueOnly :$numeric, TrueOnly :$timedate, TrueOnly :$geographic,
+               TrueOnly :$rangelimited,
                :$textcolor, :&writer? = -> $msg { self.command: $msg }
         )
 
@@ -737,17 +737,17 @@ Controls the major (labeled) tics on the x2 axis.
 Defined as:
 
         method y2tics(
-               :$axis, :$border, Bool :$mirror,
-               :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
-               :$left, :$right, :$center, :$autojustify,
-               :$add,
-               :$autofreq,
+               TrueOnly :$axis, TrueOnly :$border, Bool :$mirror,
+               TrueOnly :$in, TrueOnly :$out, TrueOnly :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
+               TrueOnly :$left, TrueOnly :$right, TrueOnly :$center, TrueOnly :$autojustify,
+               TrueOnly :$add,
+               TrueOnly :$autofreq,
                :$incr,
                :$start, :$end,
                :@tics where Array[AnyTicsTic] | Array[],
                :$format, :$font-name, :$font-size, Bool :$enhanced,
-               :$numeric, :$timedate, :$geographic,
-               :$rangelimited,
+               TrueOnly :$numeric, TrueOnly :$timedate, TrueOnly :$geographic,
+               TrueOnly :$rangelimited,
                :$textcolor, :&writer? = -> $msg { self.command: $msg }
         )
 
@@ -758,17 +758,17 @@ Controls the major (labeled) tics on the y2 axis.
 Defined as:
 
         method cbtics(
-               :$axis, :$border, Bool :$mirror,
-               :$in, :$out, :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
-               :$left, :$right, :$center, :$autojustify,
-               :$add,
-               :$autofreq,
+               TrueOnly :$axis, TrueOnly :$border, Bool :$mirror,
+               TrueOnly :$in, TrueOnly :$out, TrueOnly :$scale-default, :$scale-major, :$scale-minor, AnyTicsRotate :$rotate, AnyTicsOffset :$offset,
+               TrueOnly :$left, TrueOnly :$right, TrueOnly :$center, TrueOnly :$autojustify,
+               TrueOnly :$add,
+               TrueOnly :$autofreq,
                :$incr,
                :$start, :$end,
                :@tics where Array[AnyTicsTic] | Array[],
                :$format, :$font-name, :$font-size, Bool :$enhanced,
-               :$numeric, :$timedate, :$geographic,
-               :$rangelimited,
+               TrueOnly :$numeric, TrueOnly :$timedate, TrueOnly :$geographic,
+               TrueOnly :$rangelimited,
                :$textcolor, :&writer? = -> $msg { self.command: $msg }
         )
 
@@ -779,13 +779,13 @@ Controls the major (labeled) tics on the color box axis.
 Defined as:
 
         method legend(
-               :$on, :$off, :$default, :$inside, :$outside, :$lmargin, :$rmargin, :$tmargin, :$bmargin,
+               TrueOnly :$on, TrueOnly :$off, TrueOnly :$default, TrueOnly :$inside, TrueOnly :$outside, TrueOnly :$lmargin, TrueOnly :$rmargin, TrueOnly :$tmargin, TrueOnly :$bmargin,
                :$at,
-               :$left, :$right, :$center, :$top, :$bottom,
-               :$vertical, :$horizontal, :$Left, :$Right,
+               TrueOnly :$left, TrueOnly :$right, TrueOnly :$center, TrueOnly :$top, TrueOnly :$bottom,
+               TrueOnly :$vertical, TrueOnly :$horizontal, TrueOnly :$Left, TrueOnly :$Right,
                Bool :$opaque, Bool :$reverse, Bool :$invert,
                :$samplen, :$spacing, :$width, :$height,
-               :$autotitle, :$columnheader, :$title, :$font-name, :$font-size, :$textcolor,
+               TrueOnly :$autotitle, TrueOnly :$columnheader, :$title, :$font-name, :$font-size, :$textcolor,
                Bool :$box, :$linestyle, :$linetype, :$linewidth,
                LegendMax :$maxcols, LegendMax :$maxrows, :&writer? = -> $msg { self.command: $msg }
         )
@@ -797,7 +797,7 @@ Enables a key (or legend) containing a title and a sample (line, point, box) for
 Defined as:
 
         method border(
-               :$integer, :$front, :$back, :$behind,
+               :$integer, TrueOnly :$front, TrueOnly :$back, TrueOnly :$behind,
                :lw(:$linewidth), :ls(:$linestyle), :lt(:$linetype), :&writer? = -> $msg { self.command: $msg }
         )
 
@@ -810,7 +810,7 @@ Defined as:
         method grid(
                Bool :$xtics, TrueOnly :$mxtics, Bool :$ytics, TrueOnly :$mytics, Bool :$ztics, TrueOnly :$mztics,
                Bool :$x2tics, TrueOnly :$mx2tics, Bool :$y2tics, TrueOnly :$my2tics, Bool :$cbtics, TrueOnly :$mcbtics,
-               :$polar, :$layerdefault, :$front, :$back,
+               :$polar, TrueOnly :$layerdefault, TrueOnly :$front, TrueOnly :$back,
                :ls(:@linestyle), :lt(:@linetype), :lw(:@linewidth), :&writer? = -> $msg { self.command: $msg }
         )
 
@@ -821,7 +821,7 @@ Allows grid lines to be drawn on the plot.
 Defined as:
 
         method timestamp(
-                :$format, :$top, :$bottom, Bool :$rotate,
+                Str :$format, TrueOnly :$top, TrueOnly :$bottom, Bool :$rotate,
                 :$offset, :$font-name, :$font-size, :$textcolor, :&writer? = -> $msg { self.command: $msg }
         )
 
@@ -833,14 +833,14 @@ Defined as:
 
         multi method rectangle(
               :$index!, :$from, :$to,
-              :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
-              :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }
+              TrueOnly :$front, TrueOnly :$back, TrueOnly :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
+              TrueOnly :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }
         )
 
         multi method rectangle(
               :$index, :$from, :$rto,
-              :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
-              :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }
+              TrueOnly :$front, TrueOnly :$back, TrueOnly :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
+              TrueOnly :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }
         )
 
 Defines a single rectangle which will appear in all subsequent 2D plot.
@@ -851,8 +851,8 @@ Defined as:
 
         method ellipse(
                :$index, :center(:$at), :$w!, :$h!,
-               :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
-               :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }
+               TrueOnly :$front, TrueOnly :$back, TrueOnly :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
+               TrueOnly :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }
         )
 
 Defines a single ellipse which will appear in all subsequent 2D plot.
@@ -863,8 +863,8 @@ Defined as:
 
         method circle(
                :$index, :center(:$at), :$radius!,
-               :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
-               :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }
+               TrueOnly :$front, TrueOnly :$back, TrueOnly :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
+               TrueOnly :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }
         )
 
 Defines a single circle which will appear in all subsequent 2D plot.
@@ -875,8 +875,8 @@ Defined as:
 
         method polygon(
                :$index, :$from, :@to,
-               :$front, :$back, :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
-               :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }
+               TrueOnly :$front, TrueOnly :$back, TrueOnly :$behind, Bool :$clip, :$fillcolor, :$fillstyle,
+               TrueOnly :$default, :$linewidth, :$dashtype, :&writer? = -> $msg { self.command: $msg }
         )
 
 Defines a single polygon which will appear in all subsequent 2D plot.
@@ -886,7 +886,7 @@ Defines a single polygon which will appear in all subsequent 2D plot.
 Defined as:
 
         method title(
-               :$text, :$offset, :$font-name, :$font-size, :tc(:$textcolor), :$colorspec, Bool :$enhanced,
+               Str :$text, :$offset, :$font-name, :$font-size, :tc(:$textcolor), :$colorspec, Bool :$enhanced,
                :&writer? = -> $msg { self.command: $msg }
         )
 
@@ -897,10 +897,10 @@ Produces a plot title that is centered at the top of the plot.
 Defined as:
 
         multi method arrow(
-              :$tag, :$from, :$to, Bool :$head, :$backhead, :$heads,
+              :$tag, :$from, :$to, Bool :$head, TrueOnly :$backhead, TrueOnly :$heads,
               :$head-length, :$head-angle, :$back-angle,
-              :$filled, :$empty, :$border,
-              :$front, :$back,
+              Bool :$filled, TrueOnly :$empty, TrueOnly :$border,
+              TrueOnly :$front, TrueOnly :$back,
               :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor), :dt(:$dashtype), :&writer? = -> $msg { self.command: $msg }
         )
 
@@ -911,10 +911,10 @@ Places an arrow on a plot.
 Defined as:
 
         multi method arrow(
-              :$tag, :$from, :$rto, Bool :$head, :$backhead, :$heads,
+              :$tag, :$from, :$rto, Bool :$head, TrueOnly :$backhead, TrueOnly :$heads,
               :$head-length, :$head-angle, :$back-angle,
-              :$filled, :$empty, :$border,
-              :$front, :$back,
+              Bool :$filled, TrueOnly :$empty, TrueOnly :$border,
+              TrueOnly :$front, TrueOnly :$back,
               :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor), :dt(:$dashtype), :&writer? = -> $msg { self.command: $msg }
         )
 
