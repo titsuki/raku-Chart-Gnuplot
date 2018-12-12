@@ -2,6 +2,14 @@ Revision history for Chart-Gnuplot
 
 {{$NEXT}}
 
+0.0.9  2018-12-13T08:04:14+09:00
+    - Fixes:
+       - Fix type constraint for tics [#36]
+       - Use handles [#35]
+    - Additions:
+       - Add type constraint [#37]
+    - Efficiency:
+
 0.0.8  2018-12-04T22:41:01+09:00
     - Fixes:
        - Use AnyTicsTic instead of AnyTicsTics [#34]
