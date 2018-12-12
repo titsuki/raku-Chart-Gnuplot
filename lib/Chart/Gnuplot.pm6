@@ -28,7 +28,7 @@ has &!writer;
 has Chart::Gnuplot::Arrow $!arrow handles <arrow>;
 has Chart::Gnuplot::Border $!border handles <border>;
 has Chart::Gnuplot::Grid $!grid handles <grid>;
-has Chart::Gnuplot::Label $!label handles <label xlabel ylabel zlabel x2label y2label clabel>;
+has Chart::Gnuplot::Label $!label handles <label xlabel ylabel zlabel x2label y2label cblabel>;
 has Chart::Gnuplot::Legend $!legend handles <legend>;
 has Chart::Gnuplot::Object $!object handles <rectangle ellipse circle polygon>;
 has Chart::Gnuplot::Output $.output;
