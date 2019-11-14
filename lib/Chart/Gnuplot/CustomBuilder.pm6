@@ -9,7 +9,7 @@ use Zef::Fetch;
 use Zef::Extract;
 use Distribution::Builder::MakeFromJSON;
 
-class Chart::Gnuplot::CustomBuilder:ver<0.0.12> is Distribution::Builder::MakeFromJSON {
+class Chart::Gnuplot::CustomBuilder:ver<0.0.13> is Distribution::Builder::MakeFromJSON {
     method build(IO() $work-dir = $*CWD) {
         my $workdir = ~$work-dir;
         if $*DISTRO.is-win {

@@ -2,6 +2,12 @@ Revision history for Chart-Gnuplot
 
 {{$NEXT}}
 
+0.0.13  2019-11-14T23:09:50+09:00
+    - Fixes:
+       - Add missing build dependency
+    - Additions:
+    - Efficiency:
+
 0.0.12  2019-11-14T22:17:47+09:00
     - Fixes:
        - Fix broken gnuplot download link [d2758]
