@@ -4,7 +4,8 @@
     "Itsuki Toyota"
   ],
   "build-depends" : [
-    "zef"
+    "zef",
+    "Distribution::Builder::MakeFromJSON"
   ],
   "builder" : "Chart::Gnuplot::CustomBuilder",
   "depends" : [ ],
