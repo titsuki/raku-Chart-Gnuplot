@@ -39,7 +39,7 @@ class Chart::Gnuplot::CustomBuilder:ver<0.0.13> is Distribution::Builder::MakeFr
             { module => "Zef::Service::Shell::p5tar" },
         ];
         my $extractor = Zef::Extract.new(:backends(@extract-backends));
-        my $extract-dir = $extractor.extract($archive-file, $*CWD);
+        my $extract-dir = $extractor.extract(Candidate.new(:uri($archive-file)), $*CWD);
         chdir("gnuplot-5.2.6");
         shell("./configure --prefix=$prefix");
         shell("make");
