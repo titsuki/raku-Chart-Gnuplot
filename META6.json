@@ -6,6 +6,7 @@
   "build-depends" : [
     "zef"
   ],
+  "builder" : "Chart::Gnuplot::CustomBuilder",
   "depends" : [ ],
   "description" : "A Perl 6 bindings for gnuplot",
   "license" : "GPL-3.0",
@@ -15,6 +16,7 @@
     "Chart::Gnuplot" : "lib/Chart/Gnuplot.pm6",
     "Chart::Gnuplot::Arrow" : "lib/Chart/Gnuplot/Arrow.pm6",
     "Chart::Gnuplot::Border" : "lib/Chart/Gnuplot/Border.pm6",
+    "Chart::Gnuplot::CustomBuilder" : "lib/Chart/Gnuplot/CustomBuilder.pm6",
     "Chart::Gnuplot::Grid" : "lib/Chart/Gnuplot/Grid.pm6",
     "Chart::Gnuplot::Label" : "lib/Chart/Gnuplot/Label.pm6",
     "Chart::Gnuplot::Legend" : "lib/Chart/Gnuplot/Legend.pm6",

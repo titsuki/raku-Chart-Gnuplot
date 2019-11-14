@@ -7,9 +7,11 @@
 use Zef;
 use Zef::Fetch;
 use Zef::Extract;
+use Distribution::Builder::MakeFromJSON;
 
-class Build {
-    method build($workdir) {
+class Chart::Gnuplot::CustomBuilder:ver<0.0.11> is Distribution::Builder::MakeFromJSON {
+    method build(IO() $work-dir = $*CWD) {
+        my $workdir = ~$work-dir;
         if $*DISTRO.is-win {
             die "Sorry, this binding doesn't support windows";
         }
