@@ -1,5 +1,5 @@
 use v6;
-unit class Chart::Gnuplot::Label:ver<0.0.13>;
+unit class Chart::Gnuplot::Label:ver<0.0.14>;
 
 use Chart::Gnuplot::Util;
 use Chart::Gnuplot::Subset;

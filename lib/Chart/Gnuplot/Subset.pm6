@@ -1,5 +1,5 @@
 use v6;
-unit module Chart::Gnuplot::Subset:ver<0.0.13>;
+unit module Chart::Gnuplot::Subset:ver<0.0.14>;
 
 subset FalseOnly of Bool is export where { $_ ~~ Bool:U or $_ === False };
 subset TrueOnly of Bool is export where { $_ ~~ Bool:U or $_ === True};
