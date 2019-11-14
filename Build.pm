@@ -21,16 +21,16 @@ class Build {
     method !install-gnuplot($workdir, $prefix) {
         my $goback = $*CWD;
         chdir($workdir);
-        
+
         my @fetch-backends = [
             { module => "Zef::Service::Shell::wget" },
             { module => "Zef::Service::Shell::curl" },
         ];
         my $fetcher      = Zef::Fetch.new(:backends(@fetch-backends));
-        my $uri          = 'http://ftp.cstug.cz/pub/CTAN/graphics/gnuplot/5.2.5/gnuplot-5.2.5.tar.gz';
-        my $archive-file = "gnuplot-5.2.5.tar.gz".IO.e
-        ?? "gnuplot-5.2.5.tar.gz"
-        !! $fetcher.fetch($uri, "gnuplot-5.2.5.tar.gz");
+        my $uri          = 'http://mirrors.ctan.org/graphics/gnuplot/5.2.6/gnuplot-5.2.6.tar.gz';
+        my $archive-file = "gnuplot-5.2.6.tar.gz".IO.e
+        ?? "gnuplot-5.2.6.tar.gz"
+        !! $fetcher.fetch($uri, "gnuplot-5.2.6.tar.gz");
 
         my @extract-backends = [
             { module => "Zef::Service::Shell::tar" },
@@ -38,7 +38,7 @@ class Build {
         ];
         my $extractor = Zef::Extract.new(:backends(@extract-backends));
         my $extract-dir = $extractor.extract($archive-file, $*CWD);
-        chdir("gnuplot-5.2.5");
+        chdir("gnuplot-5.2.6");
         shell("./configure --prefix=$prefix");
         shell("make");
         shell("make install");
