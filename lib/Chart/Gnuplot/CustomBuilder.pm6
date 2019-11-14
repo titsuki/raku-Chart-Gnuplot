@@ -32,7 +32,7 @@ class Chart::Gnuplot::CustomBuilder:ver<0.0.13> is Distribution::Builder::MakeFr
         my $uri          = 'http://mirrors.ctan.org/graphics/gnuplot/5.2.6/gnuplot-5.2.6.tar.gz';
         my $archive-file = "gnuplot-5.2.6.tar.gz".IO.e
         ?? "gnuplot-5.2.6.tar.gz"
-        !! $fetcher.fetch($uri, "gnuplot-5.2.6.tar.gz");
+        !! $fetcher.fetch(Candidate.new(:$uri), "gnuplot-5.2.6.tar.gz");
 
         my @extract-backends = [
             { module => "Zef::Service::Shell::tar" },
