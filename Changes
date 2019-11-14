@@ -2,6 +2,13 @@ Revision history for Chart-Gnuplot
 
 {{$NEXT}}
 
+0.0.12  2019-11-14T22:17:47+09:00
+    - Fixes:
+       - Fix broken gnuplot download link [d2758]
+       - Use CustomBuiler [d8cca]
+    - Additions:
+    - Efficiency:
+
 0.0.11  2018-12-13T09:19:48+09:00
     - Fixes:
        - Fix delegation construction (tics, timestamp, title) [#39]

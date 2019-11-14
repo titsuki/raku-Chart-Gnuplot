@@ -1,5 +1,5 @@
 use v6;
-unit class Chart::Gnuplot::Output:ver<0.0.11>;
+unit class Chart::Gnuplot::Output:ver<0.0.12>;
 
 has Str $!filename;
 has &!writer;
