@@ -5,7 +5,8 @@
   ],
   "build-depends" : [
     "zef",
-    "Distribution::Builder::MakeFromJSON"
+    "Distribution::Builder::MakeFromJSON",
+    "Chart::Gnuplot::CustomBuilder"
   ],
   "builder" : "Chart::Gnuplot::CustomBuilder",
   "depends" : [ ],
