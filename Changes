@@ -2,6 +2,12 @@ Revision history for Chart-Gnuplot
 
 {{$NEXT}}
 
+0.0.15  2019-12-17T00:42:51+09:00
+    - Fixes:
+       - Add CustomBuilder to the build-depends
+    - Additions:
+    - Efficiency:
+
 0.0.14  2019-11-15T08:16:21+09:00
     - Fixes:
        - Fix some build errors caused by zef changes
