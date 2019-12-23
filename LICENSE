@@ -1,4 +1,4 @@
-p6-Chart-Gnuplot -- A Perl6 Gnuplot bindings
+raku-Chart-Gnuplot -- A Raku Gnuplot bindings
 Copyright (C) 2017 titsuki
 
 This program is free software: you can redistribute it and/or modify
