@@ -10,7 +10,7 @@
   ],
   "builder" : "Chart::Gnuplot::CustomBuilder",
   "depends" : [ ],
-  "description" : "A Perl 6 bindings for gnuplot",
+  "description" : "A Raku bindings for gnuplot",
   "license" : "GPL-3.0",
   "name" : "Chart::Gnuplot",
   "perl" : "6.c",
@@ -33,7 +33,7 @@
     "Chart::Gnuplot::Util" : "lib/Chart/Gnuplot/Util.pm6"
   },
   "resources" : [ ],
-  "source-url" : "git://github.com/titsuki/p6-Chart-Gnuplot.git",
+  "source-url" : "git://github.com/titsuki/raku-Chart-Gnuplot.git",
   "tags" : [ ],
   "test-depends" : [
     "IO::Capture::Simple"

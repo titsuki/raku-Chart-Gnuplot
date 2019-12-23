@@ -1,9 +1,9 @@
-[![Build Status](https://travis-ci.org/titsuki/p6-Chart-Gnuplot.svg?branch=master)](https://travis-ci.org/titsuki/p6-Chart-Gnuplot)
+[![Build Status](https://travis-ci.org/titsuki/raku-Chart-Gnuplot.svg?branch=master)](https://travis-ci.org/titsuki/raku-Chart-Gnuplot)
 
 NAME
 ====
 
-Chart::Gnuplot - A Perl 6 bindings for gnuplot
+Chart::Gnuplot - A Raku bindings for gnuplot
 
 SYNOPSIS
 ========
@@ -45,7 +45,7 @@ SYNOPSIS
 DESCRIPTION
 ===========
 
-Chart::Gnuplot is a Perl 6 naive bindings for gnuplot. Chart::Gnuplot runs `gnuplot` using `Proc::Async` and enables you to plot chart or graph with Perl6ish interface.
+Chart::Gnuplot is a Raku naive bindings for gnuplot. Chart::Gnuplot runs `gnuplot` using `Proc::Async` and enables you to plot chart or graph with Rakuish interface.
 
 SUBSET
 ------
