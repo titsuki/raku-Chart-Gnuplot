@@ -2,6 +2,12 @@ Revision history for Chart-Gnuplot
 
 {{$NEXT}}
 
+0.0.16  2019-12-24T00:56:00+09:00
+    - Fixes:
+       - Replace p6/perl6 with raku
+    - Additions:
+    - Efficiency:
+
 0.0.15  2019-12-17T00:42:51+09:00
     - Fixes:
        - Add CustomBuilder to the build-depends
