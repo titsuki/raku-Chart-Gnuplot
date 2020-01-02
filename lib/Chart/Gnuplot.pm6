@@ -22,7 +22,8 @@ has $.debug;
 has %.options;
 has Int $!num-plot;
 has $!promise;
-has @!msg-pool;
+has $!msg-channel;
+has $!msg-supply;
 has &!writer;
 
 has Chart::Gnuplot::Arrow $!arrow handles <arrow>;
@@ -38,7 +39,7 @@ has Chart::Gnuplot::Tics $!tics handles <xtics ytics ztics x2tics y2tics cbtics>
 has Chart::Gnuplot::Timestamp $!timestamp handles <timestamp>;
 has Chart::Gnuplot::Title $!title handles <title>;
 
-submethod BUILD(:$terminal!, Str :$filename, :$!persist = True, :$!debug = False, :&!writer? = -> $msg { self.command: $msg }) {
+submethod BUILD(:$terminal!, Str :$filename, :$!persist = True, :$!debug = False, :&!writer? = -> $msg { self.command: $msg }, :$stderr = $*ERR) {
     my $HOME = qq:x/echo \$HOME/.subst(/\s*/,"",:g);
     my $prefix = "$HOME/.p6chart-gnuplot";
 
@@ -47,8 +48,11 @@ submethod BUILD(:$terminal!, Str :$filename, :$!persist = True, :$!debug = False
     $!gnuplot = Proc::Async.new(:w, "$prefix/bin/gnuplot", @opts.join(" "));
 
     if $!debug {
-        $!gnuplot.stderr.act(-> $v { @!msg-pool.push($v); });
-        $!gnuplot.stdout.act(-> $v { @!msg-pool.push($v); });
+        $!msg-channel = Channel.new;
+        $!msg-supply = $!msg-channel.Supply;
+        $!gnuplot.stderr.act(-> $v { $!msg-channel.send($v); });
+        $!gnuplot.stdout.act(-> $v { $!msg-channel.send($v); });
+        $!msg-supply.tap(-> $v { $stderr.print: $v } );
     } else {
         $!gnuplot.stderr.act({;});
         $!gnuplot.stdout.act({;});
@@ -313,13 +317,6 @@ method dispose {
 
 method command(Str $command) {
     try sink await $!gnuplot.say: $command;
-
-    if $!debug {
-        sleep .5 unless @!msg-pool;
-        $*ERR.print: $command ~ "\n"; # for IO::Capture::Simple
-        $*ERR.print: @!msg-pool.join;
-        @!msg-pool = ();
-    }
 }
 
 =begin pod
