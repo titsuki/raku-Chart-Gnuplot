@@ -14,7 +14,6 @@ use Chart::Gnuplot;
     my $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("sample.png"), :debug, :stderr(class { method print(*@args){ $msg ~= @args.join; }; method flush{}}));
     $gnu.terminal("Perl6isFun");
     sleep .5;
-    say $msg;
     ok $msg ~~ /unknown/, "Chart::Gnuplot.terminal shouldn't accept \"Perl6isFun\" as an argument.";
 }
 
