@@ -981,6 +981,63 @@ Runs a given C<$command>. If there are no appropriate interfaces, this method wi
 
 =end para
 
+=head2 Recall-Precision Curve
+
+=head3 SOURCE
+
+    use v6;
+    use Chart::Gnuplot;
+
+    my $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("recprec.png"), :debug);
+    $gnu.title(:text("Recall-Precision Curve"));
+    $gnu.ylabel(:label("Precision"));
+    $gnu.xlabel(:label("Recall"));
+    $gnu.xrange(:min(0.0), :max(1.0));
+    $gnu.yrange(:min(0.0), :max(1.0));
+
+    my @methodA = (q:to/EOF/).split("\n", :skip-empty)>>.split(" ", :skip-empty);
+    0.0 1.0
+    0.1 0.95
+    0.2 0.9
+    0.3 0.85
+    0.4 0.82
+    0.5 0.6
+    0.6 0.55
+    0.7 0.51
+    0.8 0.4
+    0.9 0.38
+    1.0 0.35
+    EOF
+
+    my @methodB = (q:to/EOF/).split("\n", :skip-empty)>>.split(" ", :skip-empty);
+    0.0 1.0
+    0.1 0.95
+    0.2 0.8
+    0.3 0.5
+    0.4 0.4
+    0.5 0.3
+    0.6 0.2
+    0.7 0.1
+    0.8 0.08
+    0.9 0.05
+    1.0 0.05
+    EOF
+
+    my %methodA = %(:vertices(@methodA), :style("linespoints"), :title("proposed"), :lc(qw/rgb "green"/), :lt(10));
+    my %methodB = %(:vertices(@methodB), :style("linespoints"), :title("baseline"), :lc(qw/rgb "red"/), :lt(13));
+
+    $gnu.plot(|%methodA);
+    $gnu.plot(|%methodB);
+    $gnu.dispose;
+
+=head3 OUTPUT
+
+=begin para
+
+    <img src="recprec.png" alt="recall precision curve">
+
+=end para
+
 =head1 AUTHOR
 
 titsuki <titsuki@cpan.org>
