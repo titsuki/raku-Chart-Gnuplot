@@ -988,7 +988,7 @@ Runs a given C<$command>. If there are no appropriate interfaces, this method wi
     use v6;
     use Chart::Gnuplot;
 
-    my $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("recprec.png"), :debug);
+    my $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("recprec.png"));
     $gnu.title(:text("Recall-Precision Curve"));
     $gnu.ylabel(:label("Precision"));
     $gnu.xlabel(:label("Recall"));
