@@ -36,5 +36,5 @@
   "source-url" : "git://github.com/titsuki/raku-Chart-Gnuplot.git",
   "tags" : [ ],
   "test-depends" : [ ],
-  "version" : "0.0.18"
+  "version" : "0.0.19"
 }

@@ -1,5 +1,5 @@
 use v6;
-unit class Chart::Gnuplot::Title:ver<0.0.18>;
+unit class Chart::Gnuplot::Title:ver<0.0.19>;
 
 use Chart::Gnuplot::Util;
 

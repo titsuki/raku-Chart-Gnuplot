@@ -2,6 +2,12 @@ Revision history for Chart-Gnuplot
 
 {{$NEXT}}
 
+0.0.19  2020-07-26T15:43:28+09:00
+    - Fixes:
+      - Set pt instead of lt for recall-precision curve plotting
+    - Additions:
+    - Efficiency:
+
 0.0.18  2020-07-26T15:13:15+09:00
     - Fixes:
     - Additions:
