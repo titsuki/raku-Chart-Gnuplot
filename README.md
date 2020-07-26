@@ -663,7 +663,7 @@ Recall-Precision Curve
     use v6;
     use Chart::Gnuplot;
 
-    my $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("recprec.png"), :debug);
+    my $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("recprec.png"));
     $gnu.title(:text("Recall-Precision Curve"));
     $gnu.ylabel(:label("Precision"));
     $gnu.xlabel(:label("Recall"));
