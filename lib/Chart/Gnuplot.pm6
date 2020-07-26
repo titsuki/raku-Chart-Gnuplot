@@ -1023,8 +1023,8 @@ Runs a given C<$command>. If there are no appropriate interfaces, this method wi
     1.0 0.05
     EOF
 
-    my %methodA = %(:vertices(@methodA), :style("linespoints"), :title("proposed"), :lc(qw/rgb "green"/), :lt(10));
-    my %methodB = %(:vertices(@methodB), :style("linespoints"), :title("baseline"), :lc(qw/rgb "red"/), :lt(13));
+    my %methodA = %(:vertices(@methodA), :style("linespoints"), :title("proposed"), :lc(qw/rgb "green"/), :pt(10));
+    my %methodB = %(:vertices(@methodB), :style("linespoints"), :title("baseline"), :lc(qw/rgb "red"/), :pt(13));
 
     $gnu.plot(|%methodA);
     $gnu.plot(|%methodB);
