@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/titsuki/raku-Chart-Gnuplot.svg?branch=master)](https://travis-ci.com/titsuki/raku-Chart-Gnuplot)
+[![Actions Status](https://github.com/titsuki/raku-Chart-Gnuplot/workflows/test/badge.svg)](https://github.com/titsuki/raku-Chart-Gnuplot/actions)
 
 NAME
 ====
