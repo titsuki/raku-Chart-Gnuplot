@@ -1,5 +1,5 @@
 use v6;
-unit class Chart::Gnuplot::Grid:ver<0.0.19>;
+unit class Chart::Gnuplot::Grid:ver<0.0.20>;
 
 use Chart::Gnuplot::Subset;
 
