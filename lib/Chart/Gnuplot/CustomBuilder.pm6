@@ -41,7 +41,7 @@ class Chart::Gnuplot::CustomBuilder:ver<0.0.19> is Distribution::Builder::MakeFr
         my $extractor = Zef::Extract.new(:backends(@extract-backends));
         my $extract-dir = $extractor.extract(Candidate.new(:uri($archive-file)), $*CWD);
         chdir("gnuplot-5.2.6");
-        shell("./configure --prefix=$prefix");
+        shell("./configure --prefix=$prefix --with-latex --with-texdir={$prefix}/share/texmf/tex/latex/gnuplot");
         shell("make");
         shell("make install");
         chdir($goback);
