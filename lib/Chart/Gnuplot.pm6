@@ -312,10 +312,13 @@ method multiplot(:$title, :$font-name, :$font-size, Bool :$enhanced, :@layout, :
 method dispose {
     self.command: "exit";
     $!gnuplot.close-stdin;
-    await $!promise;
+    try sink await $!promise;
 }
 
-method command(Str $command) {
+method command(Str $command, :$stderr = $*ERR) {
+    if $!debug {
+        $stderr.say: $command;
+    }
     try sink await $!gnuplot.say: $command;
 }
 
