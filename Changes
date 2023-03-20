@@ -2,6 +2,12 @@ Revision history for Chart-Gnuplot
 
 {{$NEXT}}
 
+0.0.21  2023-03-20T13:31:50+09:00
+    - Fixes:
+      - Fix debug option as it enables to output both user input and reply from gnuplot [#47]
+    - Additions:
+    - Efficiency:
+
 0.0.20  2021-05-01T13:26:55+09:00
     - Fixes:
       - Set TEXDIR explicitly for removing dependence on kpsewhich [#44]

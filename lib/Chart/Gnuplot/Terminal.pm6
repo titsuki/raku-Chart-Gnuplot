@@ -1,5 +1,5 @@
 use v6;
-unit class Chart::Gnuplot::Terminal:ver<0.0.20>;
+unit class Chart::Gnuplot::Terminal:ver<0.0.21>;
 
 has Str $!type;
 has &!writer;
