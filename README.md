@@ -714,7 +714,9 @@ How to use Chart::Gnuplot on jupyter?
 
 One way to do this is:
 
-1) Write a svg image as a tmp file. 2) Read this tmp file and remove the first superfluous line.
+  * 1. Write a svg image as a tmp file.
+
+  * 2. Read this tmp file and remove the first superfluous line.
 
 If you haven't setup Raku kernel yet, use [Jupyter::Kernel](https://github.com/bduggan/raku-jupyter-kernel).
 

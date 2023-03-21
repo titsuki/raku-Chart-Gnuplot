@@ -1045,8 +1045,8 @@ Runs a given C<$command>. If there are no appropriate interfaces, this method wi
 
 One way to do this is:
 
-1) Write a svg image as a tmp file.
-2) Read this tmp file and remove the first superfluous line.
+=item 1. Write a svg image as a tmp file.
+=item 2. Read this tmp file and remove the first superfluous line.
 
 If you haven't setup Raku kernel yet, use L<Jupyter::Kernel|https://github.com/bduggan/raku-jupyter-kernel>.
 
