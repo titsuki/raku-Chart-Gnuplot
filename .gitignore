@@ -9,3 +9,6 @@
 /gnuplot-*
 /example/*
 *.svg
+/notebooks/.ipynb_checkpoints/
+/notebooks/jupyter.log
+/notebooks/nohup.out
