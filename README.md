@@ -763,7 +763,7 @@ If you haven't setup Raku kernel yet, use [Jupyter::Kernel](https://github.com/b
 
     $filehandle.lines[1..*].join("\n");
 
-The example ipynb file is here: [/notebooks/synopsys.ipynb](/notebooks/synopsys.ipynb).
+The example ipynb file is here: [/notebooks/synopsis.ipynb](/notebooks/synopsis.ipynb).
 
 AUTHOR
 ======

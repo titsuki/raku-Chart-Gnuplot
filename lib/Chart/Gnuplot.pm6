@@ -1095,7 +1095,7 @@ If you haven't setup Raku kernel yet, use L<Jupyter::Kernel|https://github.com/b
 
     $filehandle.lines[1..*].join("\n");
 
-The example ipynb file is here: L</notebooks/synopsys.ipynb|/notebooks/synopsys.ipynb>.
+The example ipynb file is here: L</notebooks/synopsis.ipynb|/notebooks/synopsis.ipynb>.
 
 =head1 AUTHOR
 
