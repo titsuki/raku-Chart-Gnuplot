@@ -29,10 +29,10 @@ class Chart::Gnuplot::CustomBuilder:ver<0.0.21> is Distribution::Builder::MakeFr
             { module => "Zef::Service::Shell::curl" },
         ];
         my $fetcher      = Zef::Fetch.new(:backends(@fetch-backends));
-        my $uri          = 'http://mirrors.ctan.org/graphics/gnuplot/5.2.6/gnuplot-5.2.6.tar.gz';
-        my $archive-file = "gnuplot-5.2.6.tar.gz".IO.e
-        ?? "gnuplot-5.2.6.tar.gz"
-        !! $fetcher.fetch(Candidate.new(:$uri), "gnuplot-5.2.6.tar.gz");
+        my $uri          = 'https://fossies.org/linux/misc/gnuplot-6.0.3.tar.gz';
+        my $archive-file = "gnuplot-6.0.3.tar.gz".IO.e
+        ?? "gnuplot-6.0.3.tar.gz"
+        !! $fetcher.fetch(Candidate.new(:$uri), "gnuplot-6.0.3.tar.gz");
 
         my @extract-backends = [
             { module => "Zef::Service::Shell::tar" },
@@ -40,8 +40,8 @@ class Chart::Gnuplot::CustomBuilder:ver<0.0.21> is Distribution::Builder::MakeFr
         ];
         my $extractor = Zef::Extract.new(:backends(@extract-backends));
         my $extract-dir = $extractor.extract(Candidate.new(:uri($archive-file)), $*CWD);
-        chdir("gnuplot-5.2.6");
-        shell("./configure --prefix=$prefix --with-latex --with-texdir={$prefix}/share/texmf/tex/latex/gnuplot");
+        chdir("gnuplot-6.0.3");
+        shell("./configure --prefix=$prefix --with-latex --with-texdir={$prefix}/share/texmf/tex/latex/gnuplot --without-qt --without-x");
         shell("make");
         shell("make install");
         chdir($goback);
