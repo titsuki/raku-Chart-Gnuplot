@@ -29,7 +29,7 @@ class Chart::Gnuplot::CustomBuilder:ver<0.0.21> is Distribution::Builder::MakeFr
             { module => "Zef::Service::Shell::curl" },
         ];
         my $fetcher      = Zef::Fetch.new(:backends(@fetch-backends));
-        my $uri          = 'https://fossies.org/linux/misc/gnuplot-6.0.3.tar.gz';
+        my $uri          = 'https://downloads.sourceforge.net/project/gnuplot/gnuplot/6.0.3/gnuplot-6.0.3.tar.gz';
         my $archive-file = "gnuplot-6.0.3.tar.gz".IO.e
         ?? "gnuplot-6.0.3.tar.gz"
         !! $fetcher.fetch(Candidate.new(:$uri), "gnuplot-6.0.3.tar.gz");
