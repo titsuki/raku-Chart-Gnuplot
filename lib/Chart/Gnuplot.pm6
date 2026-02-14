@@ -39,13 +39,15 @@ has Chart::Gnuplot::Tics $!tics handles <xtics ytics ztics x2tics y2tics cbtics>
 has Chart::Gnuplot::Timestamp $!timestamp handles <timestamp>;
 has Chart::Gnuplot::Title $!title handles <title>;
 
-submethod BUILD(:$terminal!, Str :$filename, :$!persist = True, :$!debug = False, :&!writer? = -> $msg { self.command: $msg }, :$stderr = $*ERR) {
+submethod BUILD(:$terminal!, Str :$filename, Str :$gnuplot?, :$!persist = True, :$!debug = False, :&!writer? = -> $msg { self.command: $msg }, :$stderr = $*ERR) {
     my $HOME = qq:x/echo \$HOME/.subst(/\s*/,"",:g);
     my $prefix = "$HOME/.p6chart-gnuplot";
+    my $bundled-gnuplot = "$prefix/bin/gnuplot";
+    my $gnuplot-bin = $gnuplot // ($bundled-gnuplot.IO.x ?? $bundled-gnuplot !! "gnuplot");
 
     my @opts;
     @opts.push('-persist') if $!persist;
-    $!gnuplot = Proc::Async.new(:w, "$prefix/bin/gnuplot", @opts.join(" "));
+    $!gnuplot = Proc::Async.new(:w, $gnuplot-bin, @opts.join(" "));
 
     if $!debug {
         $!msg-channel = Channel.new;
