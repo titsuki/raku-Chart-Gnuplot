@@ -36,9 +36,15 @@ my class Capture {
 # 2. A user-supplied :gnuplot path is accepted.
 {
     my $fake = make-fake-gnuplot;
+    my $gnu;
     lives-ok {
-        my $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("sample.png"), :gnuplot($fake));
+        $gnu = Chart::Gnuplot.new(:terminal("png"), :filename("sample.png"), :gnuplot($fake));
     }, "Chart::Gnuplot.new should accept a user-supplied :gnuplot path.";
+    # dispose awaits the subprocess promise, guaranteeing the binary has been
+    # exec'd before we remove it. Removing it earlier races the async spawn and
+    # makes exec fail with "no such file or directory" (notably on macOS, where
+    # $*TMPDIR lives under /var/folders).
+    $gnu.dispose;
     $fake.IO.unlink;
 }
 
@@ -52,6 +58,7 @@ my class Capture {
     sleep 1;
     ok $cap.buf.contains("FAKEGNUPLOT:set xrange [0:1]"),
         "The user-supplied :gnuplot binary should be the one that receives commands.";
+    $gnu.dispose;
     $fake.IO.unlink;
 }
 
