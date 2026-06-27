@@ -2,6 +2,10 @@ Revision history for Chart-Gnuplot
 
 {{$NEXT}}
 
+0.0.23  2026-06-27T14:43:45+09:00
+    - Fixes:
+      - Migrate distribution from CPAN (cpan:TITSUKI) to the zef ecosystem (zef:titsuki) [#57]
+
 0.0.22  2026-06-27T14:29:00+09:00
     - Fixes:
       - Replace gnuplot 5.2.6 with 6.0.3 [#50]
