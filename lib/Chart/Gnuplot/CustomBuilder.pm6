@@ -15,6 +15,10 @@ class Chart::Gnuplot::CustomBuilder:ver<0.0.21> is Distribution::Builder::MakeFr
         if $*DISTRO.is-win {
             die "Sorry, this binding doesn't support windows";
         }
+        if %*ENV<RAKU_CHART_GNUPLOT_NO_BUNDLE> {
+            note "RAKU_CHART_GNUPLOT_NO_BUNDLE is set; skipping the bundled gnuplot build. Chart::Gnuplot will use the gnuplot found on PATH at runtime.";
+            return True;
+        }
         my $HOME = qq:x/echo \$HOME/.subst(/\s*/,"",:g);
         my $prefix = "$HOME/.p6chart-gnuplot";
         self!install-gnuplot($workdir, $prefix);
