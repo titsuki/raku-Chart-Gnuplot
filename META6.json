@@ -35,10 +35,10 @@
   },
   "resources": [
   ],
-  "source-url": "git://github.com/titsuki/raku-Chart-Gnuplot.git",
+  "source-url": "https://github.com/titsuki/raku-Chart-Gnuplot.git",
   "tags": [
   ],
   "test-depends": [
   ],
-  "version": "0.0.21"
+  "version": "0.0.22"
 }

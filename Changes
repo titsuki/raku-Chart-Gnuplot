@@ -2,6 +2,17 @@ Revision history for Chart-Gnuplot
 
 {{$NEXT}}
 
+0.0.22  2026-06-27T14:29:00+09:00
+    - Fixes:
+      - Replace gnuplot 5.2.6 with 6.0.3 [#50]
+      - Use sourceforge for downloading gnuplot 6.0.3 [#53]
+      - Fix test 19 on mac osx [#56]
+    - Additions:
+      - Document how to use Chart::Gnuplot on jupyter [#48]
+      - Make BUILD enable to inject user-installed gnuplot [#54]
+      - Make bundle gnuplot installation optional [#55]
+    - Efficiency:
+
 0.0.21  2023-03-20T13:31:50+09:00
     - Fixes:
       - Fix debug option as it enables to output both user input and reply from gnuplot [#47]

@@ -1,5 +1,5 @@
 use v6;
-unit class Chart::Gnuplot::Range:ver<0.0.21>;
+unit class Chart::Gnuplot::Range:ver<0.0.22>;
 
 use Chart::Gnuplot::Subset;
 

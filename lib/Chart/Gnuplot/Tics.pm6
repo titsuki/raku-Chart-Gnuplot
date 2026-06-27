@@ -1,5 +1,5 @@
 use v6;
-unit class Chart::Gnuplot::Tics:ver<0.0.21>;
+unit class Chart::Gnuplot::Tics:ver<0.0.22>;
 
 use Chart::Gnuplot::Util;
 use Chart::Gnuplot::Subset;
