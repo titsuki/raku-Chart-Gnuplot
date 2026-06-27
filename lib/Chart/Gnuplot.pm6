@@ -39,13 +39,15 @@ has Chart::Gnuplot::Tics $!tics handles <xtics ytics ztics x2tics y2tics cbtics>
 has Chart::Gnuplot::Timestamp $!timestamp handles <timestamp>;
 has Chart::Gnuplot::Title $!title handles <title>;
 
-submethod BUILD(:$terminal!, Str :$filename, :$!persist = True, :$!debug = False, :&!writer? = -> $msg { self.command: $msg }, :$stderr = $*ERR) {
+submethod BUILD(:$terminal!, Str :$filename, Str :$gnuplot?, :$!persist = True, :$!debug = False, :&!writer? = -> $msg { self.command: $msg }, :$stderr = $*ERR) {
     my $HOME = qq:x/echo \$HOME/.subst(/\s*/,"",:g);
     my $prefix = "$HOME/.p6chart-gnuplot";
+    my $bundled-gnuplot = "$prefix/bin/gnuplot";
+    my $gnuplot-bin = $gnuplot // ($bundled-gnuplot.IO.x ?? $bundled-gnuplot !! "gnuplot");
 
     my @opts;
     @opts.push('-persist') if $!persist;
-    $!gnuplot = Proc::Async.new(:w, "$prefix/bin/gnuplot", @opts.join(" "));
+    $!gnuplot = Proc::Async.new(:w, $gnuplot-bin, @opts.join(" "));
 
     if $!debug {
         $!msg-channel = Channel.new;
@@ -387,6 +389,22 @@ Defined as:
         subset AnyTicsTic of Mu is export where { $_ ~~ Mu:U or $_ ~~ Hash and .<label>:exists and .<pos>:exists and .keys.grep(* eq "label"|"pos"|"level").elems == .keys.elems };
 
 =head2 METHODS
+
+=head3 new
+
+Defined as:
+
+        method new(:$terminal!, Str :$filename, Str :$gnuplot?, Bool :$persist = True, Bool :$debug = False, :&writer? = -> $msg { self.command: $msg }, :$stderr = $*ERR)
+
+Instantiates a new Chart::Gnuplot object.
+
+=item C<:$terminal!> - The output terminal type (e.g. C<"png">, C<"svg">). Required.
+=item C<:$filename> - The path of the output file to write the chart to.
+=item C<:$gnuplot> - The path of the gnuplot executable to use. When omitted, the bundled gnuplot is used if available, otherwise C<gnuplot> on C<PATH>.
+=item C<:$persist> - Keeps the gnuplot process alive by passing C<-persist>. Defaults to C<True>.
+=item C<:$debug> - Prints the commands sent to gnuplot and the gnuplot output to C<:$stderr>. Defaults to C<False>.
+=item C<:&writer> - A callback used to send commands to gnuplot. Defaults to C<self.command>.
+=item C<:$stderr> - Where the debug output is printed. Defaults to C<$*ERR>.
 
 =head3 terminal
 
