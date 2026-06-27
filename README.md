@@ -47,6 +47,15 @@ DESCRIPTION
 
 Chart::Gnuplot is a Raku naive bindings for gnuplot. Chart::Gnuplot runs `gnuplot` using `Proc::Async` and enables you to plot chart or graph with Rakuish interface.
 
+INSTALLATION
+------------
+
+By default, the installer downloads and builds gnuplot from source and installs it under `~/.p6chart-gnuplot`. If you already have gnuplot installed (or want to skip the source build), set the `RAKU_CHART_GNUPLOT_NO_BUNDLE` environment variable before installing:
+
+    RAKU_CHART_GNUPLOT_NO_BUNDLE=1 zef install Chart::Gnuplot
+
+When the bundled gnuplot is not built, Chart::Gnuplot uses the `gnuplot` found on `PATH` at runtime (or the path you pass via `:$gnuplot`).
+
 SUBSET
 ------
 
