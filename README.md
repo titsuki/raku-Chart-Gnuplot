@@ -64,6 +64,28 @@ Defined as:
 METHODS
 -------
 
+### new
+
+Defined as:
+
+    method new(:$terminal!, Str :$filename, Str :$gnuplot?, Bool :$persist = True, Bool :$debug = False, :&writer? = -> $msg { self.command: $msg }, :$stderr = $*ERR)
+
+Instantiates a new Chart::Gnuplot object.
+
+  * `:$terminal!` - The output terminal type (e.g. `"png"`, `"svg"`). Required.
+
+  * `:$filename` - The path of the output file to write the chart to.
+
+  * `:$gnuplot` - The path of the gnuplot executable to use. When omitted, the bundled gnuplot is used if available, otherwise `gnuplot` on `PATH`.
+
+  * `:$persist` - Keeps the gnuplot process alive by passing `-persist`. Defaults to `True`.
+
+  * `:$debug` - Prints the commands sent to gnuplot and the gnuplot output to `:$stderr`. Defaults to `False`.
+
+  * `:&writer` - A callback used to send commands to gnuplot. Defaults to `self.command`.
+
+  * `:$stderr` - Where the debug output is printed. Defaults to `$*ERR`.
+
 ### terminal
 
 Defined as:

@@ -390,6 +390,22 @@ Defined as:
 
 =head2 METHODS
 
+=head3 new
+
+Defined as:
+
+        method new(:$terminal!, Str :$filename, Str :$gnuplot?, Bool :$persist = True, Bool :$debug = False, :&writer? = -> $msg { self.command: $msg }, :$stderr = $*ERR)
+
+Instantiates a new Chart::Gnuplot object.
+
+=item C<:$terminal!> - The output terminal type (e.g. C<"png">, C<"svg">). Required.
+=item C<:$filename> - The path of the output file to write the chart to.
+=item C<:$gnuplot> - The path of the gnuplot executable to use. When omitted, the bundled gnuplot is used if available, otherwise C<gnuplot> on C<PATH>.
+=item C<:$persist> - Keeps the gnuplot process alive by passing C<-persist>. Defaults to C<True>.
+=item C<:$debug> - Prints the commands sent to gnuplot and the gnuplot output to C<:$stderr>. Defaults to C<False>.
+=item C<:&writer> - A callback used to send commands to gnuplot. Defaults to C<self.command>.
+=item C<:$stderr> - Where the debug output is printed. Defaults to C<$*ERR>.
+
 =head3 terminal
 
 Defined as:
