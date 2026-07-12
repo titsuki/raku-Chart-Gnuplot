@@ -620,15 +620,37 @@ Places an arrow on a plot.
 
 Defined as:
 
-    multi method arrow(
-          :$tag, :$from, :$rto, Bool :$head, TrueOnly :$backhead, TrueOnly :$heads,
-          :$head-length, :$head-angle, :$back-angle,
-          Bool :$filled, TrueOnly :$empty, TrueOnly :$border,
-          TrueOnly :$front, TrueOnly :$back,
-          :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor), :dt(:$dashtype), :&writer? = -> $msg { self.command: $msg }
+    multi method multiplot(
+          :$title, :$font-name, :$font-size, Bool :$enhanced, :@layout,
+          :$rowsfirst, :$columnsfirst, :$downwards, :$upwards,
+          :$scale, :$offset, :$margins, :$spacing,
+          :&writer = -> $msg { self.command: $msg }
+    )
+
+    multi method multiplot(
+          &body,
+          :$title, :$font-name, :$font-size, Bool :$enhanced, :@layout,
+          :$rowsfirst, :$columnsfirst, :$downwards, :$upwards,
+          :$scale, :$offset, :$margins, :$spacing,
+          :&writer = -> $msg { self.command: $msg }
     )
 
 Places gnuplot in the multiplot mode, in which several plots are placed next to each other on the same page or screen window.
+Each subsequent `plot` or `splot` call starts a new panel.
+When `&body` is provided, multiplot mode is ended automatically after the block, including when the block throws an exception.
+
+    $gnu.multiplot(:layout([1, 2]), {
+        $gnu.plot(:function("sin(x)"));
+        $gnu.plot(:function("cos(x)"));
+    });
+
+### end-multiplot
+
+Defined as:
+
+    method end-multiplot(:&writer = -> $msg { self.command: $msg })
+
+Leaves multiplot mode and resets plotting state so that the next `plot` or `splot` starts a new chart.
 
 ### command
 
@@ -809,4 +831,3 @@ COPYRIGHT AND LICENSE
 Copyright 2017 titsuki
 
 This library is free software; you can redistribute it and/or modify it under the GNU General Public License version 3.0.
-
