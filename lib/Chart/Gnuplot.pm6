@@ -21,6 +21,7 @@ has Bool $.persist;
 has $.debug;
 has %.options;
 has Int $!num-plot;
+has Bool $!in-multiplot;
 has $!promise;
 has $!msg-channel;
 has $!msg-supply;
@@ -61,6 +62,7 @@ submethod BUILD(:$terminal!, Str :$filename, Str :$gnuplot?, :$!persist = True, 
     }
     $!promise = $!gnuplot.start;
     $!num-plot = 0;
+    $!in-multiplot = False;
 
     $!arrow = Chart::Gnuplot::Arrow.new(:&!writer);
     $!border = Chart::Gnuplot::Border.new(:&!writer);
@@ -129,13 +131,12 @@ multi method plot(:$title, :$ignore, :@range, :@vertices!, :$smooth,
     @args.push("nosurface") if $surface.defined and $surface == False;
     @args.push("palette") if $palette.defined;
 
-    $!terminal.writer(&writer).set;
-    $!output.writer(&writer).set;
+    unless $!in-multiplot {
+        $!terminal.writer(&writer).set;
+        $!output.writer(&writer).set;
+    }
 
-    my $cmd = do given $!num-plot {
-        when * > 0 { "replot" }
-        default { "plot" }
-    };
+    my $cmd = ($!in-multiplot || $!num-plot == 0) ?? "plot" !! "replot";
     &writer(sprintf("%s %s",$cmd, @args.grep(* ne "").join(" ")));
     $!num-plot++;
 }
@@ -175,13 +176,12 @@ multi method plot(:$title, :$ignore, :@range, :$function!, :$smooth,
     @args.push("nosurface") if $surface.defined and $surface == False;
     @args.push("palette") if $palette.defined;
 
-    $!terminal.writer(&writer).set;
-    $!output.writer(&writer).set;
+    unless $!in-multiplot {
+        $!terminal.writer(&writer).set;
+        $!output.writer(&writer).set;
+    }
 
-    my $cmd = do given $!num-plot {
-        when * > 0 { "replot" }
-        default { "plot" }
-    };
+    my $cmd = ($!in-multiplot || $!num-plot == 0) ?? "plot" !! "replot";
 
     &writer(sprintf("%s %s", $cmd, @args.grep(* ne "").join(" ")));
     $!num-plot++;
@@ -234,13 +234,12 @@ multi method splot(:@range,
     @args.push("nosurface") if $surface.defined and $surface == False;
     @args.push("palette") if $palette.defined;
 
-    $!terminal.writer(&writer).set;
-    $!output.writer(&writer).set;
+    unless $!in-multiplot {
+        $!terminal.writer(&writer).set;
+        $!output.writer(&writer).set;
+    }
 
-    my $cmd = do given $!num-plot {
-        when * > 0 { "replot" }
-        default { "splot" }
-    };
+    my $cmd = ($!in-multiplot || $!num-plot == 0) ?? "splot" !! "replot";
     &writer(sprintf("%s %s", $cmd, @args.grep(* ne "").join(" ")));
     $!num-plot++;
 }
@@ -279,20 +278,19 @@ multi method splot(:@range,
     @args.push("nosurface") if $surface.defined and $surface == False;
     @args.push("palette") if $palette.defined;
 
-    $!terminal.writer(&writer).set;
-    $!output.writer(&writer).set;
+    unless $!in-multiplot {
+        $!terminal.writer(&writer).set;
+        $!output.writer(&writer).set;
+    }
 
-    my $cmd = do given $!num-plot {
-        when * > 0 { "replot" }
-        default { "splot" }
-    };
+    my $cmd = ($!in-multiplot || $!num-plot == 0) ?? "splot" !! "replot";
     &writer(sprintf("%s %s", $cmd, @args.grep(* ne "").join(" ")));
     $!num-plot++;
 }
 
-method multiplot(:$title, :$font-name, :$font-size, Bool :$enhanced, :@layout, :$rowsfirst, :$columnsfirst,
-                 :$downwards, :$upwards, :$scale, :$offset, :$margins,
-                 :$spacing, :&writer = -> $msg { self.command: $msg }) {
+multi method multiplot(:$title, :$font-name, :$font-size, Bool :$enhanced, :@layout, :$rowsfirst, :$columnsfirst,
+                       :$downwards, :$upwards, :$scale, :$offset, :$margins,
+                       :$spacing, :&writer = -> $msg { self.command: $msg }) {
     my @args;
 
     @args.push(sprintf("title \"%s\"", $title)) if $title.defined;
@@ -308,7 +306,27 @@ method multiplot(:$title, :$font-name, :$font-size, Bool :$enhanced, :@layout, :
     @args.push("margins " ~ $margins.join(",")) if $margins.elems == 4;
     @args.push("spacing " ~ $spacing.join(",")) if $spacing.defined;
 
-    &writer(sprintf("set multiplot %s", @args.grep(* ne "").join(" ")));
+    my $options = @args.grep(* ne "").join(" ");
+    $!terminal.writer(&writer).set;
+    $!output.writer(&writer).set;
+    &writer($options ?? "set multiplot $options" !! "set multiplot");
+    $!in-multiplot = True;
+    $!num-plot = 0;
+}
+
+multi method multiplot(&body, :$title, :$font-name, :$font-size, Bool :$enhanced, :@layout, :$rowsfirst, :$columnsfirst,
+                       :$downwards, :$upwards, :$scale, :$offset, :$margins,
+                       :$spacing, :&writer = -> $msg { self.command: $msg }) {
+    self.multiplot(:$title, :$font-name, :$font-size, :$enhanced, :@layout, :$rowsfirst, :$columnsfirst,
+                   :$downwards, :$upwards, :$scale, :$offset, :$margins, :$spacing, :&writer);
+    LEAVE self.end-multiplot(:&writer);
+    body();
+}
+
+method end-multiplot(:&writer = -> $msg { self.command: $msg }) {
+    &writer("unset multiplot");
+    $!in-multiplot = False;
+    $!num-plot = 0;
 }
 
 method dispose {
@@ -938,15 +956,32 @@ Places an arrow on a plot.
 
 Defined as:
 
-        multi method arrow(
-              :$tag, :$from, :$rto, Bool :$head, TrueOnly :$backhead, TrueOnly :$heads,
-              :$head-length, :$head-angle, :$back-angle,
-              Bool :$filled, TrueOnly :$empty, TrueOnly :$border,
-              TrueOnly :$front, TrueOnly :$back,
-              :ls(:$linestyle), :lt(:$linetype), :lw(:$linewidth), :lc(:$linecolor), :dt(:$dashtype), :&writer? = -> $msg { self.command: $msg }
+        multi method multiplot(
+              :$title, :$font-name, :$font-size, Bool :$enhanced, :@layout,
+              :$rowsfirst, :$columnsfirst, :$downwards, :$upwards,
+              :$scale, :$offset, :$margins, :$spacing,
+              :&writer = -> $msg { self.command: $msg }
+        )
+
+        multi method multiplot(
+              &body,
+              :$title, :$font-name, :$font-size, Bool :$enhanced, :@layout,
+              :$rowsfirst, :$columnsfirst, :$downwards, :$upwards,
+              :$scale, :$offset, :$margins, :$spacing,
+              :&writer = -> $msg { self.command: $msg }
         )
 
 Places gnuplot in the multiplot mode, in which several plots are placed next to each other on the same page or screen window.
+Each subsequent C<plot> or C<splot> call starts a new panel.
+When C<&body> is provided, multiplot mode is ended automatically after the block, including when the block throws an exception.
+
+=head3 end-multiplot
+
+Defined as:
+
+        method end-multiplot(:&writer = -> $msg { self.command: $msg })
+
+Leaves multiplot mode and resets plotting state so that the next C<plot> or C<splot> starts a new chart.
 
 =head3 command
 
