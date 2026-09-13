@@ -635,14 +635,7 @@ Defined as:
           :&writer = -> $msg { self.command: $msg }
     )
 
-Places gnuplot in the multiplot mode, in which several plots are placed next to each other on the same page or screen window.
-Each subsequent `plot` or `splot` call starts a new panel.
-When `&body` is provided, multiplot mode is ended automatically after the block, including when the block throws an exception.
-
-    $gnu.multiplot(:layout([1, 2]), {
-        $gnu.plot(:function("sin(x)"));
-        $gnu.plot(:function("cos(x)"));
-    });
+Places gnuplot in the multiplot mode, in which several plots are placed next to each other on the same page or screen window. Each subsequent `plot` or `splot` call starts a new panel. When `&body` is provided, multiplot mode is ended automatically after the block, including when the block throws an exception.
 
 ### end-multiplot
 
@@ -831,3 +824,4 @@ COPYRIGHT AND LICENSE
 Copyright 2017 titsuki
 
 This library is free software; you can redistribute it and/or modify it under the GNU General Public License version 3.0.
+

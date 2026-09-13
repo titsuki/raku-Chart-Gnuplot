@@ -2,6 +2,10 @@ Revision history for Chart-Gnuplot
 
 {{$NEXT}}
 
+0.0.24  2026-09-13T22:47:49+09:00
+    - Fixes:
+      - Fix multiplot state handling and add scoped block form [#59]
+
 0.0.23  2026-06-27T14:43:45+09:00
     - Fixes:
       - Migrate distribution from CPAN (cpan:TITSUKI) to the zef ecosystem (zef:titsuki) [#57]
